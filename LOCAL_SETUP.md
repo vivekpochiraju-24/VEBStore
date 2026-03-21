@@ -51,7 +51,7 @@ Frontend will run on: http://localhost:5174
 
 ## Login Credentials
 - Email: `bhargavisurampudi1@gmail.com`
-- Password: `lzevtyxurfrapoiw`
+- Password: `bhargavi10`
 
 ## What Works Locally
 ✅ Admin login authentication
