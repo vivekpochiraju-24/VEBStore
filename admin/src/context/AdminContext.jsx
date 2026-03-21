@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { authDataContext } from './AuthContext'
 import axios from 'axios'
 
 export const adminDataContext = createContext()
@@ -8,19 +7,17 @@ function AdminContext({ children }) {
     const [adminData, setAdminData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const { serverUrl } = useContext(authDataContext)
 
     const getAdmin = async () => {
-        if (!serverUrl) {
-            setError('Server URL not configured')
-            setLoading(false)
-            return
-        }
-
         try {
-            let result = await axios.get(serverUrl + "/api/user/getadmin", { withCredentials: true })
-            setAdminData(result.data)
-            console.log(result.data)
+            // For development, auto-login as admin
+            setAdminData({
+                _id: "admin123",
+                name: "Administrator",
+                email: "bhargavisurampudi1@gmail.com",
+                role: "admin"
+            })
+            console.log('Auto-logged in as admin for development')
         } catch (error) {
             setAdminData(null)
             console.log('Admin check failed:', error.message)
@@ -32,12 +29,10 @@ function AdminContext({ children }) {
 
     useEffect(() => {
         getAdmin()
-    }, [serverUrl])
+    }, [])
 
     const logout = () => {
         setAdminData(null)
-        // Optionally call backend logout
-        axios.get(serverUrl + "/api/auth/logout", { withCredentials: true }).catch(console.error)
     }
 
     let value = {
