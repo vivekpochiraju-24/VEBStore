@@ -1,16 +1,35 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { themeDataContext } from '../context/ThemeContext'
 
 function NewLetterBox() {
-    const handleSubmit = ()=>{
-        e.preventDefault()
-    }
+  const { isDark } = useContext(themeDataContext)
+  const dk = isDark
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
+
   return (
-    <div className='w-[100%] h-[40vh]  bg-gradient-to-l from-[#141414] to-[#0c2025] flex items-center justify-start gap-[10px] flex-col'>
-      <p className='md:text-[30px] text-[20px] text-[#a5faf7] font-semibold px-[20px]'>Subscribe now & get 20% off</p>
-      <p className='md:text-[18px] text-[14px] text-center text-blue-100 font-semibold px-[20px]'>Subscribe now and enjoy exclusive savings, special deals, and early access to new collections.</p>
-      <form action="" onSubmit={handleSubmit} className='w-[100%] h-[30%] md:h-[50%] flex items-center justify-center mt-[20px] gap-[20px] px-[20px]'>
-        <input type="text" placeholder='Enter Your Email' className='placeholder:text-[black] bg-slate-300 w-[600px] max-w-[60%] h-[40px]  px-[20px] rounded-lg shadow-sm shadow-black' required />
-        <button type='submit' className='text-[15px] md:text-[16px] px-[10px] md:px-[30px] py-[12px] md:py-[10px]  hover:bg-slate-500 cursor-pointer bg-[#2e3030c9]  text-white flex items-center justify-center gap-[20px]  border-[1px] border-[#80808049]  rounded-lg shadow-sm shadow-black'>Subscribe</button>
+    <div className={`w-full py-20 flex items-center justify-center gap-4 flex-col border-y transition-colors duration-300 ${dk ? 'bg-[#1e293b] border-slate-700/50' : 'bg-blue-50 border-blue-100'}`}>
+      <p className={`md:text-4xl text-2xl font-extrabold px-6 tracking-tight text-center ${dk ? 'text-white' : 'text-gray-900'}`}>
+        Subscribe now &amp; get 20% off
+      </p>
+      <p className={`md:text-lg text-base text-center font-medium px-6 max-w-2xl mt-2 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
+        Subscribe now and enjoy exclusive savings, special deals, and early access to new collections.
+      </p>
+      <form action="" onSubmit={handleSubmit} className='w-full flex sm:flex-row flex-col items-center justify-center mt-8 gap-4 px-6'>
+        <input
+          type="email"
+          placeholder='Enter your email address'
+          className={`w-full sm:w-[450px] h-14 px-6 rounded-2xl shadow-sm border focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-none font-medium ${dk ? 'bg-[#0f172a] border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
+          required
+        />
+        <button
+          type='submit'
+          className={`h-14 px-10 font-bold rounded-2xl transition-all active:scale-[0.98] shadow-md tracking-wide w-full sm:w-auto ${dk ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20' : 'bg-gray-900 text-white hover:bg-black shadow-gray-900/10'}`}
+        >
+          SUBSCRIBE
+        </button>
       </form>
     </div>
   )

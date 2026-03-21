@@ -1,85 +1,113 @@
-import React, { useContext, useState } from 'react'
-import ai from "../assets/ai.png"
+import React, { useContext } from 'react'
+import { FaWhatsapp } from 'react-icons/fa'
 import { shopDataContext } from '../context/ShopContext'
+import { userDataContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import open from "../assets/open.mp3"
+
+const STORE_NUMBER = '919603673436' // Store WhatsApp number
+
 function Ai() {
-  let {showSearch , setShowSearch} = useContext(shopDataContext)
-  let navigate = useNavigate()
-  let [activeAi,setActiveAi] = useState(false)
-  let openingSound = new Audio(open)
+  const { cartItem, products, currency } = useContext(shopDataContext)
+  const { userData } = useContext(userDataContext)
+  const navigate = useNavigate()
 
- function speak(message){
-let utterence=new SpeechSynthesisUtterance(message)
-window.speechSynthesis.speak(utterence)
+  const buildWhatsAppMessage = () => {
+    const cartProductIds = Object.keys(cartItem || {})
+
+    if (cartProductIds.length === 0) {
+      return `👋 Hi VEBStore!\n\nI came across your store and I'm interested in your products. Could you please send me your latest collection and available offers?\n\nThank you! 🛍️`
+    }
+
+    let lines = []
+    lines.push(`👋 Hi VEBStore! I'd like to order the following items:\n`)
+    lines.push(`👤 Customer: ${userData?.name || 'Customer'}`)
+    lines.push(`📧 Email: ${userData?.email || ''}`)
+    if (userData?.phone) lines.push(`📱 Phone: +91${userData.phone}`)
+    lines.push(``)
+
+    let grandTotal = 0
+
+    cartProductIds.forEach((productId) => {
+      const product = products.find(p => p._id === productId)
+      if (!product) return
+
+      const sizes = cartItem[productId]
+      Object.keys(sizes).forEach((size) => {
+        const qty = sizes[size]
+        if (qty <= 0) return
+
+        const subtotal = product.price * qty
+        grandTotal += subtotal
+
+        lines.push(`🛍️ *${product.name}*`)
+        lines.push(`   • Size: ${size}`)
+        lines.push(`   • Qty: ${qty}`)
+        lines.push(`   • Price: ${currency}${product.price} × ${qty} = ${currency}${subtotal}`)
+        if (product.image1) {
+          lines.push(`   • Product Link: ${product.image1}`)
+        }
+        lines.push(``)
+      })
+    })
+
+    lines.push(`─────────────────────────`)
+    lines.push(`💰 *Subtotal: ${currency}${grandTotal}*`)
+    lines.push(`🚚 *Delivery: ${currency}40*`)
+    lines.push(`✅ *Grand Total: ${currency}${grandTotal + 40}*`)
+    lines.push(``)
+    lines.push(`Please confirm product availability and share payment details. Thank you! 🙏`)
+
+    return lines.join('\n')
   }
 
-
-  const speechRecognition=window.SpeechRecognition || window.webkitSpeechRecognition
-  const recognition = new speechRecognition()
-   if(!recognition){
-    console.log("not supported")
-  }
-
-  recognition.onresult = (e)=>{
-    const transcript = e.results[0][0].transcript.trim();
- if(transcript.toLowerCase().includes("search") && transcript.toLowerCase().includes("open") && !showSearch){
-      speak("opening search")
-      setShowSearch(true) 
-      navigate("/collection")
-    }
-    else if(transcript.toLowerCase().includes("search") && transcript.toLowerCase().includes("close") && showSearch){
-      speak("closing search")
-      setShowSearch(false) 
-      
-    }
-     else if(transcript.toLowerCase().includes("collection") || transcript.toLowerCase().includes("collections") || transcript.toLowerCase().includes("product") || transcript.toLowerCase().includes("products")){
-      speak("opening collection page")
-      navigate("/collection")
-    }
-    else if(transcript.toLowerCase().includes("about") || transcript.toLowerCase().includes("aboutpage") ){
-      speak("opening about page")
-      navigate("/about")
-      setShowSearch(false) 
-    }
-     else if(transcript.toLowerCase().includes("home") || transcript.toLowerCase().includes("homepage") ){
-      speak("opening home page")
-      navigate("/")
-      setShowSearch(false) 
-    }
-     else if(transcript.toLowerCase().includes("cart")  || transcript.toLowerCase().includes("kaat")  || transcript.toLowerCase().includes("caat")){
-      speak("opening your cart")
-      navigate("/cart")
-      setShowSearch(false) 
-    }
-    else if(transcript.toLowerCase().includes("contact")){
-      speak("opening contact page")
-      navigate("/contact")
-      setShowSearch(false) 
-    }
-   
-     else if(transcript.toLowerCase().includes("order") || transcript.toLowerCase().includes("myorders") || transcript.toLowerCase().includes("orders") || transcript.toLowerCase().includes("my order")){
-      speak("opening your orders page")
-      navigate("/order")
-      setShowSearch(false) 
-    }
-    else{
-      toast.error("Try Again")
+  const handleWhatsAppClick = () => {
+    // Check if user has saved their phone number — show reminder if not
+    if (!userData?.phone) {
+      toast.warn('Please add your mobile number in Edit Profile first! 📱', { autoClose: 4000 })
+      navigate('/profile')
+      return
     }
 
+    const message = buildWhatsAppMessage()
+    // Send the order details to the STORE's WhatsApp
+    const url = `https://wa.me/${STORE_NUMBER}?text=${encodeURIComponent(message)}`
+    window.open(url, '_blank')
   }
-  recognition.onend=()=>{
-   setActiveAi(false)
-  }
+
+  const cartCount = Object.keys(cartItem || {}).reduce((acc, id) => {
+    return acc + Object.values(cartItem[id] || {}).reduce((s, q) => s + q, 0)
+  }, 0)
+
   return (
-    <div className='fixed lg:bottom-[20px] md:bottom-[40px] bottom-[80px] left-[2%] ' onClick={()=>{recognition.start();
-    openingSound.play()
-    setActiveAi(true)
-    }}>
-      <img src={ai} alt="" className={`w-[100px] cursor-pointer ${activeAi ? 'translate-x-[10%] translate-y-[-10%] scale-125 ' : 'translate-x-[0] translate-y-[0] scale-100'} transition-transform` } style={{
-        filter: ` ${activeAi?"drop-shadow(0px 0px 30px #00d2fc)":"drop-shadow(0px 0px 20px black)"}`
-      }}/>
+    <div
+      className='fixed lg:bottom-6 md:bottom-10 bottom-20 left-4 z-50 group cursor-pointer'
+      onClick={handleWhatsAppClick}
+      title='Order via WhatsApp'
+    >
+      {/* Pulse ring */}
+      <span className='absolute inset-0 rounded-full bg-green-400 opacity-30 animate-ping'></span>
+
+      {/* Cart count badge */}
+      {cartCount > 0 && (
+        <div className='absolute -top-1 -right-1 z-10 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow'>
+          {cartCount}
+        </div>
+      )}
+
+      {/* WhatsApp icon button */}
+      <div className='relative flex items-center justify-center w-[60px] h-[60px] bg-green-500 hover:bg-green-600 rounded-full shadow-xl shadow-green-400/50 transition-all duration-300 group-hover:scale-110 active:scale-95'>
+        <FaWhatsapp className='text-white text-4xl' />
+      </div>
+
+      {/* Hover tooltip */}
+      <div className='absolute left-[72px] top-1/2 -translate-y-1/2 bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md leading-relaxed'>
+        {cartCount > 0
+          ? `Order ${cartCount} item${cartCount > 1 ? 's' : ''} via WhatsApp`
+          : 'Chat with us on WhatsApp'
+        }
+        <span className='absolute left-[-6px] top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900'></span>
+      </div>
     </div>
   )
 }

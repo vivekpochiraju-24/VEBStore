@@ -1,134 +1,171 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FaChevronRight } from "react-icons/fa";
-import { FaChevronDown } from "react-icons/fa";
-import Title from '../component/Title';
-import { shopDataContext } from '../context/ShopContext';
-import Card from '../component/Card';
+import Title from '../component/Title'
+import { shopDataContext } from '../context/ShopContext'
+import { themeDataContext } from '../context/ThemeContext'
+import Card from '../component/Card'
+import { LuSettings2 } from "react-icons/lu"
 
 function Collections() {
+  const { isDark } = useContext(themeDataContext)
+  const dk = isDark
 
-    let [showFilter,setShowFilter] = useState(false)
-    let {products,search,showSearch} = useContext(shopDataContext)
-    let [filterProduct,setFilterProduct] = useState([])
-    let [category,setCaterory] = useState([])
-    let [subCategory,setSubCaterory] = useState([])
-    let [sortType,SetSortType] = useState("relavent")
+  const [showFilter, setShowFilter] = useState(false)
+  const { products, search, showSearch } = useContext(shopDataContext)
+  const [filterProduct, setFilterProduct] = useState([])
+  const [category, setCaterory] = useState([])
+  const [subCategory, setSubCaterory] = useState([])
+  const [sortType, SetSortType] = useState("relavent")
 
-    const toggleCategory = (e) =>{
-        if(category.includes(e.target.value)){
-            setCaterory(prev => prev.filter(item => item !== e.target.value))
-        }else
-         {
-            setCaterory(prev => [...prev,e.target.value])
-         }
+  const toggleCategory = (e) => {
+    if (category.includes(e.target.value)) {
+      setCaterory(prev => prev.filter(item => item !== e.target.value))
+    } else {
+      setCaterory(prev => [...prev, e.target.value])
     }
+  }
 
-    const toggleSubCategory = (e) =>{
-         if(subCategory.includes(e.target.value)){
-            setSubCaterory(prev => prev.filter(item => item !== e.target.value))
-        }else
-         {
-            setSubCaterory(prev => [...prev,e.target.value])
-         }
+  const toggleSubCategory = (e) => {
+    if (subCategory.includes(e.target.value)) {
+      setSubCaterory(prev => prev.filter(item => item !== e.target.value))
+    } else {
+      setSubCaterory(prev => [...prev, e.target.value])
     }
+  }
 
-    const applyFilter = ()=>{
-        let productCopy = products.slice()
-
-        if(showSearch && search){
-            productCopy = productCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
-        }
-        if(category.length > 0)
-        {
-            productCopy = productCopy.filter(item => category.includes(item.category))
-        }
-        if(subCategory.length > 0)
-        {
-            productCopy = productCopy.filter(item => subCategory.includes(item.subCategory))
-        }
-        setFilterProduct(productCopy)
-
+  const applyFilter = () => {
+    let productCopy = products.slice()
+    if (showSearch && search) {
+      productCopy = productCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
     }
-
-
-    const sortProducts = (e)=>{
-        let fbCopy = filterProduct.slice()
-
-        switch(sortType){
-         case 'low-high':
-            setFilterProduct(fbCopy.sort((a,b)=>(a.price - b.price)))
-        break;
-
-         case 'high-low':
-            setFilterProduct(fbCopy.sort((a,b)=>(b.price - a.price)))
-        break;
-        default:
-            applyFilter()
-        break;
-        }
-
+    if (category.length > 0) {
+      productCopy = productCopy.filter(item => category.includes(item.category))
     }
+    if (subCategory.length > 0) {
+      productCopy = productCopy.filter(item => subCategory.includes(item.subCategory))
+    }
+    setFilterProduct(productCopy)
+  }
 
-    useEffect(()=>{
-        sortProducts()
-    },[sortType])
-
-
-    useEffect(()=>{
-    setFilterProduct(products)
-    },[products])
-
-    useEffect(()=>{
+  const sortProducts = () => {
+    let fbCopy = filterProduct.slice()
+    switch (sortType) {
+      case 'low-high':
+        setFilterProduct(fbCopy.sort((a, b) => (a.price - b.price)))
+        break
+      case 'high-low':
+        setFilterProduct(fbCopy.sort((a, b) => (b.price - a.price)))
+        break
+      default:
         applyFilter()
-    },[category,subCategory,search ,showSearch])
+        break
+    }
+  }
 
-
-
-
-
+  useEffect(() => { sortProducts() }, [sortType])
+  useEffect(() => { setFilterProduct(products) }, [products])
+  useEffect(() => { applyFilter() }, [category, subCategory, search, showSearch])
 
   return (
-    <div className='w-[99vw]  min-h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] flex items-start flex-col md:flex-row justify-start  pt-[70px] overflow-x-hidden z-[2] pb-[110px]'>
-      <div className={`md:w-[30vw] lg:w-[20vw] w-[100vw] md:min-h-[100vh] ${showFilter ? "h-[45vh]" :"h-[8vh]"}  p-[20px] border-r-[1px] border-gray-400  text-[#aaf5fa] lg:fixed `}>
-        <p className='text-[25px] font-semibold flex gap-[5px] items-center justify-start cursor-pointer' onClick={()=>setShowFilter(prev=>!prev)}>FILTERS
-            {!showFilter && <FaChevronRight className='text-[18px] md:hidden'  />}
-           {showFilter && <FaChevronDown className='text-[18px] md:hidden'  />}
-        </p>
-        
+    <div className={`w-full min-h-screen pt-[100px] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] pb-32 flex flex-col sm:flex-row gap-6 sm:gap-10 transition-colors duration-300 ${dk ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
 
-        <div className={`border-[2px] border-[#dedcdc] pl-5 py-3 mt-6 rounded-md bg-slate-600 ${showFilter ? "" : "hidden"} md:block`}>
-            <p className='text-[18px] text-[#f8fafa]'>CATEGORIES</p>
-            <div className='w-[230px] h-[120px]  flex items-start justify-center gap-[10px] flex-col'>
-                <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'Men'} className='w-3' onChange={toggleCategory} /> Men</p>
-                 <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'Women'} className='w-3' onChange={toggleCategory} /> Women</p>
-                  <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'Kids'} onChange={toggleCategory} className='w-3' /> Kids</p>
+      {/* Sidebar Filters */}
+      <div className='w-full sm:min-w-[260px] sm:w-[260px]'>
+        <div className={`rounded-2xl shadow-sm border p-6 sm:sticky sm:top-[100px] transition-colors duration-300 ${dk ? 'bg-[#1e293b] border-slate-700/50' : 'bg-white border-gray-200'}`}>
+          <div
+            onClick={() => setShowFilter(!showFilter)}
+            className='flex items-center justify-between cursor-pointer sm:cursor-default mb-4'
+          >
+            <p className={`text-lg font-bold flex items-center gap-2 ${dk ? 'text-white' : 'text-gray-900'}`}>
+              <LuSettings2 className="text-blue-500" size={20} /> FILTERS
+            </p>
+            <svg className={`h-4 sm:hidden transition-transform ${showFilter ? 'rotate-90' : ''} ${dk ? 'text-slate-400' : 'text-gray-500'}`} fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+            </svg>
+          </div>
+
+          <div className={`transition-all duration-300 overflow-hidden ${showFilter ? 'max-h-[1000px] opacity-100' : 'max-h-0 sm:max-h-[1000px] opacity-0 sm:opacity-100'}`}>
+
+            {/* Category Filter */}
+            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Categories</p>
+              <div className='flex flex-col gap-3'>
+                {['Men', 'Women', 'Kids'].map((cat) => (
+                  <label key={cat} className='flex items-center gap-3 cursor-pointer group'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={cat}
+                      onChange={toggleCategory}
+                    />
+                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{cat}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-        </div>
-        <div className={`border-[2px] border-[#dedcdc] pl-5 py-3 mt-6 rounded-md bg-slate-600 ${showFilter ? "" : "hidden"} md:block`}>
-            <p className='text-[18px] text-[#f8fafa]'>SUB-CATEGORIES</p>
-            <div className='w-[230px] h-[120px]  flex items-start justify-center gap-[10px] flex-col'>
-                <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'TopWear'} className='w-3' onChange={toggleSubCategory} /> TopWear</p>
-                 <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'BottomWear'} className='w-3' onChange={toggleSubCategory} /> BottomWear</p>
-                  <p className='flex items-center justify-center gap-[10px] text-[16px] font-light'> <input type="checkbox" value={'WinterWear'} className='w-3' onChange={toggleSubCategory} /> WinterWear</p>
+
+            {/* SubCategory Filter */}
+            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Product Type</p>
+              <div className='flex flex-col gap-3'>
+                {['TopWear', 'BottomWear', 'WinterWear'].map((type) => (
+                  <label key={type} className='flex items-center gap-3 cursor-pointer group'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={type}
+                      onChange={toggleSubCategory}
+                    />
+                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{type}</span>
+                  </label>
+                ))}
+              </div>
             </div>
+          </div>
         </div>
       </div>
-      <div className='lg:pl-[20%] md:py-[10px] '>
-        <div className=' md:w-[80vw] w-[100vw]    flex  justify-between flex-col lg:flex-row lg:px-[50px] '>
-            <Title text1={"ALL"} text2={"COLLECTIONS"}/>
 
-            <select name="" id="" className='bg-slate-600 w-[60%] md:w-[200px] h-[50px] px-[10px] text-[white] rounded-lg hover:border-[#46d1f7] border-[2px]' onChange={(e)=>SetSortType(e.target.value)}>
-                <option value="relavent" className='w-[100%] h-[100%]'>Sort By: Relavent</option>
-                <option value="low-high" className='w-[100%] h-[100%]'>Sort By: Low to High</option>
-                <option value="high-low" className='w-[100%] h-[100%]'>Sort By: High to Low</option>
+      {/* Main Content */}
+      <div className='flex-1 w-full'>
+        <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4'>
+          <div className='mb-0'>
+            <Title text1={'ALL'} text2={'PRODUCTS'} />
+            <p className={`text-sm mt-1 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Explore our carefully curated premium collections</p>
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative shrink-0">
+            <select
+              onChange={(e) => SetSortType(e.target.value)}
+              className={`appearance-none font-medium text-sm px-5 py-3 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer pr-10 transition-colors w-full sm:w-auto border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 hover:border-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
+            >
+              <option value="relavent">Sort by: Relevant</option>
+              <option value="low-high">Sort by: Price (Low to High)</option>
+              <option value="high-low">Sort by: Price (High to Low)</option>
             </select>
+            <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
+              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className='lg:w-[80vw] md:w-[60vw]   w-[100vw] min-h-[70vh] flex items-center justify-center flex-wrap gap-[30px]'>
-            {
-             filterProduct.map((item,index)=>(
-                <Card key={index} id={item._id} name={item.name} price={item.price} image={item.image1}/>
-             ))
-            }
+
+        {/* Products Grid */}
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'>
+          {filterProduct.map((item, index) => (
+            <Card key={index} name={item.name} id={item._id} price={item.price} image={item.image1} />
+          ))}
+          {filterProduct.length === 0 && (
+            <div className={`col-span-full flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-400' : 'bg-white border-gray-300 text-gray-500'}`}>
+              <p className="text-lg">No products found matching your filters.</p>
+              <button
+                onClick={() => { setCaterory([]); setSubCaterory([]); document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false) }}
+                className="mt-4 text-blue-500 font-medium hover:underline"
+              >
+                Clear all filters
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

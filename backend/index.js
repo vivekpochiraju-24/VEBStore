@@ -10,29 +10,52 @@ import productRoutes from './routes/productRoutes.js'
 import cartRoutes from './routes/cartRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 
-let port = process.env.PORT || 6000
+let port = process.env.PORT || 8000
 
 let app = express()
 
-app.use(express.json())
+// Middleware
+app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 app.use(cors({
- origin:["http://localhost:5173" , "http://localhost:5174"],
- credentials:true
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://192.168.10.40:5173", "http://192.168.10.40:5174"],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
 
-app.use("/api/auth",authRoutes)
-app.use("/api/user",userRoutes)
-app.use("/api/product",productRoutes)
-app.use("/api/cart",cartRoutes)
-app.use("/api/order",orderRoutes)
+// Routes
+app.use("/api/auth", authRoutes)
+app.use("/api/user", userRoutes)
+app.use("/api/product", productRoutes)
+app.use("/api/cart", cartRoutes)
+app.use("/api/order", orderRoutes)
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+})
 
+// Start server
+const server = app.listen(port, '0.0.0.0', () => {
+    console.log("🚀 VEBStore Server Starting...")
+    console.log(`📍 Server running on: http://localhost:${port}`)
+    console.log(`📍 Also accessible on: http://0.0.0.0:${port}`)
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`)
+    connectDb().then(() => {
+        console.log("✅ Database connected successfully")
+        console.log("🎯 VEBStore Backend Ready!")
+    }).catch(err => {
+        console.error("❌ Database connection failed:", err.message)
+        process.exit(1)
+    })
+})
 
-
-app.listen(port,()=>{
-    console.log("Hello From Server")
-    connectDb()
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully')
+    server.close(() => {
+        console.log('Process terminated')
+    })
 })
 
 

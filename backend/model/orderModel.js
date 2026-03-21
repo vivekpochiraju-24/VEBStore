@@ -35,6 +35,33 @@ const orderSchema = new mongoose.Schema({
     date: {
         type: Number,
         required:true
+    },
+    isCancelled: {
+        type: Boolean,
+        default: false
+    },
+    cancellationReason: {
+        type: String,
+        default: ""
+    },
+    returnRequest: {
+        status: {
+            type: String,
+            enum: ['None', 'Requested', 'Approved', 'Rejected'],
+            default: 'None'
+        },
+        type: {
+            type: String,
+            enum: ['Return', 'Exchange', 'None'],
+            default: 'None'
+        },
+        reason: {
+            type: String,
+            default: ""
+        },
+        requestDate: {
+            type: Date
+        }
     }
 },{timestamps:true}) 
 

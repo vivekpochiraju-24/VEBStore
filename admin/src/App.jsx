@@ -5,24 +5,28 @@ import Add from './pages/Add'
 import Lists from './pages/Lists'
 import Orders from './pages/Orders'
 import Login from './pages/Login'
+import Settings from './pages/Settings'
+import Support from './pages/Support'
 import { adminDataContext } from './context/AdminContext'
-  import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
-  let {adminData} = useContext(adminDataContext)
+  let { adminData } = useContext(adminDataContext)
   return (
 
     <>
       <ToastContainer />
-    {!adminData ? <Login/> : <>
+      {!adminData ? <Login /> : <>
 
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/add' element={<Add/>}/>
-        <Route path='/lists' element={<Lists/>}/>
-        <Route path='/orders' element={<Orders/>}/>
-        <Route path='/login' element={<Login/>}/>
-      </Routes>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/add' element={<Add />} />
+          <Route path='/lists' element={<Lists />} />
+          <Route path='/orders' element={<Orders />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='/support' element={<Support />} />
+          <Route path='/login' element={<Login />} />
+        </Routes>
       </>
       }
     </>

@@ -62,3 +62,73 @@ export const removeProduct = async (req,res) => {
     }
     
 }
+
+export const editProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, category, subCategory, sizes, bestseller } = req.body;
+        
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (description) updateData.description = description;
+        if (price) updateData.price = Number(price);
+        if (category) updateData.category = category;
+        if (subCategory) updateData.subCategory = subCategory;
+        if (sizes) updateData.sizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes);
+        if (bestseller !== undefined) updateData.bestseller = bestseller === "true" || bestseller === true;
+        
+        // Note: Image editing is omitted for simplicity unless an image was uploaded, but the requirement is just description mostly
+        const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        
+        return res.status(200).json(product);
+    } catch (error) {
+        console.log("EditProduct error", error);
+        return res.status(500).json({ message: `EditProduct error: ${error.message}` });
+    }
+}
+
+import User from "../model/userModel.js";
+
+export const addReview = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rating, comment, name } = req.body;
+        const userId = req.userId || req.adminEmail; // userId from isAuth OR adminEmail from adminAuth
+        
+        if (!rating || !comment) {
+            return res.status(400).json({ message: "Rating and comment are required" });
+        }
+
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Check if user already reviewed (if it's not admin)
+        if (!req.adminEmail) {
+            const alreadyReviewed = product.reviews.find(r => r.userId.toString() === userId.toString());
+            if (alreadyReviewed) {
+                return res.status(400).json({ message: "You have already reviewed this product" });
+            }
+        }
+
+        const review = {
+            name: name || "Anonymous User",
+            rating: Number(rating),
+            comment,
+            userId,
+            date: Date.now()
+        };
+
+        product.reviews.push(review);
+        await product.save();
+
+        return res.status(201).json({ message: "Review added successfully", reviews: product.reviews });
+    } catch (error) {
+        console.log("AddReview error", error);
+        return res.status(500).json({ message: `AddReview error: ${error.message}` });
+    }
+}

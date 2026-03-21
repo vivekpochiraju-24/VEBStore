@@ -1,1 +1,114 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ===== LIGHT THEME VARIABLES ===== */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-nav: rgba(255,255,255,0.85);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-glow: rgba(37,99,235,0.15);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* ===== DARK THEME VARIABLES ===== */
+html.dark {
+  --bg-primary: #1e293b;
+  --bg-secondary: #0f172a;
+  --bg-card: #1e293b;
+  --bg-nav: rgba(15,23,42,0.90);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #334155;
+  --border-light: #1e293b;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-glow: rgba(59,130,246,0.20);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+html.dark body { background-color: #0f172a; }
+html.dark #root { background-color: #0f172a; }
+
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root { width: 100%; }
+
+/* ===== THEME-AWARE UTILITY CLASSES ===== */
+.theme-bg        { background-color: var(--bg-secondary); }
+.theme-bg-card   { background-color: var(--bg-card); }
+.theme-bg-nav    { background-color: var(--bg-nav); }
+.theme-text      { color: var(--text-primary); }
+.theme-text-muted{ color: var(--text-muted); }
+.theme-border    { border-color: var(--border); }
+.theme-shadow    { box-shadow: var(--shadow-md); }
+
+/* Card with dark support */
+.t-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ===== ANIMATIONS ===== */
+@layer utilities {
+  .animate-in { animation-duration: 300ms; animation-fill-mode: forwards; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  .fade-in { animation-name: fadeIn; }
+  .slide-in-from-top-2 { animation-name: slideInTop; }
+  .slide-in-from-bottom-10 { animation-name: slideInBottom; }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInTop { from { transform: translateY(-0.5rem); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideInBottom { from { transform: translateY(2.5rem); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes shine { 0% { left:-100%; opacity:0; } 20% { opacity:0.5; } 100% { left:100%; opacity:0; } }
+.animate-shine { animation: shine 1.5s infinite; }
+@keyframes fadeInUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+
+/* ===== GLOW & GLASS ===== */
+.glow-hover:hover { box-shadow: 0 0 25px rgba(0, 212, 170, 0.4); border-color: rgba(0, 212, 170, 0.5); }
+.glass-glow { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 20px rgba(255,255,255,0.02); }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

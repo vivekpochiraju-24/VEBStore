@@ -1,54 +1,62 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Title from '../component/Title'
-import about from '../assets/about.jpg'
-import NewLetterBox from '../component/NewLetterBox'
+import logo from '../assets/logo.png'
+import { themeDataContext } from '../context/ThemeContext'
 
 function About() {
+  const { isDark } = useContext(themeDataContext)
+  const dk = isDark
+
   return (
-    <div className=' w-[99vw] min-h-[100vh] flex items-center justify-center flex-col  bg-gradient-to-l from-[#141414] to-[#0c2025] gap-[50px] pt-[80px]'>
-      <Title text1={'ABOUT'} text2={'US'}/>
-      <div className='w-[100%]  flex items-center justify-center flex-col lg:flex-row'>
-
-        <div className='lg:w-[50%] w-[100%] flex items-center justify-center '>
-          <img src={about} alt="" className='lg:w-[65%] w-[80%] shadow-md shadow-black rounded-sm' />
-        </div>
-        <div className='lg:w-[50%] w-[80%] flex items-start justify-center gap-[20px]  flex-col mt-[20px] lg:mt-[0px]'>
-          <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>
-            OneCart born for smart, seamless shopping—created to deliver quality products, trending styles, and everyday essentials in one place. With reliable service, fast delivery, and great value, OneCart makes your online shopping experience simple, satisfying, and stress-free.
-          </p>
-          <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>
-             modern shoppers—combining style, convenience, and affordability. Whether it’s fashion, essentials, or trends, we bring everything you need to one trusted platform with fast delivery, easy returns, and a customer-first shopping experience you’ll love.
-          </p>
-          <p className='lg:w-[80%] w-[100%] text-[15px] text-[white] lg:text-[18px] mt-[10px] font-bold'>Our Mission</p>
-          <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>
-            Our mission is to redefine online shopping by delivering quality, affordability, and convenience. OneCart connects customers with trusted products and brands, offering a seamless, customer-focused experience that saves time, adds value, and fits every lifestyle and need.
-          </p>
-        </div>
-      </div>
-      <div className='w-[100%] flex items-center justify-center flex-col gap-[10px]'>
-        <Title text1={'WHY'} text2={'CHOOSE US'}/>
-        <div className='w-[80%] flex items-center justify-center lg:flex-row flex-col py-[40px]'>
-
-          <div className='lg:w-[33%] w-[90%] h-[250px] border-[1px] border-gray-100 flex items-center justify-center gap-[20px] flex-col  px-[40px] py-[10px] text-[white] backdrop-blur-[2px] bg-[#ffffff0b]'>
-            <b className='text-[20px] font-semibold text-[#bff1f9]'>Quality Assurance</b>
-            <p>We guarantee quality through strict checks, reliable sourcing, and a commitment to customer satisfaction always.</p>
-          </div>
-           <div className='lg:w-[33%] w-[90%] h-[250px] border-[1px] border-gray-100 flex items-center justify-center gap-[20px] flex-col  px-[40px] py-[10px] text-[white] backdrop-blur-[2px] bg-[#ffffff0b]'>
-            <b className='text-[20px] font-semibold text-[#bff1f9]'>Convenience</b>
-            <p>
-             Shop easily with fast delivery, simple navigation, secure checkout, and everything you need in one place.
-            </p>
-          </div>
-           <div className='lg:w-[33%] w-[90%] h-[250px] border-[1px] border-gray-100 flex items-center justify-center gap-[20px] flex-col  px-[40px] py-[10px] text-[white] backdrop-blur-[2px] bg-[#ffffff0b]'>
-            <b className='text-[20px] font-semibold text-[#bff1f9]'>Exceptional Customer Service</b>
-            <p>
-              Our dedicated support team ensures quick responses, helpful solutions, and a smooth shopping experience every time.
-            </p>
-          </div>
-        </div>
-      </div>
-      <NewLetterBox/>
+    <div className={`w-full min-h-screen pt-[120px] pb-24 px-6 sm:px-[10vw] transition-colors duration-300 ${dk ? 'bg-[#0f172a]' : 'bg-white'}`}>
       
+      <div className='max-w-6xl mx-auto'>
+        <div className='text-2xl text-center mb-12'>
+          <Title text1={'ABOUT'} text2={'US'} />
+        </div>
+
+        <div className='flex flex-col md:flex-row gap-16 items-center'>
+          <div className='w-full md:w-1/2 relative group'>
+            <div className={`absolute inset-0 rounded-[40px] blur-3xl opacity-20 transition-all duration-500 group-hover:opacity-30 ${dk ? 'bg-blue-500' : 'bg-blue-400'}`}></div>
+            <img 
+              className='w-full rounded-[40px] shadow-2xl relative z-10 border border-white/10' 
+              src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop" 
+              alt="About VEBStore" 
+            />
+          </div>
+
+          <div className='w-full md:w-1/2 flex flex-col gap-8'>
+            <div className='space-y-4'>
+              <h2 className={`text-3xl font-black tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>Our Signature Story</h2>
+              <div className='w-20 h-1.5 bg-blue-600 rounded-full'></div>
+            </div>
+            
+            <p className={`text-lg leading-relaxed font-medium ${dk ? 'text-slate-400' : 'text-gray-600'}`}>
+              VEBStore was born out of a passion for innovation and a relentless desire to redefine the modern shopping experience. We started with a simple idea: to provide a platform where style meets substance, and where every customer feels like a priority.
+            </p>
+            <p className={`text-lg leading-relaxed font-medium ${dk ? 'text-slate-400' : 'text-gray-600'}`}>
+              Since our inception, we’ve worked tirelessly to curate a selection of high-quality products that cater to diverse tastes and preferences. From fashion and electronics to home essentials, we bring the best of the world to your fingertips.
+            </p>
+          </div>
+        </div>
+
+        <div className='mt-32 text-2xl text-center mb-16'>
+          <Title text1={'WHY'} text2={'CHOOSE US'} />
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+          {[
+            { title: "Quality Assurance", desc: "We meticulously select and vet each product to ensure it meets our stringent quality standards." },
+            { title: "Convenience", desc: "With our user-friendly interface and hassle-free ordering process, shopping has never been easier." },
+            { title: "Exceptional Support", desc: "Our team of dedicated professionals is here to assist you the way, ensuring your satisfaction is our top priority." }
+          ].map((item, index) => (
+            <div key={index} className={`p-10 rounded-[32px] border transition-all duration-300 hover:-translate-y-2 ${dk ? 'bg-[#1e293b] border-slate-700/50 hover:border-blue-500/50' : 'bg-gray-50 border-gray-100 hover:border-blue-200'}`}>
+              <h4 className={`text-lg font-black mb-4 ${dk ? 'text-white' : 'text-gray-900'}`}>{item.title}</h4>
+              <p className={`text-sm leading-7 font-medium ${dk ? 'text-slate-400' : 'text-gray-500'}`}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
