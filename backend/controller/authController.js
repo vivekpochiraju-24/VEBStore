@@ -140,11 +140,11 @@ export const adminLogin = async (req, res) => {
         console.log("Admin login attempt:", { email, passwordReceived: password ? "***" : "undefined" });
         
         // Priority:
-        // 1. ADMIN_LOGIN_EMAIL / ADMIN_LOGIN_PASSWORD (Explicit for login)
-        // 2. ADMIN_EMAIL / ADMIN_PASSWORD (Original variables)
+        // 1. ADMIN_EMAIL / ADMIN_PASSWORD (From .env)
+        // 2. ADMIN_LOGIN_EMAIL / ADMIN_LOGIN_PASSWORD (Fallback)
         // 3. Defaults (Fallback for ease of use)
-        const adminEmail = process.env.ADMIN_LOGIN_EMAIL || process.env.ADMIN_EMAIL || "bhargavisurampudi1@gmail.com";
-        const adminPassword = process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || "bhargavi10";
+        const adminEmail = process.env.ADMIN_EMAIL || process.env.ADMIN_LOGIN_EMAIL || "bhargavisurampudi1@gmail.com";
+        const adminPassword = process.env.ADMIN_PASSWORD || process.env.ADMIN_LOGIN_PASSWORD || "bhargavi10";
         
         console.log("Expected credentials:", { adminEmail, adminPassword: "***" });
         console.log("Email match:", email === adminEmail);
