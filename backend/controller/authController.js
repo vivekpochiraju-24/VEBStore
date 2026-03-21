@@ -137,32 +137,24 @@ export const adminLogin = async (req, res) => {
     try {
         let { email, password } = req.body;
         
-        console.log("=== ADMIN LOGIN DEBUG ===");
-        console.log("Provided email:", email);
-        console.log("Provided password:", password ? "***" : "NOT PROVIDED");
-        console.log("Expected email:", process.env.ADMIN_EMAIL);
-        console.log("Expected password:", process.env.ADMIN_PASSWORD ? "***SET***" : "NOT SET");
-        
-        // Realistic admin credentials with fallback
-        const adminEmail = process.env.ADMIN_EMAIL || "admin@vebstore.com";
-        const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
-        
-        console.log("Using email:", adminEmail);
-        console.log("Email match:", email === adminEmail ? "YES" : "NO");
-        console.log("Password match:", password === adminPassword ? "YES" : "NO");
-        console.log("========================");
+        // Priority:
+        // 1. ADMIN_LOGIN_EMAIL / ADMIN_LOGIN_PASSWORD (Explicit for login)
+        // 2. ADMIN_EMAIL / ADMIN_PASSWORD (Original variables)
+        // 3. Defaults (Fallback for ease of use)
+        const adminEmail = process.env.ADMIN_LOGIN_EMAIL || process.env.ADMIN_EMAIL || "admin@vebstore.com";
+        const adminPassword = process.env.ADMIN_LOGIN_PASSWORD || process.env.ADMIN_PASSWORD || "admin123";
         
         if (email === adminEmail && password === adminPassword) {
             let token = await genToken1(email)
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.NODE_ENV === "production", // Secure in production
                 sameSite: "Strict",
                 maxAge: 1 * 24 * 60 * 60 * 1000
             })
             return res.status(200).json({ success: true, token, message: "Admin login successful" })
         }
-        return res.status(400).json({ message: "Invalid credentials" })
+        return res.status(400).json({ message: "Invalid administrator credentials" })
 
     } catch (error) {
         console.error("AdminLogin error:", error.message)
