@@ -42,6 +42,8 @@ The admin panel was failing to login on Netlify because it was trying to connect
    - `netlify.toml` file (2 places)
    - `src/context/AuthContext.jsx` fallback
 
+   **Note**: Your admin panel is deployed at `https://vebadmin.netlify.app/`
+
 2. **Backend Environment Variables:**
    Ensure your backend has these environment variables set:
    ```

@@ -10,7 +10,8 @@ app.use(cors({
         "http://localhost:5173", 
         "http://localhost:5174",
         "https://vebstore.netlify.app",
-        "https://admin-vebstore.netlify.app"
+        "https://admin-vebstore.netlify.app",
+        "https://vebadmin.netlify.app"
     ],
     credentials: true
 }));

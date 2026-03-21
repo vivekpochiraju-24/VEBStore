@@ -26,7 +26,8 @@ app.use(cors({
         process.env.FRONTEND_URL, 
         process.env.ADMIN_URL,
         "https://vebstore.netlify.app",
-        "https://admin-vebstore.netlify.app"
+        "https://admin-vebstore.netlify.app",
+        "https://vebadmin.netlify.app"
     ].filter(Boolean),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
