@@ -29,8 +29,8 @@ function Login() {
       if (email === "bhargavisurampudi1@gmail.com" && password === "bhargavi10") {
         console.log("Frontend - Login successful (direct validation)");
         
-        // Create a simple token
-        const token = Buffer.from(`${email}:${Date.now()}`).toString('base64');
+        // Create a simple token using browser-compatible method
+        const token = btoa(`${email}:${Date.now()}`);
         
         // Set token in localStorage
         localStorage.setItem('admin_token', token);
