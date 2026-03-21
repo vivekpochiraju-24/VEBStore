@@ -6,6 +6,12 @@
   VITE_BACKEND_URL = "https://vebadmin.netlify.app"
 
 [[redirects]]
+  from = "/api/user/getadmin"
+  to = "/.netlify/functions/getadmin"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200

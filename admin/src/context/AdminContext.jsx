@@ -5,6 +5,7 @@ import axios from 'axios'
 export const adminDataContext = createContext()
 function AdminContext({children}) {
     let [adminData,setAdminData] = useState(null)
+    let [loading, setLoading] = useState(true)
     let {serverUrl} = useContext(authDataContext)
 
 
@@ -17,6 +18,8 @@ function AdminContext({children}) {
       } catch (error) {
         setAdminData(null)
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -24,6 +27,12 @@ function AdminContext({children}) {
      getAdmin()
     },[])
 
+
+    // Add error boundary to prevent white screen
+    if (!serverUrl) {
+        console.error("Server URL is not defined");
+        return null;
+    }
 
     let value = {
 adminData,setAdminData,getAdmin
