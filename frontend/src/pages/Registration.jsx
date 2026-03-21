@@ -7,7 +7,7 @@ import { IoEyeOutline, IoEye } from "react-icons/io5";
 import axios from 'axios';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../../utils/Firebase';
-import { authDataContext } from '../context/authContext';
+import { authDataContext } from '../context/AuthContext';
 import { userDataContext } from '../context/UserContext';
 import { toast } from 'react-toastify';
 import Loading from '../component/Loading';

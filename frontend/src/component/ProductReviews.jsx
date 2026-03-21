@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { authDataContext } from '../context/authContext';
+import { authDataContext } from '../context/AuthContext';
 import { FaStar } from "react-icons/fa";
 import Loading from './Loading';
 
