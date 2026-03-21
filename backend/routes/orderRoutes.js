@@ -16,6 +16,7 @@ orderRoutes.post("/return-exchange",isAuth,requestReturnExchange)
  
 //for Admin
 orderRoutes.post("/list",adminAuth,allOrders)
+orderRoutes.get("/list",adminAuth,allOrders)
 orderRoutes.post("/status",adminAuth,updateStatus)
 orderRoutes.post("/handle-return",adminAuth,handleReturnExchange)
 orderRoutes.get("/dashboard-stats",adminAuth,getAdminStats)
