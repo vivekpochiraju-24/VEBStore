@@ -43,6 +43,18 @@ const server = app.listen(port, '0.0.0.0', () => {
     console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`)
     connectDb().then(() => {
         console.log("✅ Database connected successfully")
+        
+        // SMTP Verification
+        import('./utils/emailService.js').then(({ transporter }) => {
+            transporter.verify((error, success) => {
+                if (error) {
+                    console.error("❌ Email Service (SMTP) Error:", error.message);
+                } else {
+                    console.log("📨 Email Service (SMTP) Verified & Ready!");
+                }
+            });
+        });
+
         console.log("🎯 VEBStore Backend Ready!")
     }).catch(err => {
         console.error("❌ Database connection failed:", err.message)
