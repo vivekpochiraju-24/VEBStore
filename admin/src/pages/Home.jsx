@@ -14,6 +14,8 @@ function Home() {
     recentOrders: [],
     chartData: []
   })
+  const [lastRefresh, setLastRefresh] = useState(new Date())
+  const [autoRefresh, setAutoRefresh] = useState(true)
   const { serverUrl } = useContext(authDataContext)
 
   const fetchDashboardData = async () => {
@@ -29,6 +31,7 @@ function Home() {
         timeout: 10000
       })
       setStats(response.data)
+      setLastRefresh(new Date())
       console.log('Dashboard data received:', response.data)
     } catch (err) {
       console.error("Dashboard data error", {
@@ -37,6 +40,22 @@ function Home() {
         data: err.response?.data
       })
     }
+  }
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!autoRefresh || !serverUrl) return
+
+    const interval = setInterval(() => {
+      fetchDashboardData()
+    }, 30000) // 30 seconds
+
+    return () => clearInterval(interval)
+  }, [autoRefresh, serverUrl, fetchDashboardData])
+
+  const manualRefresh = () => {
+    console.log('Manual refresh triggered')
+    fetchDashboardData()
   }
 
   useEffect(() => {
@@ -68,12 +87,23 @@ function Home() {
               </div>
             </div>
 
-            <button
-              onClick={fetchDashboardData}
-              className='flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm'
-            >
-              Refresh Data
-            </button>
+            <div className='flex items-center gap-3'>
+              <button
+                onClick={manualRefresh}
+                className='flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm'
+              >
+                <RefreshCcw size={18} />
+                <span>Refresh Data</span>
+              </button>
+              
+              <div className='flex items-center gap-2 text-sm text-gray-500'>
+                <span className='flex items-center gap-1'>
+                  <div className='w-2 h-2 bg-green-500 rounded-full animate-pulse'></div>
+                  Auto-refresh active
+                </span>
+                <span>Last: {lastRefresh.toLocaleTimeString()}</span>
+              </div>
+            </div>
           </div>
 
           {/* Stats Grid */}
