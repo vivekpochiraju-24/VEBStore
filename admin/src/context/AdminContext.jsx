@@ -3,48 +3,48 @@ import { authDataContext } from './AuthContext'
 import axios from 'axios'
 
 export const adminDataContext = createContext()
-function AdminContext({children}) {
-    let [adminData,setAdminData] = useState(null)
-    let [loading, setLoading] = useState(true)
-    let {serverUrl} = useContext(authDataContext)
 
+function AdminContext({ children }) {
+    const [adminData, setAdminData] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const { serverUrl } = useContext(authDataContext)
 
     const getAdmin = async () => {
-      try {
-           let result = await axios.get(serverUrl + "/api/user/getadmin",{withCredentials:true})
-
-      setAdminData(result.data)
-      console.log(result.data)
-      } catch (error) {
-        setAdminData(null)
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
+        try {
+            let result = await axios.get(serverUrl + "/api/user/getadmin", { withCredentials: true })
+            setAdminData(result.data)
+            console.log(result.data)
+        } catch (error) {
+            setAdminData(null)
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
-    useEffect(()=>{
-     getAdmin()
-    },[])
-
+    useEffect(() => {
+        getAdmin()
+    }, [])
 
     // Add error boundary to prevent white screen
     if (!serverUrl) {
-        console.error("Server URL is not defined");
-        return null;
+        console.error("Server URL is not defined")
+        return null
     }
 
     let value = {
-adminData,setAdminData,getAdmin
+        adminData,
+        setAdminData,
+        getAdmin
     }
-  return (
-    <div>
-<adminDataContext.Provider value={value}>
-    {children}
-</adminDataContext.Provider>
-      
-    </div>
-  )
+
+    return (
+        <div>
+            <adminDataContext.Provider value={value}>
+                {children}
+            </adminDataContext.Provider>
+        </div>
+    )
 }
 
 export default AdminContext
