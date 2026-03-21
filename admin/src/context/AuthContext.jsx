@@ -2,7 +2,7 @@ import React, { createContext } from 'react'
 
 export const authDataContext = createContext()
 function AuthContext({ children }) {
-  let serverUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"
+  let serverUrl = import.meta.env.VITE_BACKEND_URL || "https://your-backend-url.vercel.app"
 
   let value = {
     serverUrl
