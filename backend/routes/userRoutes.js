@@ -6,7 +6,7 @@ import adminAuth from "../middleware/adminAuth.js"
 let userRoutes = express.Router()
 
 userRoutes.get("/getcurrentuser",isAuth,getCurrentUser)
-userRoutes.get("/getadmin",adminAuth,getAdmin)
+userRoutes.get("/getadmin",getAdmin)
 userRoutes.post("/whatsapp-optin", isAuth, optInWhatsapp)
 
 export default userRoutes

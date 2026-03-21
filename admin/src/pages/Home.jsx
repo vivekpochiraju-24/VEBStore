@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Nav from '../component/Nav'
 import Sidebar from '../component/Sidebar'
+import { authDataContext } from '../context/AuthContext'
+import axios from 'axios'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
 } from 'recharts';
@@ -12,63 +14,36 @@ function Home() {
     recentOrders: [],
     chartData: []
   })
+  const { serverUrl } = useContext(authDataContext)
 
   const fetchDashboardData = async () => {
+    if (!serverUrl) {
+      console.log('Server URL not available for dashboard data')
+      return
+    }
+
     try {
-      // Mock data for development
-      const mockData = {
-        totals: {
-          totalProducts: 156,
-          totalCustomers: 1243,
-          totalOrders: 892,
-          returnsCancellations: 23
-        },
-        recentOrders: [
-          {
-            _id: 'order123456789',
-            items: [{ name: 'Premium Cotton T-Shirt' }],
-            address: { firstName: 'Rahul', lastName: 'Kumar' },
-            amount: 1299,
-            status: 'Delivered',
-            date: new Date('2024-03-20')
-          },
-          {
-            _id: 'order987654321',
-            items: [{ name: 'Designer Denim Jeans' }],
-            address: { firstName: 'Priya', lastName: 'Sharma' },
-            amount: 2499,
-            status: 'Processing',
-            date: new Date('2024-03-19')
-          },
-          {
-            _id: 'order456789123',
-            items: [{ name: 'Summer Dress Collection' }],
-            address: { firstName: 'Anita', lastName: 'Patel' },
-            amount: 1899,
-            status: 'Shipped',
-            date: new Date('2024-03-18')
-          }
-        ],
-        chartData: [
-          { month: 'Jan', sales: 45000, orders: 120 },
-          { month: 'Feb', sales: 52000, orders: 145 },
-          { month: 'Mar', sales: 48000, orders: 132 },
-          { month: 'Apr', sales: 61000, orders: 168 },
-          { month: 'May', sales: 55000, orders: 152 },
-          { month: 'Jun', sales: 67000, orders: 189 }
-        ]
-      }
-      
-      setStats(mockData)
-      console.log('Dashboard data loaded (mock data)')
+      console.log('Fetching dashboard data from:', serverUrl + "/api/order/dashboard-stats")
+      const response = await axios.get(`${serverUrl}/api/order/dashboard-stats`, { 
+        withCredentials: true,
+        timeout: 10000
+      })
+      setStats(response.data)
+      console.log('Dashboard data received:', response.data)
     } catch (err) {
-      console.error("Dashboard data error", err)
+      console.error("Dashboard data error", {
+        message: err.message,
+        status: err.response?.status,
+        data: err.response?.data
+      })
     }
   }
 
   useEffect(() => {
-    fetchDashboardData()
-  }, [])
+    if (serverUrl) {
+      fetchDashboardData()
+    }
+  }, [serverUrl])
 
   return (
     <div className='w-full min-h-screen bg-[#f8fafc] flex flex-col'>
