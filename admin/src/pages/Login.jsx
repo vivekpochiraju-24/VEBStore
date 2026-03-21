@@ -23,12 +23,26 @@ function Login() {
     e.preventDefault()
     setLoading(true)
     try {
+      console.log("Frontend - Sending login request:", { 
+        url: serverUrl + '/api/auth/adminlogin',
+        email, 
+        password: password ? "***" : "undefined",
+        serverUrl 
+      });
+      
       const result = await axios.post(serverUrl + '/api/auth/adminlogin', { email, password }, { withCredentials: true })
+      
+      console.log("Frontend - Login successful:", result.data);
       toast.success("Welcome back, Administrator")
       getAdmin()
       navigate("/")
     } catch (error) {
-      console.error(error)
+      console.error("Frontend - Login error:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        serverUrl
+      })
       toast.error(error.response?.data?.message || "Invalid administrator credentials")
     } finally {
       setLoading(false)

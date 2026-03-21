@@ -6,7 +6,12 @@ const port = 8000;
 
 // Middleware
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+        "http://localhost:5173", 
+        "http://localhost:5174",
+        "https://vebstore.netlify.app",
+        "https://admin-vebstore.netlify.app"
+    ],
     credentials: true
 }));
 app.use(express.json());
@@ -24,8 +29,8 @@ app.post('/api/auth/adminlogin', (req, res) => {
     console.log('Email:', email);
     console.log('Password:', password ? '***' : 'NOT PROVIDED');
     
-    // Simple test credentials
-    if (email === 'admin@vebstore.com' && password === 'admin123') {
+    // Updated test credentials
+    if (email === 'bhargavisurampudi1@gmail.com' && password === 'bhargavi10') {
         console.log('✅ Login successful!');
         return res.json({ 
             success: true, 
