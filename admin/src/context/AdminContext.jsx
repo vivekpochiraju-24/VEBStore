@@ -7,16 +7,24 @@ export const adminDataContext = createContext()
 function AdminContext({ children }) {
     const [adminData, setAdminData] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const { serverUrl } = useContext(authDataContext)
 
     const getAdmin = async () => {
+        if (!serverUrl) {
+            setError('Server URL not configured')
+            setLoading(false)
+            return
+        }
+
         try {
             let result = await axios.get(serverUrl + "/api/user/getadmin", { withCredentials: true })
             setAdminData(result.data)
             console.log(result.data)
         } catch (error) {
             setAdminData(null)
-            console.log(error)
+            console.log('Admin check failed:', error.message)
+            setError(error.message)
         } finally {
             setLoading(false)
         }
@@ -24,18 +32,14 @@ function AdminContext({ children }) {
 
     useEffect(() => {
         getAdmin()
-    }, [])
-
-    // Add error boundary to prevent white screen
-    if (!serverUrl) {
-        console.error("Server URL is not defined")
-        return null
-    }
+    }, [serverUrl])
 
     let value = {
         adminData,
         setAdminData,
-        getAdmin
+        getAdmin,
+        loading,
+        error
     }
 
     return (
