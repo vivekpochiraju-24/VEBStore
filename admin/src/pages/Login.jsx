@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react'
 import logo from '../assets/logo.png'
 import { IoEyeOutline, IoEye } from "react-icons/io5"
+import axios from 'axios'
+import { authDataContext } from '../context/AuthContext'
 import { adminDataContext } from '../context/AdminContext'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -13,6 +15,7 @@ function Login() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const { serverUrl } = useContext(authDataContext)
   const { getAdmin } = useContext(adminDataContext)
   const navigate = useNavigate()
 
@@ -20,34 +23,27 @@ function Login() {
     e.preventDefault()
     setLoading(true)
     try {
-      console.log("Frontend - Login attempt:", { 
+      console.log("Frontend - Sending login request:", { 
+        url: serverUrl + '/api/auth/adminlogin',
         email, 
-        password: password ? "***" : "undefined"
+        password: password ? "***" : "undefined",
+        serverUrl 
       });
       
-      // Direct validation without backend call
-      if (email === "bhargavisurampudi1@gmail.com" && password === "bhargavi10") {
-        console.log("Frontend - Login successful (direct validation)");
-        
-        // Create a simple token using browser-compatible method
-        const token = btoa(`${email}:${Date.now()}`);
-        
-        // Set token in localStorage
-        localStorage.setItem('admin_token', token);
-        localStorage.setItem('admin_email', email);
-        
-        toast.success("Welcome back, Administrator")
-        getAdmin()
-        navigate("/")
-      } else {
-        throw new Error("Invalid administrator credentials")
-      }
+      const result = await axios.post(serverUrl + '/api/auth/adminlogin', { email, password }, { withCredentials: true })
       
+      console.log("Frontend - Login successful:", result.data);
+      toast.success("Welcome back, Administrator")
+      getAdmin()
+      navigate("/")
     } catch (error) {
       console.error("Frontend - Login error:", {
-        message: error.message
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        serverUrl
       })
-      toast.error(error.message || "Invalid administrator credentials")
+      toast.error(error.response?.data?.message || "Invalid administrator credentials")
     } finally {
       setLoading(false)
     }

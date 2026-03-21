@@ -26,8 +26,10 @@ function Home() {
   }
 
   useEffect(() => {
-    fetchDashboardData()
-  }, [])
+    if (serverUrl) {
+      fetchDashboardData()
+    }
+  }, [serverUrl])
 
   return (
     <div className='w-full min-h-screen bg-[#f8fafc] flex flex-col'>

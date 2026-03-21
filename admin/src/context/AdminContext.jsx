@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { authDataContext } from './AuthContext'
+import axios from 'axios'
 
 export const adminDataContext = createContext()
 
@@ -6,27 +8,19 @@ function AdminContext({ children }) {
     const [adminData, setAdminData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const { serverUrl } = useContext(authDataContext)
 
     const getAdmin = async () => {
+        if (!serverUrl) {
+            setError('Server URL not configured')
+            setLoading(false)
+            return
+        }
+
         try {
-            // Check localStorage for admin token
-            const token = localStorage.getItem('admin_token')
-            const email = localStorage.getItem('admin_email')
-            
-            if (token && email) {
-                // Token exists, user is logged in
-                setAdminData({
-                    _id: "admin123",
-                    name: "Administrator",
-                    email: email,
-                    role: "admin"
-                })
-                console.log('Admin found in localStorage:', email)
-            } else {
-                // No token, user not logged in
-                setAdminData(null)
-                console.log('No admin token found')
-            }
+            let result = await axios.get(serverUrl + "/api/user/getadmin", { withCredentials: true })
+            setAdminData(result.data)
+            console.log(result.data)
         } catch (error) {
             setAdminData(null)
             console.log('Admin check failed:', error.message)
@@ -38,12 +32,12 @@ function AdminContext({ children }) {
 
     useEffect(() => {
         getAdmin()
-    }, [])
+    }, [serverUrl])
 
     const logout = () => {
-        localStorage.removeItem('admin_token')
-        localStorage.removeItem('admin_email')
         setAdminData(null)
+        // Optionally call backend logout
+        axios.get(serverUrl + "/api/auth/logout", { withCredentials: true }).catch(console.error)
     }
 
     let value = {
