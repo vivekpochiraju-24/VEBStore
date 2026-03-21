@@ -20,11 +20,11 @@ function RelatedProduct({category,subCategory,currentProductId }) {
      }
     },[products,category,subCategory,currentProductId])
   return (
-    <div className='my-[130px] md:my-[40px]  md:px-[60px] '>
-        <div className='ml-[20px] lg:ml-[80px]'>
+    <div className='my-12 md:my-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16'>
+        <div className='mb-8 md:mb-12'>
             <Title text1={'RELATED'} text2={'PRODUCTS'}/>
         </div>
-        <div className='w-[100%]  mt-[30px] flex items-center justify-center flex-wrap gap-[50px]'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8'>
             {
                 related.map((item,index)=>(
                     <Card key={index} id={item._id} name={item.name } price={item.price} image={item.image1} />
