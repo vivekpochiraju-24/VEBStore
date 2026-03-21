@@ -18,7 +18,16 @@ let app = express()
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://192.168.10.40:5173", "http://192.168.10.40:5174"],
+    origin: [
+        "http://localhost:5173", 
+        "http://localhost:5174", 
+        "http://127.0.0.1:5173", 
+        "http://127.0.0.1:5174", 
+        process.env.FRONTEND_URL, 
+        process.env.ADMIN_URL,
+        "https://vebstore.netlify.app",
+        "https://admin-vebstore.netlify.app"
+    ].filter(Boolean),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
