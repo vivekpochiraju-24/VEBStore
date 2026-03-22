@@ -66,7 +66,7 @@ export const removeProduct = async (req,res) => {
 export const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, category, subCategory, sizes, bestseller } = req.body;
+        const { name, description, price, category, subCategory, sizes, bestseller, stock } = req.body;
         
         const updateData = {};
         if (name) updateData.name = name;
@@ -75,6 +75,7 @@ export const editProduct = async (req, res) => {
         if (category) updateData.category = category;
         if (subCategory) updateData.subCategory = subCategory;
         if (sizes) updateData.sizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes);
+        if (stock !== undefined) updateData.stock = Number(stock);
         if (bestseller !== undefined) updateData.bestseller = bestseller === "true" || bestseller === true;
         
         // Note: Image editing is omitted for simplicity unless an image was uploaded, but the requirement is just description mostly
@@ -91,6 +92,28 @@ export const editProduct = async (req, res) => {
 }
 
 import User from "../model/userModel.js";
+
+export const getCategories = async (req,res) => {
+    try {
+        const products = await Product.find({});
+        
+        // Extract all unique categories and subcategories
+        const categories = [...new Set(products.map(product => product.category).filter(cat => cat))];
+        const subCategories = [...new Set(products.map(product => product.subCategory).filter(subCat => subCat))];
+        
+        // Define default categories if no products exist
+        const defaultCategories = ['men', 'women', 'kids', 'accessories', 'electronics', 'home'];
+        const defaultSubCategories = ['t-shirts', 'shirts', 'pants', 'dresses', 'shoes', 'jackets', 'watches', 'bags'];
+        
+        return res.status(200).json({
+            categories: categories.length > 0 ? categories : defaultCategories,
+            subCategories: subCategories.length > 0 ? subCategories : defaultSubCategories
+        });
+    } catch (error) {
+        console.log("GetCategories error", error);
+        return res.status(500).json({message: `GetCategories error: ${error.message}`});
+    }
+}
 
 export const addReview = async (req, res) => {
     try {
