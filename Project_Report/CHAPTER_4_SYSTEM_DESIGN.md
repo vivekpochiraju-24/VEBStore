@@ -379,15 +379,99 @@ Data Flow Diagrams provide comprehensive visual representations of how data move
 
 The context level DFD presents the VEBStore system as a single process interacting with external entities including customers, administrators, payment gateways, email services, and image storage services. This high-level diagram establishes the system boundaries and identifies all external interactions that are critical for system functionality.
 
-**System Boundary Definition:**
-The context diagram clearly defines the VEBStore system as a central processing unit that manages all e-commerce operations. The system receives inputs from various external entities and processes these inputs to generate meaningful outputs. This level of abstraction helps stakeholders understand the overall system scope and relationships without getting bogged down in technical details.
-
-**External Entities and Interactions:**
-Customers interact with the system through web and mobile interfaces, providing input data such as user registration information, product selections, shopping cart modifications, and payment details. The system processes these inputs and outputs order confirmations, product information, user account updates, and personalized recommendations. This interaction flow ensures that customers receive timely and relevant information throughout their shopping journey.
-
-Administrators interact with the system through dedicated admin interfaces, providing input data such as product information, pricing updates, inventory levels, and system configurations. The system processes these inputs and outputs analytics reports, inventory status updates, system performance metrics, and management dashboards. This interaction flow enables administrators to effectively manage and monitor the platform.
-
-External services including payment gateways, email services, and image storage services interact with the system through well-defined APIs. The system sends payment processing requests and receives payment confirmations, sends email delivery requests and receives delivery confirmations, and sends image storage requests and receives image URLs. These interactions ensure reliable integration with critical third-party services.
+**Context Level Data Flow Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     VEBSTORE CONTEXT DFD                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   CUSTOMER   │  │  ADMIN      │  │  PAYMENT    │  │   EMAIL     │ │
+│  │   ENTITY    │  │   ENTITY    │  │  GATEWAY    │  │   SERVICE   │ │
+│  │             │  │             │  │   ENTITY    │  │   ENTITY    │ │
+│  │ • Register   │  │ • Manage     │  │ • Process   │  │ • Send      │ │
+│  │ • Browse     │  │ • Products   │  │ • Payments  │  │ • Emails    │ │
+│  │ • Search     │  │ • Orders     │  │ • Refunds   │  │ • Notify    │ │
+│  │ • Cart       │  │ • Users      │  │ • Webhooks   │  │ • Templates  │ │
+│  │ • Checkout   │  │ • Analytics  │  │ • API       │  │ • Queue     │ │
+│  │ • Profile    │  │ • Reports    │  │ • SDK       │  │ • Delivery   │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     External Entity Interactions              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     IMAGE STORAGE                            │ │
+│  │                     ENTITY                                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Upload Images                                                 │
+│  • Store & Optimize                                             │
+│  • CDN Delivery                                                  │
+│  • Image Processing                                             │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     SHIPPING SERVICE                          │ │
+│  │                     ENTITY                                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Rate Calculation                                              │
+│  • Label Generation                                              │
+│  • Tracking Updates                                              │
+│  • Delivery Confirmation                                         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     ANALYTICS SERVICE                         │ │
+│  │                     ENTITY                                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Track User Behavior                                           │
+│  • Generate Reports                                              │
+│  • Performance Metrics                                           │
+│  • Business Intelligence                                         │
+│                                 │                                 │
+│                                 │ Data Flows                       │
+│                                 │                                 │
+│                                 ▼                                 │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     VEBSTORE SYSTEM                           │ │
+│  │                     (PROCESS 0)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   INPUT DATA FLOWS                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Registration Data                                        │
+│  • Product Search Queries                                         │
+│  • Shopping Cart Operations                                      │
+│  • Payment Information                                           │
+│  • Order Requests                                                │
+│  • Admin Management Commands                                      │
+│  • Product Management Data                                        │
+│  • System Configuration Data                                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   OUTPUT DATA FLOWS                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Authentication Tokens                                     │
+│  • Product Catalog Information                                    │
+│  • Shopping Cart Status                                           │
+│  • Order Confirmations                                           │
+│  • Payment Status Updates                                         │
+│  • Order Tracking Information                                     │
+│  • Analytics Reports                                              │
+│  • System Status Information                                      │
+│  • Email Notifications                                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   DATA STORES                                 │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Database                                                  │
+│  • Product Database                                               │
+│  • Order Database                                                │
+│  • Review Database                                               │
+│  • Session Storage                                               │
+│  • Cache Storage                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **Data Flow Analysis:**
 The context diagram reveals critical data flow patterns including customer data flow from registration through purchase, product data flow from catalog management to customer display, and order data flow from cart creation through fulfillment. Understanding these patterns is essential for designing efficient system architecture and identifying potential bottlenecks.
@@ -396,31 +480,444 @@ The context diagram reveals critical data flow patterns including customer data 
 
 The level 1 DFD breaks down the VEBStore system into major functional processes including user management, product management, order management, payment processing, and notification management. This detailed diagram shows how different system components interact and collaborate to deliver comprehensive e-commerce functionality.
 
-**User Management Process Flow:**
-The user management process handles all user-related operations including registration, authentication, profile management, and account maintenance. The process receives user registration data from customers, validates this information against business rules, stores user profiles in the database, and outputs authentication tokens and profile information. The process also handles password reset requests, profile updates, and account deactivation requests.
+**Level 1 Data Flow Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     VEBSTORE LEVEL 1 DFD                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     EXTERNAL ENTITIES                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   CUSTOMER   │  │  ADMIN      │  │  PAYMENT    │  │   EMAIL     │ │
+│  │   ENTITY    │  │   ENTITY    │  │  GATEWAY    │  │   SERVICE   │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     External Entity Interactions              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     VEBSTORE PROCESSES                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   USER      │  │  PRODUCT    │  │   ORDER     │  │  PAYMENT   │ │
+│  │ MANAGEMENT │  │ MANAGEMENT │  │ MANAGEMENT │  │ PROCESSING │ │
+│  │ (PROCESS 1) │  │ (PROCESS 2) │  │ (PROCESS 3) │  │ (PROCESS 4) │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Internal Process Communication           │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │  NOTIFICATION│  │  INVENTORY  │  │  ANALYTICS  │  │   IMAGE     │ │
+│  │   SYSTEM    │  │ MANAGEMENT │  │   SYSTEM    │  │ MANAGEMENT  │ │
+│  │ (PROCESS 5) │  │ (PROCESS 6) │  │ (PROCESS 7) │  │ (PROCESS 8) │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Supporting Process Communication          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     DATA STORES                                 │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   USER      │  │  PRODUCT    │  │   ORDER     │  │   REVIEW    │ │
+│  │   DATABASE  │  │  DATABASE   │  │  DATABASE   │  │  DATABASE   │ │
+│  │   (STORE 1) │  │   (STORE 2) │  │   (STORE 3) │  │   (STORE 4) │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Database Access Layer                     │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   CACHE     │  │  SESSION    │  │   LOG       │  │  CONFIG     │ │
+│  │   STORE     │  │   STORE     │  │   STORE     │  │   STORE     │ │
+│  │   (STORE 5) │  │   (STORE 6) │  │   (STORE 7) │  │   (STORE 8) │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The user management process interacts with the user database for storing and retrieving user information, with the email service for sending verification emails and notifications, and with the authentication system for managing user sessions and access control. These interactions ensure that user data is properly managed and protected throughout the user lifecycle.
+**Process Flow Descriptions:**
 
-**Product Management Process Flow:**
-The product management process handles all product-related operations including product creation, updates, deletion, and inventory management. The process receives product information from administrators, validates this information against business rules, stores product data in the database, and outputs product catalog information for customer display.
+**Process 1 - User Management:**
+- **Input**: User registration data, login credentials, profile updates
+- **Processing**: Authentication, validation, profile management, session handling
+- **Output**: Authentication tokens, user profiles, session data
+- **Data Stores**: User Database, Session Store, Cache Store
 
-The product management process interacts with the product database for storing and retrieving product information, with the image storage service for managing product images, and with the inventory management system for tracking product availability. These interactions ensure that product information is accurate, up-to-date, and properly presented to customers.
+**Process 2 - Product Management:**
+- **Input**: Product data, inventory updates, search queries
+- **Processing**: Product validation, catalog management, search processing
+- **Output**: Product information, search results, inventory status
+- **Data Stores**: Product Database, Cache Store, Image Management
 
-**Order Management Process Flow:**
-The order management process handles all order-related operations including order creation, processing, fulfillment, and tracking. The process receives order requests from customers, validates these requests against inventory availability, stores order information in the database, and outputs order confirmations and tracking information.
+**Process 3 - Order Management:**
+- **Input**: Order requests, cart data, shipping information
+- **Processing**: Order validation, inventory checking, order creation
+- **Output**: Order confirmations, tracking information, status updates
+- **Data Stores**: Order Database, User Database, Inventory Management
 
-The order management process interacts with the order database for storing and retrieving order information, with the inventory management system for updating product availability, with the payment processing system for handling payment transactions, and with the notification system for sending order status updates. These interactions ensure that orders are processed efficiently and customers are kept informed throughout the order lifecycle.
+**Process 4 - Payment Processing:**
+- **Input**: Payment information, order details
+- **Processing**: Payment validation, transaction processing, verification
+- **Output**: Payment confirmations, transaction records, refund processing
+- **Data Stores**: Order Database, Log Store, Payment Gateway
+
+**Process 5 - Notification System:**
+- **Input**: Order status, user actions, system events
+- **Processing**: Notification generation, template processing, delivery management
+- **Output**: Email notifications, SMS alerts, push notifications
+- **Data Stores**: Log Store, Email Service, User Database
 
 ### 4.3.3 Level 2 DFD
 
 The level 2 DFD provides detailed breakdowns of key system processes, showing the specific data flows and transformations within each major system component. These detailed diagrams provide comprehensive understanding of how data is processed and transformed throughout the system.
 
-**User Registration Process Data Flow:**
-The user registration process at level 2 shows detailed data flows including user input validation, email verification processing, account creation, and profile initialization. Each sub-process is shown with its specific data inputs, processing logic, and outputs, providing comprehensive understanding of the registration workflow.
+**User Registration Process Level 2 DFD:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                USER REGISTRATION LEVEL 2 DFD                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│         │                                                        │
+│         │ 1. Registration Data                                    │
+│         │    (Name, Email, Password, Phone)                       │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               INPUT VALIDATION PROCESS                        │ │
+│  │               (SUBPROCESS 2.1)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Registration Data                                     │ │
+│  │  Processing: Format Validation, Business Rules Check          │ │
+│  │  Output: Validated Data / Error Messages                     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 2. Validated Data / Error Messages                        │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               DUPLICATE CHECK PROCESS                         │ │
+│  │               (SUBPROCESS 2.2)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Validated Data                                       │ │
+│  │  Processing: Database Query for Existing Email               │ │
+│  │  Output: User Not Found / User Exists                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 3. User Not Found / User Exists                           │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               PASSWORD HASHING PROCESS                       │ │
+│  │               (SUBPROCESS 2.3)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Validated User Data                                   │ │
+│  │  Processing: Password Hashing, Token Generation             │ │
+│  │  Output: Hashed Password, Auth Token                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 4. Hashed Password, Auth Token                           │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               USER CREATION PROCESS                           │ │
+│  │               (SUBPROCESS 2.4)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Hashed Password, User Data, Auth Token              │ │
+│  │  Processing: Database Insert, Profile Initialization          │ │
+│  │  Output: User Record, Confirmation Data                      │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 5. User Record, Confirmation Data                       │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               EMAIL VERIFICATION PROCESS                      │ │
+│  │               (SUBPROCESS 2.5)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: User Email, Verification Token                      │ │
+│  │  Processing: Email Generation, Template Processing             │ │
+│  │  Output: Verification Email                                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 6. Verification Email                                     │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────────────────────────────────────┐ │
+│  │   EMAIL     │  │               USER DATABASE                   │ │
+│  │   SERVICE   │  │                                                   │ │
+│  └─────────────┘  └─────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 7. Email Delivery Confirmation                           │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               RESPONSE GENERATION PROCESS                    │ │
+│  │               (SUBPROCESS 2.6)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: User Creation Status, Email Status                   │ │
+│  │  Processing: Response Formatting, Success/Error Handling      │ │
+│  │  Output: Registration Response                                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 8. Registration Response                                  │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     DATA STORES                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Database: User Records, Authentication Data             │ │
+│  • Session Store: User Sessions, Temporary Data                 │ │
+│  • Log Store: Registration Events, Error Logs                   │ │
+│  • Cache Store: User Profile Cache, Verification Tokens        │ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The user input validation sub-process receives registration data from customers, validates this data against business rules and format requirements, and outputs either validated data or error messages. The email verification sub-process receives validated user data, generates verification emails, sends these emails through the email service, and tracks verification status.
+**Product Search Process Level 2 DFD:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                PRODUCT SEARCH LEVEL 2 DFD                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│         │                                                        │
+│         │ 1. Search Query (Keywords, Filters)                     │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               QUERY VALIDATION PROCESS                        │ │
+│  │               (SUBPROCESS 3.1)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Search Query                                         │ │
+│  │  Processing: Query Sanitization, Parameter Validation         │ │
+│  │  Output: Validated Query / Error Response                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 2. Validated Query                                       │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               CACHE CHECK PROCESS                            │ │
+│  │               (SUBPROCESS 3.2)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Validated Query                                      │ │
+│  │  Processing: Cache Key Generation, Cache Lookup              │ │
+│  │  Output: Cached Results / Cache Miss                          │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 3. Cached Results / Cache Miss                            │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               DATABASE SEARCH PROCESS                         │ │
+│  │               (SUBPROCESS 3.3)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Search Query (if cache miss)                          │ │
+│  │  Processing: Query Construction, Database Execution           │ │
+│  │  Output: Raw Product Data                                     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 4. Raw Product Data                                     │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               FILTERING PROCESS                               │ │
+│  │               (SUBPROCESS 3.4)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Raw Product Data                                     │ │
+│  │  Processing: Category Filter, Price Filter, Size Filter        │ │
+│  │  Output: Filtered Product Data                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 5. Filtered Product Data                                 │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               SORTING PROCESS                                 │ │
+│  │               (SUBPROCESS 3.5)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Filtered Product Data                               │ │
+│  │  Processing: Price Sort, Popularity Sort, Relevance Sort      │ │
+│  │  Output: Sorted Product Data                                 │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 6. Sorted Product Data                                   │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               PAGINATION PROCESS                              │ │
+│  │               (SUBPROCESS 3.6)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Sorted Product Data                                  │ │
+│  │  Processing: Page Calculation, Result Limiting              │ │
+│  │  Output: Paginated Results                                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 7. Paginated Results                                      │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               CACHE UPDATE PROCESS                            │ │
+│  │               (SUBPROCESS 3.7)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Search Query, Paginated Results                      │ │
+│  │  Processing: Cache Storage, Expiration Setting               │ │
+│  │  Output: Cache Updated                                       │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 8. Final Search Results                                  │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     DATA STORES                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Product Database: Product Records, Indexes                  │ │
+│  • Cache Store: Search Results, Query Cache                     │ │
+│  • Log Store: Search Analytics, Performance Metrics             │ │
+│  • Config Store: Search Configuration, Filter Settings           │ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The account creation sub-process receives verified user data, creates user accounts in the database, generates authentication tokens, and outputs account confirmation information. The profile initialization sub-process receives newly created account information, creates default user profiles, and outputs completed profile information.
+**Checkout Process Level 2 DFD:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                CHECKOUT PROCESS LEVEL 2 DFD                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│         │                                                        │
+│         │ 1. Checkout Initiation (Cart Data, Address)              │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               CART VALIDATION PROCESS                         │ │
+│  │               (SUBPROCESS 4.1)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Cart Data, User ID                                   │ │
+│  │  Processing: Cart Validation, Stock Check, Price Calculation   │ │
+│  │  Output: Validated Cart / Error Response                      │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 2. Validated Cart / Error Response                        │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               INVENTORY CHECK PROCESS                         │ │
+│  │               (SUBPROCESS 4.2)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Validated Cart                                       │ │
+│  │  Processing: Stock Verification, Reservation                 │ │
+│  │  Output: Stock Available / Stock Shortage                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 3. Stock Available / Stock Shortage                        │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               ORDER CREATION PROCESS                          │ │
+│  │               (SUBPROCESS 4.3)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Cart Data, User Data, Address Data                   │ │
+│  │  Processing: Order Generation, Order Number Assignment        │ │
+│  │  Output: Order Record, Order ID                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 4. Order Record, Order ID                                 │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               PAYMENT INITIATION PROCESS                     │ │
+│  │               (SUBPROCESS 4.4)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Order ID, Payment Method, Amount                      │ │
+│  │  Processing: Payment Request Generation, Gateway Integration    │ │
+│  │  Output: Payment Request, Transaction ID                     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 5. Payment Request, Transaction ID                        │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────────────────────────────────────┐ │
+│  │  PAYMENT    │  │               ORDER DATABASE                   │ │
+│  │  GATEWAY    │  │                                                   │ │
+│  └─────────────┘  └─────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 6. Payment Response                                       │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               PAYMENT VERIFICATION PROCESS                    │ │
+│  │               (SUBPROCESS 4.5)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Payment Response, Transaction ID                     │ │
+│  │  Processing: Payment Verification, Status Update             │ │
+│  │  Output: Payment Confirmation / Payment Failed                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 7. Payment Confirmation / Payment Failed                    │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               ORDER FINALIZATION PROCESS                      │ │
+│  │               (SUBPROCESS 4.6)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Payment Status, Order ID                             │ │
+│  │  Processing: Order Status Update, Inventory Update            │ │
+│  │  Output: Finalized Order, Confirmation Data                  │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 8. Finalized Order, Confirmation Data                     │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               NOTIFICATION PROCESS                             │ │
+│  │               (SUBPROCESS 4.7)                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │  Input: Order Data, Customer Data                            │ │
+│  │  Processing: Email Generation, SMS Notification               │ │
+│  │  Output: Order Confirmation Email, SMS Alert                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ 9. Order Confirmation Email, SMS Alert                      │
+│         ▼                                                        │
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ENTITY    │                                                 │
+│  └─────────────┘                                                 │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                     DATA STORES                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Order Database: Order Records, Transaction History           │ │
+│  • Product Database: Inventory Updates, Stock Levels             │ │
+│  • User Database: Order History, Customer Data                  │ │
+│  • Log Store: Transaction Logs, Error Logs                      │ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **Order Processing Process Data Flow:**
 The order processing process at level 2 shows detailed flows including cart validation, inventory checking, payment processing, order creation, and notification generation. Each step is shown with its data dependencies and transformation logic, providing comprehensive understanding of the order processing workflow.
