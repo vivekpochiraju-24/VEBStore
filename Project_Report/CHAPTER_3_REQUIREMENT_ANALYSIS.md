@@ -81,33 +81,39 @@ This analysis addresses the needs of:
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-UM-001 | User Registration | High | Users can register with email and password |
-| FR-UM-002 | Email Verification | High | Users must verify email before account activation |
-| FR-UM-003 | Social Login Integration | Medium | Support for Google, Facebook, Apple login |
-| FR-UM-004 | Password Recovery | High | Users can reset forgotten passwords via email |
-| FR-UM-005 | Two-Factor Authentication | Medium | Optional 2FA for enhanced security |
-| FR-UM-006 | Account Deletion | High | Users can permanently delete their accounts |
+| FR-UM-001 | User Registration | High | Users can register with name, email, and password |
+| FR-UM-002 | Email Uniqueness | High | Email must be unique across all users |
+| FR-UM-003 | Google OAuth Integration | Medium | Users can register/login with Google account |
+| FR-UM-004 | Password Hashing | High | Passwords stored using bcryptjs hashing |
+| FR-UM-005 | JWT Authentication | High | JWT tokens for secure authentication |
+| FR-UM-006 | Phone Number Support | Medium | Optional phone number field for users |
+| FR-UM-007 | WhatsApp Integration | Low | WhatsApp opt-in and phone number support |
 
-**Registration Process Flow:**
-```mermaid
-graph TD
-    A[User Starts Registration] --> B[Enter Email & Password]
-    B --> C[Email Verification]
-    C --> D[Account Created]
-    D --> E[Profile Setup]
-    E --> F[Registration Complete]
+**User Data Structure:**
+```javascript
+User {
+  name: String (required)
+  email: String (required, unique)
+  password: String (hashed)
+  phone: String (optional)
+  cartData: Object (default: {})
+  whatsappOptIn: Boolean (default: false)
+  whatsappPhone: String (default: "")
+  preferredProductType: String (default: "TopWear")
+  timestamps: true
+}
 ```
 
 #### 3.2.1.2 User Profile Management
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-UM-007 | Profile Creation | High | Users must create basic profile after registration |
-| FR-UM-008 | Profile Editing | High | Users can update personal information |
-| FR-UM-009 | Address Management | High | Multiple shipping and billing addresses |
-| FR-UM-010 | Payment Methods | High | Save and manage multiple payment methods |
-| FR-UM-011 | Order History | High | View complete order history |
-| FR-UM-012 | Wishlist Management | Medium | Create and manage multiple wishlists |
+| FR-UM-008 | Profile Creation | High | Basic profile created on registration |
+| FR-UM-009 | Profile Editing | High | Users can update name and phone |
+| FR-UM-010 | Cart Persistence | High | Cart data saved in user profile |
+| FR-UM-011 | Preference Management | Medium | Preferred product type selection |
+| FR-UM-012 | Order History | High | View complete order history |
+| FR-UM-013 | WhatsApp Preferences | Low | Opt-in for WhatsApp notifications |
 
 ### 3.2.2 Product Management Requirements
 
@@ -115,30 +121,33 @@ graph TD
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-PM-001 | Product Addition | High | Admin can add products with all details |
+| FR-PM-001 | Product Addition | High | Admin can add products with all required fields |
 | FR-PM-002 | Product Editing | High | Admin can modify all product attributes |
 | FR-PM-003 | Product Deletion | High | Admin can remove products with confirmation |
-| FR-PM-004 | Bulk Operations | Medium | Bulk import/export of products |
-| FR-PM-005 | Product Categories | High | Hierarchical category structure |
-| FR-PM-006 | Product Attributes | High | Custom attributes and variants |
-| FR-PM-007 | Inventory Management | High | Real-time stock tracking |
-| FR-PM-008 | Product Images | High | Multiple high-quality images per product |
+| FR-PM-004 | Multiple Images | High | 4 images per product (image1-4) |
+| FR-PM-005 | Category Management | High | Category and subcategory classification |
+| FR-PM-006 | Size Options | High | Multiple size options per product |
+| FR-PM-007 | Bestseller Flag | Medium | Mark products as bestseller |
+| FR-PM-008 | Review System | Medium | Customer reviews with ratings |
+| FR-PM-009 | Cloudinary Integration | High | Image storage via Cloudinary |
 
 **Product Data Structure:**
-```
+```javascript
 Product {
-  id: String
-  name: String
-  description: String
-  price: Number
-  category: String
-  subCategory: String
-  images: Array[String]
-  attributes: Object
-  inventory: Number
-  variants: Array[Variant]
+  name: String (required)
+  image1: String (required)
+  image2: String (required)
+  image3: String (required)
+  image4: String (required)
+  description: String (required)
+  price: Number (required)
+  category: String (required)
+  subCategory: String (required)
+  sizes: Array (required)
+  date: Number (required)
+  bestseller: Boolean
   reviews: Array[Review]
-  metadata: Object
+  timestamps: true
 }
 ```
 
@@ -146,12 +155,12 @@ Product {
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-PM-009 | Basic Search | High | Search by product name and description |
-| FR-PM-010 | Advanced Search | High | Filter by category, price, attributes |
-| FR-PM-011 | Auto-complete | Medium | Search suggestions as user types |
-| FR-PM-012 | Faceted Navigation | High | Multi-dimensional filtering |
-| FR-PM-013 | Product Recommendations | Medium | AI-powered product suggestions |
-| FR-PM-014 | Recently Viewed | Low | Track and display recently viewed products |
+| FR-PM-010 | Basic Search | High | Search by product name |
+| FR-PM-011 | Category Filtering | High | Filter by category and subcategory |
+| FR-PM-012 | Size Filtering | High | Filter by available sizes |
+| FR-PM-013 | Price Range Filter | High | Filter by price range |
+| FR-PM-014 | Bestseller Filter | Medium | Filter bestseller products |
+| FR-PM-015 | Search by Category | High | Search within specific categories |
 
 ### 3.2.3 Shopping Cart Requirements
 
@@ -160,33 +169,31 @@ Product {
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
 | FR-SC-001 | Add to Cart | High | Users can add products to cart |
-| FR-SC-002 | Update Quantity | High | Modify item quantities in cart |
-| FR-SC-003 | Remove Items | High | Remove items from cart |
-| FR-SC-004 | Cart Persistence | High | Cart contents saved across sessions |
-| FR-SC-005 | Guest Cart | High | Non-registered users can use cart |
-| FR-SC-006 | Cart Sharing | Low | Share cart contents with others |
-| FR-SC-007 | Bulk Operations | Medium | Add multiple items at once |
+| FR-SC-002 | Size Selection | High | Select product size before adding |
+| FR-SC-003 | Update Quantity | High | Modify item quantities in cart |
+| FR-SC-004 | Remove Items | High | Remove items from cart |
+| FR-SC-005 | Cart Persistence | High | Cart saved in user profile |
+| FR-SC-006 | Guest Cart | High | Non-registered users can use cart |
+| FR-SC-007 | Cart Data Structure | High | Cart stored as object in user document |
 
-**Cart State Management:**
-```mermaid
-graph LR
-    A[Empty Cart] --> B[Items Added]
-    B --> C[Quantity Updated]
-    C --> D[Items Removed]
-    D --> E[Checkout Initiated]
-    E --> F[Order Placed]
-    F --> A
+**Cart Data Structure:**
+```javascript
+cartData: {
+  [productId]: {
+    size: String,
+    quantity: Number
+  }
+}
 ```
 
 #### 3.2.3.2 Cart Features
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-SC-008 | Price Calculation | High | Real-time price including taxes |
-| FR-SC-009 | Discount Application | High | Apply promo codes and discounts |
-| FR-SC-010 | Shipping Estimation | High | Calculate shipping costs |
-| FR-SC-011 | Tax Calculation | High | Automatic tax calculation |
-| FR-SC-012 | Cart Abandonment | Medium | Track and recover abandoned carts |
+| FR-SC-008 | Price Calculation | High | Real-time price calculation |
+| FR-SC-009 | Size Management | High | Handle multiple size options |
+| FR-SC-010 | Cart Validation | High | Validate cart before checkout |
+| FR-SC-011 | Cart Clearing | High | Clear cart after successful order |
 
 ### 3.2.4 Order Management Requirements
 
@@ -195,23 +202,34 @@ graph LR
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
 | FR-OM-001 | Order Placement | High | Complete checkout process |
-| FR-OM-002 | Order Confirmation | High | Email and SMS confirmations |
-| FR-OM-003 | Order Tracking | High | Real-time order status updates |
-| FR-OM-004 | Order Modification | Medium | Modify orders before shipment |
-| FR-OM-005 | Order Cancellation | High | Cancel orders with refund |
-| FR-OM-006 | Return Management | High | Process returns and exchanges |
-| FR-OM-007 | Order History | High | Complete order history for users |
+| FR-OM-002 | Order Creation | High | Create order from cart data |
+| FR-OM-003 | Order Confirmation | High | Email confirmation after order |
+| FR-OM-004 | Order Tracking | Medium | Track order status |
+| FR-OM-005 | Order History | High | Users can view order history |
+| FR-OM-006 | Order Management | High | Admin can view and manage orders |
+
+**Order Data Structure:**
+```javascript
+Order {
+  userId: String
+  items: Array[OrderItem]
+  totalAmount: Number
+  status: String
+  paymentId: String
+  shippingAddress: Object
+  timestamps: true
+}
+```
 
 #### 3.2.4.2 Order Status Management
 
 | Status | Description | User Actions | System Actions |
 |--------|-------------|--------------|----------------|
-| Pending | Order received, awaiting processing | View, Cancel | Send confirmation |
-| Processing | Payment confirmed, preparing shipment | View | Update inventory |
-| Shipped | Order shipped, tracking available | Track | Send tracking info |
-| Delivered | Order delivered successfully | Review Request | Mark complete |
-| Cancelled | Order cancelled by user or system | Reorder | Process refund |
-| Returned | Product returned, refund processed | Reorder | Update inventory |
+| Pending | Order received, awaiting payment | View, Cancel | Send confirmation |
+| Confirmed | Payment confirmed, processing | View | Update status |
+| Shipped | Order shipped | Track | Send tracking info |
+| Delivered | Order delivered | Review Request | Mark complete |
+| Cancelled | Order cancelled | Reorder | Process refund |
 
 ### 3.2.5 Payment Processing Requirements
 
@@ -219,24 +237,23 @@ graph LR
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-PP-001 | Credit/Debit Cards | High | Support major card providers |
-| FR-PP-002 | Digital Wallets | High | PayPal, Apple Pay, Google Pay |
-| FR-PP-003 | Bank Transfers | Medium | Direct bank transfers |
-| FR-PP-004 | Cryptocurrency | Low | Bitcoin, Ethereum support |
-| FR-PP-005 | Buy Now Pay Later | Medium | Klarna, Afterpay integration |
-| FR-PP-006 | Gift Cards | Medium | Platform gift cards |
-| FR-PP-007 | Store Credit | Medium | Customer credit system |
+| FR-PP-001 | Razorpay Integration | High | Primary payment gateway |
+| FR-PP-002 | UPI Support | High | UPI payment method |
+| FR-PP-003 | Credit/Debit Cards | High | Card payment support |
+| FR-PP-004 | Net Banking | High | Bank transfer support |
+| FR-PP-005 | Wallet Payments | Medium | Digital wallet support |
+| FR-PP-006 | COD (Cash on Delivery) | Medium | Cash on delivery option |
+| FR-PP-007 | Payment Security | High | Secure payment processing |
 
 #### 3.2.5.2 Payment Security
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-PP-008 | PCI DSS Compliance | High | Level 1 PCI compliance |
-| FR-PP-009 | Tokenization | High | Secure payment token storage |
-| FR-PP-010 | Fraud Detection | High | Real-time fraud screening |
-| FR-PP-011 | 3D Secure | High | 3D Secure 2.0 support |
-| FR-PP-012 | SSL/TLS Encryption | High | All payment data encrypted |
-| FR-PP-013 | Audit Logging | High | Complete payment audit trail |
+| FR-PP-008 | Payment Gateway Security | High | Razorpay security compliance |
+| FR-PP-009 | Data Encryption | High | All payment data encrypted |
+| FR-PP-010 | Transaction Validation | High | Validate payment transactions |
+| FR-PP-011 | Refund Processing | High | Handle payment refunds |
+| FR-PP-012 | Payment Notifications | High | Email notifications for payments |
 
 ### 3.2.6 Search and Filtering Requirements
 
@@ -244,23 +261,22 @@ graph LR
 
 | Requirement ID | Description | Priority | Acceptance Criteria |
 |----------------|-------------|----------|---------------------|
-| FR-SF-001 | Keyword Search | High | Search by product name, description |
-| FR-SF-002 | Category Search | High | Search within specific categories |
-| FR-SF-003 | Attribute Search | High | Search by product attributes |
-| FR-SF-004 | Price Range Search | High | Filter by price range |
-| FR-SF-005 | Brand Search | Medium | Search by brand name |
-| FR-SF-006 | SKU Search | Medium | Search by product SKU |
-| FR-SF-007 | Advanced Filters | High | Multiple filter combinations |
+| FR-SF-001 | Product Search | High | Search by product name |
+| FR-SF-002 | Description Search | High | Search in product descriptions |
+| FR-SF-003 | Category Search | High | Search within specific categories |
+| FR-SF-004 | Subcategory Search | High | Search within subcategories |
+| FR-SF-005 | Size Search | Medium | Filter by available sizes |
+| FR-SF-006 | Price Search | High | Filter by price range |
+| FR-SF-007 | Bestseller Search | Medium | Filter bestseller products |
 
 #### 3.2.6.2 Search Performance
 
 | Metric | Target | Measurement Method |
 |--------|--------|-------------------|
-| Search Response Time | <200ms | Load testing |
-| Search Accuracy | >95% | User testing |
+| Search Response Time | <300ms | Load testing |
+| Search Accuracy | >90% | User testing |
 | Search Coverage | 100% | Automated testing |
 | Index Update Time | <5min | System monitoring |
-| Search Relevance | >90% | User feedback |
 
 ### 3.2.7 Review and Rating Requirements
 
@@ -270,100 +286,20 @@ graph LR
 |----------------|-------------|----------|---------------------|
 | FR-RR-001 | Product Reviews | High | Customers can review purchased products |
 | FR-RR-002 | Star Ratings | High | 1-5 star rating system |
-| FR-RR-003 | Review Moderation | High | Admin can moderate reviews |
-| FR-RR-004 | Review Photos | Medium | Upload photos with reviews |
-| FR-RR-005 | Helpful Votes | Low | Vote on review helpfulness |
-| FR-RR-006 | Review Responses | Medium | Sellers can respond to reviews |
-| FR-RR-007 | Review Analytics | Medium | Review sentiment analysis |
+| FR-RR-003 | Review Comments | High | Text comments with reviews |
+| FR-RR-004 | Admin Reviews | High | Admin can add reviews |
+| FR-RR-005 | Review Display | High | Reviews displayed on product pages |
+| FR-RR-006 | Review Validation | High | Validate review data |
 
-#### 3.2.7.2 Rating System
-
-| Rating | Description | Weight | Impact |
-|--------|-------------|--------|--------|
-| 5 Stars | Excellent | 1.0 | Full positive impact |
-| 4 Stars | Good | 0.8 | Strong positive impact |
-| 3 Stars | Average | 0.6 | Neutral impact |
-| 2 Stars | Poor | 0.4 | Negative impact |
-| 1 Star | Very Poor | 0.2 | Strong negative impact |
-
-### 3.2.8 Admin Panel Requirements
-
-#### 3.2.8.1 Dashboard Features
-
-| Requirement ID | Description | Priority | Acceptance Criteria |
-|----------------|-------------|----------|---------------------|
-| FR-AP-001 | Sales Dashboard | High | Real-time sales metrics |
-| FR-AP-002 | Product Dashboard | High | Product performance metrics |
-| FR-AP-003 | Customer Dashboard | High | Customer analytics |
-| FR-AP-004 | Order Dashboard | High | Order management interface |
-| FR-AP-005 | Inventory Dashboard | High | Stock level monitoring |
-| FR-AP-006 | Financial Dashboard | High | Revenue and profit tracking |
-| FR-AP-007 | Marketing Dashboard | Medium | Campaign performance |
-
-#### 3.2.8.2 Admin Operations
-
-| Operation | Description | Frequency | Complexity |
-|-----------|-------------|-----------|------------|
-| Product Management | Add/edit/delete products | Daily | Medium |
-| Order Processing | Process and fulfill orders | Daily | High |
-| Customer Support | Handle customer inquiries | Daily | Medium |
-| Inventory Update | Update stock levels | Daily | Low |
-| Report Generation | Generate business reports | Weekly | Medium |
-| System Maintenance | System updates and backups | Monthly | High |
-
-### 3.2.9 Notification Requirements
-
-#### 3.2.9.1 Notification Types
-
-| Type | Trigger | Channel | Frequency |
-|------|---------|---------|-----------|
-| Order Confirmation | Order placed | Email, SMS | Immediate |
-| Shipping Update | Order shipped | Email, SMS | Immediate |
-| Delivery Confirmation | Order delivered | Email | Immediate |
-| Promotional | Marketing campaigns | Email, Push | Scheduled |
-| Abandoned Cart | Cart abandoned | Email, Push | 1 hour, 24 hours |
-| Low Stock | Inventory low | Email, Dashboard | Real-time |
-| System Alerts | System issues | Email, SMS | Immediate |
-
-#### 3.2.9.2 Notification Preferences
-
-| Preference | Options | Default | User Control |
-|------------|----------|---------|-------------|
-| Email Notifications | On/Off | On | Yes |
-| SMS Notifications | On/Off | On | Yes |
-| Push Notifications | On/Off | On | Yes |
-| Marketing Emails | On/Off | On | Yes |
-| Order Updates | On/Off | On | Yes |
-| Promotional Alerts | On/Off | On | Yes |
-
-### 3.2.10 Reporting Requirements
-
-#### 3.2.10.1 Business Reports
-
-| Report Type | Description | Generation Frequency | Format |
-|-------------|-------------|---------------------|--------|
-| Sales Report | Revenue and sales metrics | Daily/Weekly/Monthly | PDF, Excel |
-| Inventory Report | Stock levels and movements | Daily/Weekly | PDF, Excel |
-| Customer Report | Customer analytics | Monthly | PDF, Excel |
-| Product Report | Product performance | Monthly | PDF, Excel |
-| Financial Report | Revenue and profit | Monthly/Quarterly | PDF, Excel |
-| Marketing Report | Campaign effectiveness | Monthly | PDF, Excel |
-
-#### 3.2.10.2 Report Metrics
-
-| Metric | Calculation | Source | Update Frequency |
-|--------|-------------|--------|------------------|
-| Total Revenue | Sum of all order amounts | Orders table | Real-time |
-| Average Order Value | Total Revenue / Order Count | Orders table | Real-time |
-| Conversion Rate | Orders / Sessions | Analytics | Daily |
-| Customer Lifetime Value | Total Revenue / Customer Count | Orders table | Monthly |
-| Cart Abandonment Rate | Abandoned Carts / Total Carts | Cart table | Real-time |
-| Product Return Rate | Returned Orders / Total Orders | Orders table | Monthly |
-
----
-
-## 3.3 Non-Functional Requirements
-
+**Review Data Structure:**
+```javascript
+Review {
+  userId: String (required)
+  name: String (required)
+  rating: Number (required)
+  comment: String (required)
+  date: Number (required)
+}
 ### 3.3.1 Performance Requirements
 
 #### 3.3.1.1 Response Time Requirements
@@ -577,30 +513,30 @@ graph LR
 
 | Component | Minimum Specification | Recommended Specification | Purpose |
 |-----------|----------------------|-------------------------|---------|
-| CPU | 8 cores @ 2.4GHz | 16 cores @ 3.0GHz | Application processing |
-| RAM | 32GB | 64GB | Application cache and processing |
-| Storage | 500GB SSD | 1TB NVMe SSD | Application and database storage |
+| CPU | 4 cores @ 2.4GHz | 8 cores @ 3.0GHz | Node.js application processing |
+| RAM | 16GB | 32GB | Application cache and MongoDB processing |
+| Storage | 256GB SSD | 512GB NVMe SSD | Application and MongoDB storage |
 | Network | 1Gbps | 10Gbps | Network connectivity |
-| Backup | 1TB external | 2TB RAID array | Data backup and recovery |
-| Load Balancer | Software-based | Hardware-based | Traffic distribution |
+| Backup | 500GB external | 1TB RAID array | MongoDB backups and file storage |
+| Load Balancer | Nginx | Hardware-based | Traffic distribution |
 
 #### 3.4.1.2 Database Server Requirements
 
 | Component | Minimum | Recommended | Scaling Strategy |
 |-----------|----------|-------------|-----------------|
-| CPU | 4 cores @ 2.4GHz | 8 cores @ 3.0GHz | Vertical/horizontal |
-| RAM | 16GB | 32GB | Vertical scaling |
-| Storage | 256GB SSD | 1TB NVMe SSD | Horizontal sharding |
+| CPU | 2 cores @ 2.4GHz | 4 cores @ 3.0GHz | Vertical scaling |
+| RAM | 8GB | 16GB | Vertical scaling |
+| Storage | 100GB SSD | 256GB NVMe SSD | Horizontal sharding |
 | Network | 1Gbps | 10Gbps | Load balancing |
-| Replication | Master-slave | Multi-master | High availability |
+| Replication | Primary only | Primary + 2 replicas | High availability |
 
 #### 3.4.1.3 Development Environment
 
 | Component | Minimum | Recommended | Purpose |
 |-----------|----------|-------------|---------|
 | CPU | 4 cores @ 2.0GHz | 8 cores @ 2.4GHz | Development and testing |
-| RAM | 16GB | 32GB | IDE and tools |
-| Storage | 256GB SSD | 512GB NVMe SSD | Source code and dependencies |
+| RAM | 8GB | 16GB | IDE and tools |
+| Storage | 100GB SSD | 256GB NVMe SSD | Source code and dependencies |
 | Network | 100Mbps | 1Gbps | Internet connectivity |
 
 ### 3.4.2 Client Hardware Requirements
@@ -608,10 +544,10 @@ graph LR
 #### 3.4.2.1 Desktop Requirements
 
 | Specification | Minimum | Recommended | Target Audience |
-|--------------|----------|-------------|----------------|
+|--------------|----------|-------------|-----------------|
 | CPU | Dual-core @ 1.5GHz | Quad-core @ 2.0GHz | General users |
 | RAM | 4GB | 8GB | Power users |
-| Storage | 10GB free | 20GB free | Application cache |
+| Storage | 5GB free | 10GB free | Application cache |
 | Graphics | Integrated | Dedicated 2GB | Enhanced experience |
 | Network | Broadband | High-speed broadband | Optimal performance |
 
@@ -622,42 +558,62 @@ graph LR
 | iOS | iOS 12+ | iOS 15+ | Safari browser |
 | Android | Android 8+ | Android 12+ | Chrome browser |
 | RAM | 2GB | 4GB | Application performance |
-| Storage | 1GB free | 2GB free | Cache and data |
+| Storage | 500MB free | 1GB free | Cache and data |
 | Network | 4G LTE | 5G | Faster loading |
 
 ### 3.4.3 Software Requirements
 
-#### 3.4.3.1 Server Software Stack
+#### 3.4.3.1 Backend Software Stack
 
 | Software | Version | Purpose | License |
 |----------|---------|---------|---------|
-| Node.js | 18.x LTS | Runtime environment | MIT |
-| MongoDB | 6.x | Database | SSPL |
-| Redis | 7.x | Caching | BSD |
-| Nginx | 1.20+ | Web server | BSD |
-| Docker | 20.x+ | Containerization | Apache 2.0 |
-| Kubernetes | 1.25+ | Orchestration | Apache 2.0 |
+| Node.js | 18.x LTS | JavaScript runtime | MIT |
+| Express.js | 5.x | Web framework | MIT |
+| MongoDB | 8.x | Database | SSPL |
+| Mongoose | 8.x | MongoDB ODM | MIT |
+| Redis | 7.x | Caching (optional) | BSD |
+| Nodemailer | 8.x | Email service | MIT |
+| Razorpay | 2.x | Payment gateway | MIT |
+| JWT | 9.x | Authentication | MIT |
+| Bcryptjs | 3.x | Password hashing | MIT |
+| Multer | 2.x | File upload | MIT |
+| Cloudinary | 2.x | Image storage | MIT |
+| Firebase Admin | 13.x | Push notifications | Apache 2.0 |
 
-#### 3.4.3.2 Development Tools
+#### 3.4.3.2 Frontend Software Stack
+
+| Software | Version | Purpose | License |
+|----------|---------|---------|---------|
+| React | 19.x | Frontend framework | MIT |
+| Vite | 6.x | Build tool | MIT |
+| Tailwind CSS | 4.x | CSS framework | MIT |
+| React Router | 7.x | Routing | MIT |
+| Axios | 1.x | HTTP client | MIT |
+| React Toastify | 11.x | Notifications | MIT |
+| Lucide React | 0.5.x | Icons | MIT |
+| Firebase | 11.x | Client services | Apache 2.0 |
+| React OAuth Google | 0.12.x | Social login | Apache 2.0 |
+
+#### 3.4.3.3 Development Tools
 
 | Tool | Version | Purpose | License |
 |------|---------|---------|---------|
 | VS Code | 1.80+ | IDE | MIT |
 | Git | 2.40+ | Version control | GPL |
 | npm | 9.x | Package manager | MIT |
-| React | 18.x | Frontend framework | MIT |
-| TypeScript | 5.x | Type safety | Apache 2.0 |
-| Jest | 29.x | Testing | MIT |
+| ESLint | 9.x | Code linting | MIT |
+| Nodemon | 3.x | Auto-restart | MIT |
+| Docker | 20.x+ | Containerization | Apache 2.0 |
 
-#### 3.4.3.3 Monitoring and Analytics
+#### 3.4.3.4 External Services
 
-| Tool | Version | Purpose | Cost |
-|------|---------|---------|------|
-| Google Analytics | 4.x | User analytics | Free |
-| Sentry | Latest | Error tracking | Freemium |
-| New Relic | Latest | APM monitoring | Paid |
-| Datadog | Latest | Infrastructure monitoring | Paid |
-| LogRocket | Latest | Session replay | Paid |
+| Service | Purpose | Integration | Cost Model |
+|---------|---------|------------|------------|
+| Cloudinary | Image hosting | API integration | Freemium |
+| Razorpay | Payment processing | API integration | Transaction fees |
+| Firebase | Push notifications | SDK integration | Freemium |
+| Gmail/Nodemailer | Email notifications | SMTP integration | Free |
+| MongoDB Atlas | Database hosting | Connection string | Freemium |
 
 ### 3.4.4 Network Requirements
 
@@ -665,21 +621,21 @@ graph LR
 
 | User Type | Concurrent Users | Bandwidth per User | Total Bandwidth |
 |-----------|------------------|-------------------|-----------------|
-| Casual | 1,000 | 1 Mbps | 1 Gbps |
-| Power | 500 | 2 Mbps | 1 Gbps |
-| Mobile | 2,000 | 500 Kbps | 1 Gbps |
-| Admin | 100 | 5 Mbps | 500 Mbps |
-| API | 10,000 | 100 Kbps | 1 Gbps |
+| Casual | 500 | 1 Mbps | 500 Mbps |
+| Power | 250 | 2 Mbps | 500 Mbps |
+| Mobile | 1,000 | 500 Kbps | 500 Mbps |
+| Admin | 50 | 5 Mbps | 250 Mbps |
+| API | 5,000 | 100 Kbps | 500 Mbps |
 
 #### 3.4.4.2 Latency Requirements
 
 | Region | Target Latency | Maximum Acceptable | CDN Coverage |
 |--------|----------------|------------------|--------------|
-| North America | <50ms | 100ms | 100% |
-| Europe | <100ms | 200ms | 100% |
-| Asia | <150ms | 300ms | 95% |
-| South America | <200ms | 400ms | 90% |
-| Africa | <250ms | 500ms | 80% |
+| North America | <100ms | 200ms | 95% |
+| Europe | <150ms | 300ms | 90% |
+| Asia | <200ms | 400ms | 85% |
+| South America | <250ms | 500ms | 80% |
+| Africa | <300ms | 600ms | 70% |
 
 ### 3.4.5 Storage Requirements
 
@@ -687,20 +643,32 @@ graph LR
 
 | Data Type | Current Size | Annual Growth | 5-Year Projection |
 |-----------|-------------|---------------|-------------------|
-| Product Images | 100GB | 50GB | 350GB |
-| User Data | 10GB | 5GB | 35GB |
-| Order Data | 20GB | 10GB | 70GB |
-| Logs | 50GB | 25GB | 175GB |
-| Backups | 200GB | 100GB | 700GB |
-| Total | 380GB | 190GB | 1.33TB |
+| Product Images | 50GB | 25GB | 175GB |
+| User Data | 5GB | 2GB | 15GB |
+| Order Data | 10GB | 5GB | 35GB |
+| Logs | 25GB | 12GB | 85GB |
+| Backups | 100GB | 50GB | 350GB |
+| **Total** | **190GB** | **94GB** | **660GB** |
 
-#### 3.4.5.2 Backup Strategy
+#### 3.4.5.2 MongoDB Storage Requirements
+
+| Collection | Documents | Size per Document | Total Size | Index Size |
+|-----------|-----------|------------------|------------|-----------|
+| Users | 10,000 | 1KB | 10MB | 2MB |
+| Products | 1,000 | 5KB | 5MB | 1MB |
+| Orders | 50,000 | 2KB | 100MB | 20MB |
+| Reviews | 100,000 | 500B | 50MB | 10MB |
+| **Total** | **161,000** | - | **165MB** | **33MB** |
+
+#### 3.4.5.3 Backup Strategy
 
 | Backup Type | Frequency | Retention | Storage Location |
 |-------------|-----------|----------|-----------------|
-| Full Backup | Daily | 30 days | Cloud storage |
-| Incremental | Hourly | 7 days | Local storage |
-| Database | Every 15 min | 90 days | Cloud storage |
+| MongoDB Backup | Daily | 30 days | Cloud storage |
+| Image Backup | Weekly | 90 days | Cloud storage |
+| Code Backup | Every commit | Permanent | Git repository |
+| Log Backup | Weekly | 30 days | Local storage |
+| Disaster Recovery | Monthly | 1 year | Off-site storage |
 | Files | Daily | 90 days | Cloud storage |
 | Disaster Recovery | Weekly | 1 year | Off-site storage |
 
