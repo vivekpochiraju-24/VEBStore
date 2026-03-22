@@ -106,13 +106,12 @@ User {
   timestamps: true
 }
 ```
-
 #### 3.2.1.2 User Profile Management
 
 Profile management capabilities empower users to personalize their shopping experience and maintain comprehensive control over their account information and preferences. The system provides intuitive interfaces for profile editing while ensuring data integrity, privacy protection, and seamless integration with other platform features such as shopping cart management and order history tracking.
 
 **Profile Features and Functionality:**
-Users can create and maintain comprehensive profiles that include personal information for personalization, communication preferences for marketing and support, and shopping preferences for enhanced product recommendations. The cart persistence feature ensures that users' shopping selections are saved between sessions, providing a seamless shopping experience that encourages return visits and increases conversion rates. The preferred product type selection enables sophisticated personalization algorithms to deliver tailored product recommendations and create a customized shopping experience.
+Users can create and maintain comprehensive profiles that include personal information for personalization, communication preferences for marketing and support, and shopping preferences for enhanced product recommendations. The preferred product type selection enables sophisticated personalization algorithms to deliver tailored product recommendations and create a customized shopping experience.
 
 **Privacy and Data Control:**
 The system respects user privacy by providing granular control over data sharing preferences and communication channels. Users can opt-in to WhatsApp notifications and manage their communication preferences according to their individual needs and privacy requirements. All profile updates undergo comprehensive validation to ensure data integrity and consistency across all platform components, maintaining a reliable and trustworthy user experience.
@@ -340,6 +339,231 @@ Review {
   comment: String (required)
   date: Date (required)
 }
+```
+
+---
+
+## 3.3 Non-Functional Requirements
+
+Non-functional requirements define the quality attributes and operational characteristics that the VEBStore platform must exhibit to ensure optimal performance, security, usability, and reliability. These requirements establish the technical standards and performance benchmarks that guide system architecture, design decisions, and operational procedures.
+
+### 3.3.1 Performance Requirements
+
+Performance requirements establish the speed, responsiveness, and efficiency metrics that the VEBStore platform must achieve to deliver a seamless user experience. These requirements ensure that the system can handle expected user loads while maintaining optimal response times and resource utilization.
+
+**Response Time Requirements:**
+The system must deliver fast response times across all user interactions to ensure a positive user experience. Response time requirements cover page loading, search operations, checkout processes, and administrative functions.
+
+| Requirement ID | Metric | Target | Measurement Condition |
+|----------------|--------|--------|----------------------|
+| NFR-PR-001 | Page Load Time | <2 seconds | Standard pages with normal load |
+| NFR-PR-002 | Search Response Time | <300ms | Product search queries |
+| NFR-PR-003 | Checkout Process Time | <5 seconds | Complete checkout flow |
+| NFR-PR-004 | API Response Time | <500ms | Backend API calls |
+| NFR-PR-005 | Image Load Time | <1 second | Product images optimization |
+
+**Throughput Requirements:**
+The system must support concurrent user access and transaction processing to handle peak traffic periods without performance degradation. Throughput requirements define the capacity limits and scalability targets.
+
+| Requirement ID | Metric | Target | Measurement Condition |
+|----------------|--------|--------|----------------------|
+| NFR-PR-006 | Concurrent Users | 10,000 | Peak traffic handling |
+| NFR-PR-007 | Transactions/Minute | 1,000 | Order processing capacity |
+| NFR-PR-008 | Search Queries/Minute | 5,000 | Search operation capacity |
+| NFR-PR-009 | API Requests/Minute | 50,000 | Backend API capacity |
+| NFR-PR-010 | Database Connections | 1,000 | Concurrent database connections |
+
+### 3.3.2 Security Requirements
+
+Security requirements establish the protective measures and controls that safeguard the VEBStore platform, user data, and financial transactions. These requirements ensure compliance with industry standards and protect against security threats while maintaining user trust.
+
+**Data Protection Requirements:**
+The system must implement comprehensive data protection measures to safeguard sensitive user information, payment data, and business intelligence. Data protection requirements cover encryption, access control, and data privacy.
+
+| Requirement ID | Security Measure | Implementation Standard | Compliance |
+|----------------|------------------|----------------------|------------|
+| NFR-SR-001 | Data Encryption | AES-256 encryption | GDPR, PCI DSS |
+| NFR-SR-002 | Password Security | Bcrypt hashing with salt | OWASP guidelines |
+| NFR-SR-003 | Payment Data Protection | Tokenization | PCI DSS Level 1 |
+| NFR-SR-004 | Data Transmission Security | TLS 1.3 | Industry standard |
+| NFR-SR-005 | Data Backup Encryption | Encrypted backups | GDPR compliance |
+
+**Access Control Requirements:**
+The system must implement robust access control mechanisms to prevent unauthorized access to system resources and user data. Access control requirements cover authentication, authorization, and session management.
+
+| Requirement ID | Control Mechanism | Implementation | Security Level |
+|----------------|-------------------|----------------|---------------|
+| NFR-SR-006 | Multi-Factor Authentication | TOTP/SMS | High |
+| NFR-SR-007 | Role-Based Access Control | Admin roles | Medium |
+| NFR-SR-008 | Session Management | Secure cookies | High |
+| NFR-SR-009 | API Rate Limiting | Request throttling | Medium |
+| NFR-SR-010 | Audit Logging | Activity tracking | High |
+
+### 3.3.3 Usability Requirements
+
+Usability requirements ensure that the VEBStore platform provides an intuitive, accessible, and efficient user experience across different devices and user capabilities. These requirements focus on user interface design, accessibility, and user satisfaction.
+
+**User Interface Requirements:**
+The system must provide a clean, intuitive, and responsive user interface that enables users to accomplish tasks efficiently and effectively. User interface requirements cover design consistency, navigation, and visual hierarchy.
+
+| Requirement ID | UI Aspect | Standard | Target |
+|----------------|-----------|----------|--------|
+| NFR-UR-001 | Design Consistency | Component library | 100% consistency |
+| NFR-UR-002 | Navigation Ease | Max 3 clicks to any page | 95% success rate |
+| NFR-UR-003 | Visual Clarity | WCAG 2.1 AA | Full compliance |
+| NFR-UR-004 | Error Prevention | Form validation | 90% error reduction |
+| NFR-UR-005 | Help Availability | Contextual help | 80% user satisfaction |
+
+**Accessibility Requirements:**
+The system must be accessible to users with disabilities, ensuring equal access to all platform features and content. Accessibility requirements comply with international accessibility standards.
+
+| Requirement ID | Accessibility Feature | Standard | Implementation |
+|----------------|----------------------|----------|----------------|
+| NFR-UR-006 | Screen Reader Support | WCAG 2.1 AA | Full compatibility |
+| NFR-UR-007 | Keyboard Navigation | WCAG 2.1 AA | Complete keyboard access |
+| NFR-UR-008 | Color Contrast | WCAG 2.1 AA | 4.5:1 contrast ratio |
+| NFR-UR-009 | Alternative Text | WCAG 2.1 AA | All images described |
+| NFR-UR-010 | Font Scaling | WCAG 2.1 AA | 200% zoom support |
+
+### 3.3.4 Reliability Requirements
+
+Reliability requirements establish the availability, fault tolerance, and data integrity standards that the VEBStore platform must maintain to ensure consistent and dependable operation. These requirements minimize downtime and ensure business continuity.
+
+**Availability Requirements:**
+The system must maintain high availability to ensure continuous service for users and minimize business impact from system outages. Availability requirements cover uptime targets and recovery procedures.
+
+| Requirement ID | Availability Metric | Target | Measurement |
+|----------------|---------------------|--------|-------------|
+| NFR-RR-001 | System Uptime | 99.9% | Monthly calculation |
+| NFR-RR-002 | Recovery Time Objective | 4 hours | Maximum downtime |
+| NFR-RR-003 | Recovery Point Objective | 1 hour | Data loss tolerance |
+| NFR-RR-004 | Scheduled Maintenance | 4 hours/month | Planned downtime |
+| NFR-RR-005 | Emergency Response | 15 minutes | Incident response time |
+
+**Data Integrity Requirements:**
+The system must ensure data accuracy, consistency, and protection against corruption or loss. Data integrity requirements cover validation, backup, and recovery procedures.
+
+| Requirement ID | Integrity Aspect | Standard | Implementation |
+|----------------|------------------|----------|----------------|
+| NFR-RR-006 | Data Validation | Input validation | All user inputs |
+| NFR-RR-007 | Transaction Integrity | ACID compliance | Database operations |
+| NFR-RR-008 | Backup Frequency | Daily incremental | Automated backups |
+| NFR-RR-009 | Data Redundancy | Multi-region | Geographic distribution |
+| NFR-RR-010 | Corruption Detection | Checksums | Data verification |
+
+### 3.3.5 Scalability Requirements
+
+Scalability requirements define the system's ability to handle growth in user base, transaction volume, and data storage without performance degradation. These requirements ensure the platform can accommodate business growth and seasonal traffic variations.
+
+**Horizontal Scalability:**
+The system must support horizontal scaling to handle increased load by adding more servers or instances. Horizontal scalability requirements cover load balancing, state management, and resource allocation.
+
+| Requirement ID | Scalability Aspect | Target | Implementation |
+|----------------|-------------------|--------|----------------|
+| NFR-SCR-001 | Load Balancing | Auto-scaling | Cloud infrastructure |
+| NFR-SCR-002 | Session Management | Stateless design | Distributed sessions |
+| NFR-SCR-003 | Database Scaling | Sharding | Horizontal partitioning |
+| NFR-SCR-004 | Cache Scaling | Distributed cache | Redis cluster |
+| NFR-SCR-005 | CDN Integration | Global distribution | Content delivery |
+
+**Vertical Scalability:**
+The system must support vertical scaling to handle increased computational demands through resource upgrades. Vertical scalability requirements cover resource optimization and performance tuning.
+
+| Requirement ID | Resource Aspect | Scaling Strategy | Target |
+|----------------|------------------|------------------|--------|
+| NFR-SCR-006 | CPU Scaling | Dynamic allocation | Up to 32 cores |
+| NFR-SCR-007 | Memory Scaling | Heap optimization | Up to 128GB |
+| NFR-SCR-008 | Storage Scaling | Elastic storage | Unlimited |
+| NFR-SCR-009 | Network Scaling | Bandwidth optimization | 10Gbps |
+| NFR-SCR-010 | Database Performance | Query optimization | <100ms queries |
+
+### 3.3.6 Compatibility Requirements
+
+Compatibility requirements ensure that the VEBStore platform functions correctly across different browsers, devices, and operating systems. These requirements maximize platform accessibility and user reach.
+
+**Browser Compatibility:**
+The system must support all major web browsers to ensure consistent user experience across different browser environments. Browser compatibility requirements cover desktop and mobile browsers.
+
+| Requirement ID | Browser | Minimum Version | Support Level |
+|----------------|---------|-----------------|--------------|
+| NFR-CR-001 | Chrome | 90+ | Full support |
+| NFR-CR-002 | Firefox | 88+ | Full support |
+| NFR-CR-003 | Safari | 14+ | Full support |
+| NFR-CR-004 | Edge | 90+ | Full support |
+| NFR-CR-005 | Opera | 76+ | Basic support |
+
+**Device Compatibility:**
+The system must provide consistent functionality across different device types and screen sizes. Device compatibility requirements cover desktop, tablet, and mobile devices.
+
+| Requirement ID | Device Type | Screen Resolution | Support Level |
+|----------------|-------------|-------------------|--------------|
+| NFR-CR-006 | Desktop | 1024x768+ | Full support |
+| NFR-CR-007 | Laptop | 1366x768+ | Full support |
+| NFR-CR-008 | Tablet | 768x1024+ | Full support |
+| NFR-CR-009 | Mobile | 375x667+ | Full support |
+| NFR-CR-010 | Large Desktop | 1920x1080+ | Enhanced support |
+
+### 3.3.7 Maintainability Requirements
+
+Maintainability requirements ensure that the VEBStore platform can be efficiently maintained, updated, and enhanced throughout its lifecycle. These requirements reduce maintenance costs and improve system longevity.
+
+**Code Quality Requirements:**
+The system must maintain high code quality standards to ensure maintainability and reduce technical debt. Code quality requirements cover coding standards, documentation, and testing.
+
+| Requirement ID | Quality Aspect | Standard | Measurement |
+|----------------|---------------|----------|-------------|
+| NFR-MR-001 | Code Coverage | 80% | Unit test coverage |
+| NFR-MR-002 | Code Documentation | 100% | Public API documentation |
+| NFR-MR-003 | Code Complexity | <10 | Cyclomatic complexity |
+| NFR-MR-004 | Technical Debt | <5 days | Resolution time |
+| NFR-MR-005 | Code Review | 100% | Peer review coverage |
+
+**System Documentation:**
+The system must maintain comprehensive documentation to support maintenance, troubleshooting, and knowledge transfer. Documentation requirements cover technical documentation and user guides.
+
+| Requirement ID | Documentation Type | Update Frequency | Access Level |
+|----------------|-------------------|------------------|-------------|
+| NFR-MR-006 | API Documentation | Real-time | Public |
+| NFR-MR-007 | System Architecture | Quarterly | Internal |
+| NFR-MR-008 | Deployment Guides | As needed | Internal |
+| NFR-MR-009 | Troubleshooting Guide | Monthly | Internal |
+| NFR-MR-010 | User Manuals | Bi-annually | Public |
+
+### 3.3.8 Accessibility Requirements
+
+Accessibility requirements ensure that the VEBStore platform is usable by people with disabilities, complying with international accessibility standards and promoting inclusive design.
+
+**Web Accessibility Standards:**
+The system must comply with WCAG 2.1 AA standards to ensure web accessibility for users with various disabilities. Web accessibility requirements cover visual, auditory, motor, and cognitive accessibility.
+
+| Requirement ID | Accessibility Feature | WCAG Standard | Implementation |
+|----------------|---------------------|---------------|----------------|
+| NFR-AR-001 | Screen Reader Support | 1.3.1 | Semantic HTML |
+| NFR-AR-002 | Keyboard Navigation | 2.1.1 | Full keyboard access |
+| NFR-AR-003 | Color Contrast | 1.4.3 | 4.5:1 ratio |
+| NFR-AR-004 | Alternative Text | 1.1.1 | All images |
+| NFR-AR-005 | Focus Indicators | 2.4.7 | Visible focus |
+
+**Assistive Technology Support:**
+The system must support various assistive technologies to enhance accessibility for users with disabilities. Assistive technology requirements cover screen readers, voice recognition, and alternative input devices.
+
+| Requirement ID | Assistive Technology | Support Level | Testing Method |
+|----------------|----------------------|--------------|---------------|
+| NFR-AR-006 | Screen Readers | Full compatibility | Automated testing |
+| NFR-AR-007 | Voice Recognition | Basic support | Manual testing |
+| NFR-AR-008 | Switch Devices | Basic support | Manual testing |
+| NFR-AR-009 | Braille Displays | Basic support | Manual testing |
+| NFR-AR-010 | Voice Commands | Planned support | Future enhancement |
+
+---
+
+## 3.4 Hardware & Software Requirements
+
+Hardware and software requirements define the technical infrastructure and technology stack necessary to deploy, operate, and maintain the VEBStore platform. These requirements ensure optimal performance, reliability, and scalability of the system.
+
+### 3.4.1 Server Hardware Requirements
+
+Server hardware requirements specify the minimum and recommended hardware specifications for hosting the VEBStore platform in production, development, and testing environments.
 
 #### 3.4.1.1 Production Environment
 
