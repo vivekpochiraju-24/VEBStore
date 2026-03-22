@@ -78,41 +78,296 @@ The application architecture of VEBStore represents the foundational framework t
 
 The VEBStore platform follows a modern three-tier architecture pattern that strategically separates presentation, business logic, and data access layers. This architectural separation enables independent development and scaling of different components while maintaining clear interfaces and well-defined responsibilities. The architecture is designed to support both monolithic deployment for simplicity and microservices deployment for scalability, providing flexibility for different deployment scenarios and business requirements.
 
-The overall architecture is fundamentally built around RESTful API principles, ensuring clear separation between frontend and backend responsibilities. The frontend layer is dedicated to handling user interface and user experience logic, while the backend layer manages business rules, data processing, and integration with external services. This architectural separation enables independent development, testing, and deployment of frontend and backend components, facilitating agile development practices and continuous delivery.
+**Three-Tier Architecture Components:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Frontend Components:                                           │
+│  • React Components (ProductCard, ShoppingCart, Checkout)       │
+│  • State Management (Redux/Context API)                        │
+│  • Routing (React Router)                                        │
+│  • UI/UX Components (Tailwind CSS)                             │
+│  • API Integration (Axios)                                      │
+└─────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ HTTP/REST API Calls
+                                  │
+┌─────────────────────────────────────────────────────────────────┐
+│                    BUSINESS LOGIC LAYER                        │
+├─────────────────────────────────────────────────────────────────┤
+│  Backend Services:                                             │
+│  • Express.js Controllers (User, Product, Order, Payment)      │
+│  • Business Logic Services (UserService, ProductService)       │
+│  • Middleware (Authentication, Validation, Error Handling)       │
+│  • API Endpoints (/api/auth, /api/product, /api/order)         │
+│  • Integration Services (Razorpay, Cloudinary, Nodemailer)      │
+└─────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ Database Operations
+                                  │
+┌─────────────────────────────────────────────────────────────────┐
+│                      DATA ACCESS LAYER                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Database & Storage:                                            │
+│  • MongoDB Database (Users, Products, Orders, Reviews)         │
+│  • Mongoose ODM (Schema Validation, Relationships)            │
+│  • Cloudinary (Image Storage & CDN)                             │
+│  • Data Models (UserSchema, ProductSchema, OrderSchema)        │
+│  • Indexing Strategy (Primary, Foreign, Composite)             │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The architecture also incorporates comprehensive integration with external services including payment gateways, email services, image storage platforms, and analytics systems. These integrations are designed to be loosely coupled, enabling easy replacement or enhancement of external services without impacting core platform functionality. This approach ensures that the platform can adapt to changing business requirements and technological advancements while maintaining system stability and performance.
+**Architecture Benefits:**
+- **Scalability**: Each tier can be scaled independently based on load requirements
+- **Maintainability**: Clear separation of concerns enables easier maintenance and updates
+- **Flexibility**: Architecture supports both monolithic and microservices deployment
+- **Security**: Layered security with authentication, authorization, and data protection
+- **Performance**: Optimized data flow and caching strategies for excellent performance
 
 ### 4.2.2 Frontend Architecture
 
 The frontend architecture of VEBStore is constructed using React, a modern JavaScript library that facilitates efficient development of interactive and dynamic user interfaces. The frontend follows a component-based architecture pattern, where reusable UI components are combined to create complex user interfaces while maintaining code consistency, reusability, and maintainability across the entire application.
 
-The frontend architecture encompasses several critical layers that work together to deliver a seamless user experience. The presentation layer handles the visual representation of data and user interface components, ensuring that users have an intuitive and engaging interface. The state management layer manages application state, ensuring that data flows consistently throughout the application and that user interactions are properly reflected in the interface. The service layer handles API communication with the backend, ensuring that data is efficiently retrieved and submitted. The routing layer manages navigation within the application, ensuring that users can easily navigate between different pages and sections.
+**Frontend Architecture Components:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FRONTEND ARCHITECTURE                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
+│  │   Pages     │  │ Components  │  │  Services   │            │
+│  │             │  │             │  │             │            │
+│  │ • Homepage  │  │ • ProductCard│  │ • APIService │            │
+│  │ • Products  │  │ • ShoppingCart│  │ • AuthService│            │
+│  │ • Cart      │  │ • Checkout   │  │ • CartService│            │
+│  │ • Checkout  │  │ • UserProfile│  │ • Storage    │            │
+│  │ • Profile   │  │ • SearchBar  │  │ • Utils      │            │
+│  │ • Login     │  │ • FilterPanel│  │             │            │
+│  │ • Register  │  │ • AdminPanel │  │             │            │
+│  └─────────────┘  └─────────────┘  └─────────────┘            │
+│         │               │               │                     │
+│         │               │               │                     │
+│         └───────────────┴───────────────┴───────────────┘            │
+│                     Component Communication                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 STATE MANAGEMENT                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • React Context API (Global State)                             │
+│  • useState/useReducer (Local State)                             │
+│  • Custom Hooks (useCart, useProducts, useAuth)                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    ROUTING LAYER                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • React Router (Client-side Routing)                             │
+│  • Route Guards (Authentication)                                   │
+│  • Lazy Loading (Code Splitting)                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   UI/UX LAYER                                  │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Tailwind CSS (Styling Framework)                               │
+│  • Lucide React (Icons)                                           │
+│  • React Toastify (Notifications)                                 │
+│  • Responsive Design (Mobile-First)                                │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The frontend architecture also implements a comprehensive routing system that supports both client-side and server-side rendering, ensuring optimal performance and search engine optimization. The architecture includes sophisticated lazy loading and code splitting strategies that minimize initial load times and improve overall application performance, particularly important for mobile users and users with slower internet connections.
+**Frontend Architecture Benefits:**
+- **Component Reusability**: Modular components can be reused across different pages and contexts
+- **State Management**: Centralized state management ensures data consistency
+- **Performance**: Lazy loading and code splitting improve initial load times
+- **User Experience**: Responsive design ensures excellent experience across all devices
+- **Maintainability**: Clear separation of concerns makes code easier to maintain and extend
 
 ### 4.2.3 Backend Architecture
 
 The backend architecture of VEBStore is built using Node.js and Express.js, providing a robust and scalable foundation for server-side functionality. The backend follows a layered architecture pattern with clear separation between controllers, services, and data access layers, ensuring that each layer has specific responsibilities and well-defined interfaces with other layers.
 
-The backend architecture includes several key layers that work together to provide comprehensive server-side functionality. The API layer handles HTTP requests and responses, ensuring that the backend can efficiently process incoming requests and return appropriate responses. The business logic layer implements business rules and algorithms, ensuring that the backend can handle complex business operations and maintain data integrity. The data access layer handles database operations, ensuring that data is efficiently stored, retrieved, and updated. The integration layer handles communication with external services, ensuring that the backend can effectively integrate with third-party systems and services.
+**Backend Architecture Components:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    BACKEND ARCHITECTURE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    API LAYER                                  │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Express.js Server (HTTP Request/Response Handling)            │
+│  • API Endpoints (/api/auth, /api/product, /api/order, /api/user)    │
+│  • Request/Response Middleware                                   │
+│  • Route Handlers (Controller Functions)                          │
+│  • HTTP Methods (GET, POST, PUT, DELETE, PATCH)                 │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 BUSINESS LOGIC LAYER                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │ Controllers │  │  Services   │  │ Middleware  │  │ Utilities   │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • UserCtrl  │  │ • UserService│  │ • Auth       │  │ • Validator  │ │
+│  │ • ProductCtrl│  │ • ProductService│ │ │ • Validation │  │ • Logger     │ │
+│  │ • OrderCtrl │  │ • OrderService│  │ │ • Error      │  │ • Helper     │ │
+│  │ • PaymentCtrl│  │ • PaymentService│  │ │ • RateLimit  │  │ • Encrypt    │ │
+│  │ • AdminCtrl │  │ • EmailService│  │ │ • CORS       │  │ • DateUtils   │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Service Communication                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 DATA ACCESS LAYER                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Mongoose ODM (MongoDB Object Document Mapping)                │
+│  • Data Models (UserSchema, ProductSchema, OrderSchema)          │
+│  • Database Operations (CRUD, Aggregation, Indexing)              │
+│  • Connection Management (Connection Pooling)                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │               INTEGRATION LAYER                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Razorpay (Payment Gateway)                                     │
+│  • Cloudinary (Image Storage)                                      │
+│  • Nodemailer (Email Service)                                      │
+│  • Firebase (Authentication)                                        │
+│  • External APIs (Third-party Services)                           │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The backend architecture also implements comprehensive middleware for authentication, authorization, logging, error handling, and request validation. These middleware components provide cross-cutting concerns that apply to all API endpoints, ensuring consistent behavior and security across the entire backend system. This approach reduces code duplication and ensures that critical security and logging functionality is consistently applied throughout the application.
+**Backend Architecture Benefits:**
+- **Scalability**: Layered architecture enables independent scaling of different components
+- **Maintainability**: Clear separation of concerns makes code easier to maintain and extend
+- **Security**: Comprehensive middleware provides robust security protection
+- **Performance**: Connection pooling and caching strategies ensure excellent performance
+- **Flexibility**: Service-oriented architecture enables easy addition of new features
 
 ### 4.2.4 Microservices Architecture
 
 While VEBStore currently implements a monolithic architecture for simplicity and rapid development, the system is strategically designed to support migration to a microservices architecture as the platform grows and evolves. The modular design and clear separation of concerns enable easy extraction of individual services into independent microservices when needed, providing a clear migration path to a more distributed architecture.
 
-The potential microservices architecture would include dedicated services for user management, product catalog, order processing, payment processing, and notification management. Each service would have its own database and API, enabling independent scaling and deployment based on specific service requirements. This approach would allow the platform to handle increased traffic and complexity by scaling individual services rather than the entire application.
+**Microservices Architecture Vision:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                MICROSERVICES ARCHITECTURE                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   Service    │  │   Service    │  │   Service    │  │   Service    │ │
+│  │   Gateway    │  │   Discovery  │  │   Registry   │  │   Config     │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • Auth       │  │ • Discovery  │  │ • Registry   │  │ • Config     │ │
+│  │ • Profile    │  │ • Service    │  │ • Service    │  │ • Service    │ │
+│  │ • Management │  │ • Management │  │ • Management │  │ • Management │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • User       │  │ • Product    │  │ • Order      │  │ • Payment    │ │
+│  │ • Service    │  │ • Service    │  │ • Service    │  │ • Service    │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • MongoDB    │  │ • MongoDB    │  │ • MongoDB    │  │ • MongoDB    │ │
+│  │ • Redis       │  │ • Redis       │  │ • Redis       │  │ • Redis       │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Service Communication                      │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │  Notification│  │   Analytics  │  │   Email      │  │   Image      │ │
+│  │   Service    │  │   Service    │  │   Service    │  │   Service    │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • Push       │  │ • Tracking   │  │ • SMTP       │  │ • Upload     │ │
+│  │ • Email      │  │ • Reporting  │  │ • Templates  │  │ • CDN        │ │
+│  │ • SMS        │  │ • Dashboard  │  │ • Queue      │  │ • Processing │ │
+│  │ • Webhooks   │  │ • Analytics  │  │ • Delivery   │  │ • Storage    │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • MongoDB    │  │ • MongoDB    │  │ • MongoDB    │  │ • Cloudinary  │ │
+│  │ • Redis       │  │ • Redis       │  │ • Redis       │  │ • Redis       │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The microservices architecture would also include comprehensive service discovery, load balancing, and inter-service communication mechanisms. These components would ensure that services can communicate efficiently while maintaining loose coupling and independent scalability. The architecture would also include comprehensive monitoring and logging to ensure that the distributed system can be effectively managed and maintained.
+**Microservices Migration Benefits:**
+- **Independent Scaling**: Each service can be scaled independently based on specific load requirements
+- **Technology Diversity**: Different services can use different technologies optimized for specific needs
+- **Fault Isolation**: Service failures don't impact the entire system
+- **Team Autonomy**: Different teams can work on different services independently
+- **Deployment Flexibility**: Services can be deployed independently with different release cycles
 
 ### 4.2.5 Integration Architecture
 
 The integration architecture of VEBStore defines how the platform interacts with external services and systems, ensuring seamless integration while maintaining system reliability and performance. This architecture is designed to be flexible and extensible, enabling easy addition of new integrations and modification of existing ones without impacting core platform functionality.
 
-The integration architecture includes adapters for different external services, message queues for asynchronous communication, and caching layers for performance optimization. These components work together to ensure reliable and efficient integration with external services while maintaining system performance and reliability. The architecture is designed to handle various integration scenarios including synchronous and asynchronous communication, real-time data synchronization, and batch processing.
+**Integration Architecture Components:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                INTEGRATION ARCHITECTURE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 VEBSTORE CORE SYSTEM                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Frontend (React Components)                                   │
+│  • Backend (Express.js Services)                                   │
+│  • Database (MongoDB)                                             │
+│  • Internal APIs                                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                INTEGRATION LAYER                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   Service    │  │   Service    │  │   Service    │  │   Service    │ │
+│  │   Adapter    │  │   Adapter    │  │   Adapter    │  │   Adapter    │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • Payment    │  │ • Email      │  │ • Image      │  │ • Analytics  │ │
+│  │ • Adapter    │  │ • Adapter    │  │ • Adapter    │  │ • Adapter    │ │
+│  │ • Razorpay   │  │ • Nodemailer  │  │ • Cloudinary  │  │ • Custom     │ │
+│  │ • Interface  │  │ • Interface  │  │ • Interface  │  │ • Interface  │ │
+│  │ • Error      │  │ • Error      │  │ • Error      │  │ • Error      │ │
+│  │ • Handling   │  │ • Handling   │  │ • Handling   │  │ • Handling   │ │
+│  │ • Retry      │  │ • Retry      │  │ • Retry      │  │ • Retry      │ │
+│  │ • Logic      │  │ • Logic      │  │ • Logic      │  │ • Logic      │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     External Service Communication                │
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   Payment    │  │   Email      │  │   Image      │  │   Analytics  │ │
+│  │  Gateway     │  │   Service    │  │   Service    │  │   Service    │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • Razorpay   │  │ • SMTP       │  │ • Cloudinary  │  │ • Custom     │ │
+│  │ • API        │  │ • Server     │  │ • API        │  │ • API        │ │
+│  │ • HTTPS      │  │ • SMTP       │  │ • HTTPS      │  │ • HTTPS      │ │
+│  │ • REST       │  │ • REST       │  │ • REST       │  │ • REST       │ │
+│  │ • Webhooks   │  │ • Webhooks   │  │ • Webhooks   │  │ • Webhooks   │ │
+│  │ • SDK        │  │ • Library    │  │ • SDK        │  │ • Library    │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   MESSAGE QUEUE LAYER                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Redis (Message Broker)                                       │
+│  • Event-Driven Communication                                   │
+│  • Asynchronous Processing                                         │
+│  • Event Sourcing                                               │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   CACHING LAYER                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Redis (Cache Store)                                           │
+│  • Application-Level Caching                                     │
+│  • Database Query Caching                                       │
+│  • CDN Caching                                                  │
+│  • Session Caching                                             │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The architecture also includes comprehensive error handling and retry mechanisms for external service calls, ensuring that temporary service disruptions do not impact platform functionality. These mechanisms include circuit breakers, fallback responses, and comprehensive logging for debugging and monitoring. The integration architecture is designed to be resilient and fault-tolerant, ensuring that the platform can continue to function even when external services are experiencing issues.
+**Integration Architecture Benefits:**
+- **Flexibility**: Easy addition of new integrations without impacting core functionality
+- **Reliability**: Robust error handling and retry mechanisms ensure reliable integration
+- **Performance**: Caching and asynchronous processing improve integration performance
+- **Maintainability**: Clear separation between core system and integration logic
+- **Scalability**: Integration layer can scale independently of core system
 
 ---
 
@@ -279,6 +534,40 @@ Use case diagrams provide a visual representation of system functionality from d
 
 The VEBStore system includes several key actors including customers, administrators, payment gateway, email service, and image storage service. Each actor has specific roles and responsibilities within the system, and their interactions define the complete scope of system functionality.
 
+**Use Case Diagram - Actor Overview:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     VEBSTORE USE CASE DIAGRAM                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │   CUSTOMER   │  │  ADMIN      │  │  PAYMENT    │  │   EMAIL     │ │
+│  │   ACTOR     │  │   ACTOR     │  │  GATEWAY    │  │   SERVICE   │ │
+│  │             │  │             │  │   ACTOR     │  │   ACTOR     │ │
+│  │ • Primary   │  │ • Secondary │  │ • Supporting│  │ • Supporting│ │
+│  │ • Human     │  │ • Human     │  │ • System    │  │ • System    │ │
+│  │ • External  │  │ • Internal  │  │ • External  │  │ • External  │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     Actor Interactions                         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 VEBSTORE SYSTEM                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Registration & Authentication                              │
+│  • Product Browsing & Searching                                   │
+│  • Shopping Cart Management                                       │
+│  • Order Processing & Management                                  │
+│  • Payment Processing                                             │
+│  • Product & Inventory Management                                 │
+│  • User Management & Support                                      │
+│  • Analytics & Reporting                                          │
+│  • Notification System                                             │
+│  • Image Storage & Management                                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
 **Primary Actors Analysis:**
 Customers are primary actors who interact with the system for browsing products, making purchases, managing accounts, and tracking orders. Customers have access to all customer-facing functionality including product search, shopping cart management, checkout process, and account management. The customer actor represents both individual consumers and business customers with potentially different access levels and permissions.
 
@@ -289,6 +578,74 @@ External services including payment gateways, email services, and image storage 
 ### 4.5.2 Customer Use Cases
 
 Customer use cases include comprehensive functionality that enables customers to browse, search, purchase, and manage products while maintaining their accounts and tracking their orders. These use cases cover the complete customer journey from initial discovery to post-purchase support.
+
+**Customer Use Case Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   CUSTOMER USE CASES                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   CUSTOMER   │                                                 │
+│  │   ACTOR     │                                                 │
+│  │             │                                                 │
+│  │ • Primary   │                                                 │
+│  │ • Human     │                                                 │
+│  └─────────────┘                                                 │
+│         │                                                        │
+│         └─────────────────────────────────────────────────────┘ │
+│                     Customer Interactions                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 AUTHENTICATION USE CASES                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Registration (<<include>>)                               │
+│  • User Login (<<include>>)                                      │
+│  • Password Reset (<<include>>)                                  │
+│  • Profile Management (<<extend>>)                               │
+│  • Logout (<<include>>)                                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 PRODUCT USE CASES                          │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Browse Products (<<include>>)                                 │
+│  • Search Products (<<include>>)                                  │
+│  • Filter Products (<<extend>>)                                   │
+│  • View Product Details (<<include>>)                             │
+│  • Compare Products (<<extend>>)                                 │
+│  • Add to Wishlist (<<extend>>)                                   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 SHOPPING CART USE CASES                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Add to Cart (<<include>>)                                     │
+│  • Update Cart Quantity (<<include>>)                            │
+│  • Remove from Cart (<<include>>)                                │
+│  • View Cart (<<include>>)                                       │
+│  • Clear Cart (<<extend>>)                                       │
+│  • Cart Abandonment Recovery (<<extend>>)                       │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 ORDER USE CASES                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Checkout Process (<<include>>)                                │
+│  • Payment Processing (<<include>>)                             │
+│  • Order Confirmation (<<include>>)                              │
+│  • Order Tracking (<<include>>)                                  │
+│  • Order History (<<include>>)                                  │
+│  • Order Cancellation (<<extend>>)                               │
+│  • Return/Exchange (<<extend>>)                                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 REVIEW USE CASES                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Write Review (<<include>>)                                    │
+│  • Rate Product (<<include>>)                                    │
+│  • View Reviews (<<include>>)                                    │
+│  • Report Review (<<extend>>)                                   │
+│  • Helpful Voting (<<extend>>)                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **Core Customer Functionality:**
 The core customer functionality includes user registration and authentication, which enables customers to create accounts, log in securely, and manage their profiles. The registration process includes email verification, password management, and profile customization options. The authentication process includes secure login, password recovery, and session management with automatic logout for security.
@@ -307,6 +664,82 @@ Review and rating functionality enables customers to provide feedback on purchas
 ### 4.5.3 Admin Use Cases
 
 Admin use cases include comprehensive functionality that enables administrators to manage the platform, monitor performance, and support customers. These use cases cover the complete administrative workflow from content management to system administration.
+
+**Admin Use Case Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     ADMIN USE CASES                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐                                                 │
+│  │   ADMIN     │                                                 │
+│  │   ACTOR     │                                                 │
+│  │             │                                                 │
+│  │ • Secondary │                                                 │
+│  │ • Human     │                                                 │
+│  └─────────────┘                                                 │
+│         │                                                        │
+│         └─────────────────────────────────────────────────────┘ │
+│                     Admin Interactions                         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 PRODUCT MANAGEMENT USE CASES              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Create Product (<<include>>)                                   │
+│  • Update Product (<<include>>)                                  │
+│  • Delete Product (<<include>>)                                  │
+│  • Bulk Product Operations (<<extend>>)                          │
+│  • Product Image Management (<<extend>>)                         │
+│  • Inventory Management (<<extend>>)                             │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 CATEGORY MANAGEMENT USE CASES              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Create Category (<<include>>)                                │
+│  • Update Category (<<include>>)                                 │
+│  • Delete Category (<<include>>)                                 │
+│  • Category Hierarchy Management (<<extend>>)                    │
+│  • Category Product Assignment (<<extend>>)                      │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 ORDER MANAGEMENT USE CASES                  │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • View Orders (<<include>>)                                     │
+│  • Process Order (<<include>>)                                   │
+│  • Update Order Status (<<include>>)                              │
+│  • Handle Returns (<<extend>>)                                   │
+│  • Order Analytics (<<extend>>)                                  │
+│  • Shipping Management (<<extend>>)                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 USER MANAGEMENT USE CASES                  │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • View Users (<<include>>)                                      │
+│  • Manage User Accounts (<<extend>>)                             │
+│  • User Support (<<extend>>)                                     │
+│  • User Analytics (<<extend>>)                                   │
+│  • Communication Management (<<extend>>)                          │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 SYSTEM ADMINISTRATION USE CASES            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • System Configuration (<<include>>)                            │
+│  • Payment Gateway Setup (<<extend>>)                            │
+│  • Email Service Configuration (<<extend>>)                      │
+│  • Security Management (<<extend>>)                             │
+│  • Backup & Recovery (<<extend>>)                                │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 ANALYTICS & REPORTING USE CASES            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Sales Reports (<<include>>)                                   │
+│  • Customer Analytics (<<include>>)                              │
+│  • Product Performance (<<include>>)                             │
+│  • System Monitoring (<<extend>>)                                │
+│  • Custom Reports (<<extend>>)                                   │
+│  • Dashboard Management (<<extend>>)                             │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **Content Management:**
 Product management functionality enables administrators to create, edit, and delete products with comprehensive product information including images, descriptions, pricing, and inventory. The product management includes bulk operations for efficient management of large product catalogs, image upload and optimization through Cloudinary integration, and inventory management with real-time stock tracking.
@@ -328,6 +761,71 @@ Analytics and reporting functionality enables administrators to monitor system p
 ### 4.5.4 External System Use Cases
 
 External system use cases include comprehensive integration scenarios with third-party services that extend the platform's capabilities. These use cases ensure reliable integration with critical external services while maintaining system performance and reliability.
+
+**External System Use Case Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                 EXTERNAL SYSTEM USE CASES                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
+│  │  PAYMENT    │  │   EMAIL     │  │   IMAGE     │  │   SHIPPING  │ │
+│  │  GATEWAY    │  │   SERVICE   │  │   STORAGE   │  │   SERVICE   │ │
+│  │   ACTOR     │  │   ACTOR     │  │   ACTOR     │  │   ACTOR     │ │
+│  │             │  │             │  │             │  │             │ │
+│  │ • Supporting│  │ • Supporting│  │ • Supporting│  │ • Supporting│ │
+│  │ • System    │  │ • System    │  │ • System    │  │ • System    │ │
+│  │ • External  │  │ • External  │  │ • External  │  │ • External  │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
+│         │               │               │               │         │
+│         └───────────────┴───────────────┴───────────────┴─────────────┘ │
+│                     External Service Interactions            │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 VEBSTORE SYSTEM                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 PAYMENT PROCESSING USE CASES               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Payment Authorization (<<include>>)                           │
+│  • Payment Capture (<<include>>)                                 │
+│  • Payment Refund (<<include>>)                                  │
+│  • Payment Verification (<<extend>>)                             │
+│  • Webhook Processing (<<extend>>)                               │
+│  • Transaction Logging (<<extend>>)                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 EMAIL NOTIFICATION USE CASES               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Order Confirmation Email (<<include>>)                         │
+│  • Password Reset Email (<<include>>)                           │
+│  • Shipping Notification (<<include>>)                            │
+│  • Marketing Email (<<extend>>)                                  │
+│  • Email Template Management (<<extend>>)                        │
+│  • Delivery Tracking (<<extend>>)                                │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 IMAGE MANAGEMENT USE CASES                 │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Image Upload (<<include>>)                                    │
+│  • Image Optimization (<<include>>)                              │
+│  • Image Storage (<<include>>)                                   │
+│  • CDN Delivery (<<extend>>)                                      │
+│  • Image Processing (<<extend>>)                                 │
+│  • Image Analytics (<<extend>>)                                   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                 SHIPPING INTEGRATION USE CASES             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Rate Calculation (<<include>>)                                │
+│  • Label Generation (<<include>>)                                │
+│  • Tracking Updates (<<include>>)                                │
+│  • Pickup Scheduling (<<extend>>)                                │
+│  • Delivery Confirmation (<<extend>>)                             │
+│  • Return Processing (<<extend>>)                                │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 **Payment Processing Integration:**
 Payment gateway integration enables secure and reliable payment processing through Razorpay. The integration includes payment authorization, capture, and refund processing, with comprehensive error handling and retry mechanisms. The system supports multiple payment methods including credit cards, debit cards, UPI, and digital wallets.
@@ -354,40 +852,474 @@ Class and sequence diagrams provide detailed technical specifications for system
 
 Class diagrams for VEBStore include detailed specifications for frontend components, backend controllers, data models, and service classes. Each class diagram shows attributes, methods, and relationships between classes, providing comprehensive technical specifications for system implementation.
 
-**Frontend Component Class Structure:**
-The frontend class diagrams include comprehensive specifications for React components that form the user interface layer. These components include ProductCard for product display, ShoppingCart for cart management, UserDashboard for user account management, and CheckoutForm for payment processing. Each component is designed with clear responsibilities and well-defined interfaces with other components.
+**Frontend Component Class Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  FRONTEND CLASS DIAGRAM                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   ProductCard                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + productId: String                                         │ │
+│  │ + productName: String                                       │ │
+│  │ + price: Number                                             │ │
+│  │ + imageUrl: String                                          │ │
+│  │ + inStock: Boolean                                          │ │
+│  │ + quantity: Number                                          │ │
+│  │ + isLoading: Boolean                                        │ │
+│  │                                                             │ │
+│  │ + render(): JSX                                             │ │
+│  │ + handleAddToCart(): void                                   │ │
+│  │ + handleViewDetails(): void                                 │ │
+│  │ + handleAddToWishlist(): void                               │ │
+│  │ + updateQuantity(qty: Number): void                         │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ uses                                                   │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   ShoppingCart                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + items: CartItem[]                                         │ │
+│  │ + totalAmount: Number                                       │ │
+│  │ + itemCount: Number                                         │ │
+│  │ + isCheckout: Boolean                                       │ │
+│  │                                                             │ │
+│  │ + addItem(item: Product): void                              │ │
+│  │ + removeItem(productId: String): void                       │ │
+│  │ + updateQuantity(productId: String, qty: Number): void      │ │
+│  │ + calculateTotal(): Number                                  │ │
+│  │ + clearCart(): void                                         │ │
+│  │ + proceedToCheckout(): void                                 │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ uses                                                   │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   CheckoutForm                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + shippingAddress: Address                                  │ │
+│  │ + billingAddress: Address                                   │ │
+│  │ + paymentMethod: PaymentMethod                               │ │
+│  │ + isProcessing: Boolean                                     │ │
+│  │                                                             │ │
+│  │ + validateForm(): boolean                                  │ │
+│  │ + processPayment(): Promise<PaymentResult>                  │ │
+│  │ + placeOrder(): Promise<OrderResult>                        │ │
+│  │ + handlePaymentSuccess(): void                              │ │
+│  │ + handlePaymentError(error: Error): void                    │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ uses                                                   │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   UserDashboard                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + user: User                                                │ │
+│  │ + orders: Order[]                                            │ │
+│  │ + addresses: Address[]                                      │ │
+│  │ + preferences: UserPreferences                              │ │
+│  │                                                             │ │
+│  │ + loadUserData(): Promise<void>                             │ │
+│  │ + updateProfile(data: UserProfile): Promise<void>          │ │
+│  │ + loadOrderHistory(): Promise<void>                          │ │
+│  │ + addAddress(address: Address): Promise<void>               │ │
+│  │ + updatePreferences(prefs: UserPreferences): Promise<void>  │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+```
 
-The ProductCard component includes attributes for product data, UI state, and event handlers. It includes methods for rendering product information, handling user interactions, and managing component state. The component maintains relationships with the ShoppingCart component for cart operations and with the ProductDetail component for detailed product views.
+**Backend Controller Class Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  BACKEND CLASS DIAGRAM                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   UserController                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ - userService: UserService                                  │ │
+│  │ - emailService: EmailService                                │ │
+│  │ - authService: AuthService                                  │ │
+│  │                                                             │ │
+│  │ + register(req: Request, res: Response): Promise<void>    │ │
+│  │ + login(req: Request, res: Response): Promise<void>        │ │
+│  │ + logout(req: Request, res: Response): Promise<void>       │ │
+│  │ + getProfile(req: Request, res: Response): Promise<void>   │ │
+│  │ + updateProfile(req: Request, res: Response): Promise<void> │ │
+│  │ + resetPassword(req: Request, res: Response): Promise<void> │ │
+│  │ + changePassword(req: Request, res: Response): Promise<void> │ │
+│  │                                                             │ │
+│  │ - validateUserData(data: UserData): boolean                │ │
+│  │ - generateToken(user: User): string                        │ │
+│  │ - sendVerificationEmail(email: string): Promise<void>       │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ uses                                                   │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   ProductController                          │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ - productService: ProductService                            │ │
+│  │ - imageService: ImageService                                │ │
+│  │ - inventoryService: InventoryService                        │ │
+│  │                                                             │ │
+│  │ + getProducts(req: Request, res: Response): Promise<void>   │ │
+│  │ + getProductById(req: Request, res: Response): Promise<void>│ │
+│  │ + createProduct(req: Request, res: Response): Promise<void>│ │
+│  │ + updateProduct(req: Request, res: Response): Promise<void>│ │
+│  │ + deleteProduct(req: Request, res: Response): Promise<void>│ │
+│  │ + searchProducts(req: Request, res: Response): Promise<void>│ │
+│  │ + getCategories(req: Request, res: Response): Promise<void> │ │
+│  │                                                             │ │
+│  │ - validateProductData(data: ProductData): boolean          │ │
+│  │ - processImages(files: File[]): Promise<string[]>          │ │
+│  │ - updateInventory(productId: string, qty: Number): void    │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ uses                                                   │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   OrderController                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ - orderService: OrderService                                │ │
+│  │ - paymentService: PaymentService                            │ │
+│  │ - shippingService: ShippingService                          │ │
+│  │                                                             │ │
+│  │ + createOrder(req: Request, res: Response): Promise<void>   │ │
+│  │ + getOrderById(req: Request, res: Response): Promise<void>   │ │
+│  │ + getUserOrders(req: Request, res: Response): Promise<void> │ │
+│  │ + updateOrderStatus(req: Request, res: Response): Promise<void>│ │
+│  │ + cancelOrder(req: Request, res: Response): Promise<void>   │ │
+│  │ + trackOrder(req: Request, res: Response): Promise<void>    │ │
+│  │                                                             │ │
+│  │ - validateOrderData(data: OrderData): boolean              │ │
+│  │ - processPayment(paymentData: PaymentData): Promise<PaymentResult>│ │
+│  │ - updateInventory(order: Order): Promise<void>              │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+```
 
-The ShoppingCart component includes attributes for cart items, pricing calculations, and checkout state. It includes methods for adding items, updating quantities, calculating totals, and processing checkout. The component maintains relationships with the ProductCard component for item additions and with the CheckoutForm component for payment processing.
-
-**Backend Controller Class Structure:**
-The backend class diagrams include comprehensive specifications for Express.js controllers that handle HTTP requests and business logic. These controllers include UserController for user management, ProductController for product operations, OrderController for order processing, and PaymentController for payment handling. Each controller includes methods for handling specific HTTP operations and maintaining data integrity.
-
-The UserController includes attributes for user validation, authentication services, and database connections. It includes methods for user registration, login, profile management, and password reset. The controller maintains relationships with the UserService for business logic and with the UserModel for data persistence.
-
-The ProductController includes attributes for product validation, image processing services, and inventory management. It includes methods for product creation, updates, deletion, and search functionality. The controller maintains relationships with the ProductService for business logic and with the ProductModel for data persistence.
-
-**Data Model Class Structure:**
-The data model class diagrams include comprehensive specifications for MongoDB schemas that define the database structure. These models include UserSchema for user data, ProductSchema for product information, OrderSchema for order management, and ReviewSchema for customer feedback. Each schema includes field definitions, validation rules, and relationships with other schemas.
-
-The UserSchema includes attributes for personal information, authentication credentials, shopping preferences, and communication settings. It includes methods for password validation, profile updates, and cart management. The schema maintains relationships with the OrderSchema through user references and with the ReviewSchema through user associations.
-
-The ProductSchema includes attributes for product details, pricing information, categorization, and inventory data. It includes methods for inventory updates, price calculations, and review aggregation. The schema maintains relationships with the OrderSchema through product references and with the ReviewSchema through embedded review arrays.
+**Data Model Class Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  DATA MODEL CLASS DIAGRAM                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   UserSchema                                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + _id: ObjectId                                             │ │
+│  │ + name: String                                               │ │
+│  │ + email: String (unique)                                     │ │
+│  │ + password: String (hashed)                                  │ │
+│  │ + phone: String                                              │ │
+│  │ + addresses: Address[]                                       │ │
+│  │ + cartData: CartData                                         │ │
+│  │ + whatsappOptIn: Boolean                                     │ │
+│  │ + preferredProductType: String                                │ │
+│  │ + createdAt: Date                                             │ │
+│  │ + updatedAt: Date                                             │ │
+│  │                                                             │ │
+│  │ + validatePassword(password: String): boolean              │ │
+│  │ + updateCart(productId: String, qty: Number): void          │ │
+│  │ + addAddress(address: Address): void                        │ │
+│  │ + generatePasswordResetToken(): string                      │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ references                                             │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   ProductSchema                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + _id: ObjectId                                             │ │
+│  │ + name: String                                               │ │
+│  │ + description: String                                        │ │
+│  │ + price: Number                                               │ │
+│  │ + category: String                                           │ │
+│  │ + subCategory: String                                        │ │
+│  │ + sizes: Size[]                                              │ │
+│  │ + image1: String                                             │ │
+│  │ + image2: String                                             │ │
+│  │ + image3: String                                             │ │
+│  │ + image4: String                                             │ │
+│  │ + date: Date                                                 │ │
+│  │ + bestseller: Boolean                                       │ │
+│  │ + stock: Number                                              │ │
+│  │ + reviews: Review[]                                          │ │
+│  │ + createdAt: Date                                             │ │
+│  │ + updatedAt: Date                                             │ │
+│  │                                                             │ │
+│  │ + updateStock(qty: Number): void                            │ │
+│  │ + addReview(review: Review): void                            │ │
+│  │ + calculateAverageRating(): Number                          │ │
+│  │ + isAvailable(): boolean                                     │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│         │                                                        │
+│         │ references                                             │
+│         │                                                        │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   OrderSchema                                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  │ + _id: ObjectId                                             │ │
+│  │ + userId: ObjectId (ref: User)                               │ │
+│  │ + items: OrderItem[]                                         │ │
+│  │ + amount: Number                                             │ │
+│  │ + address: Address                                           │ │
+│  │ + status: String (pending/processing/shipped/delivered/cancelled)│ │
+│  │ + paymentMethod: String                                      │ │
+│  │ + paymentStatus: String (pending/paid/failed/refunded)       │ │
+│  │ + transactionId: String                                      │ │
+│  │ + shippingMethod: String                                      │ │
+│  │ + trackingNumber: String                                      │ │
+│  │ + estimatedDelivery: Date                                    │ │
+│  │ + createdAt: Date                                             │ │
+│  │ + updatedAt: Date                                             │ │
+│  │                                                             │ │
+│  │ + calculateTotal(): Number                                   │ │
+│  │ + updateStatus(status: String): void                        │ │
+│  │ + addTracking(tracking: string): void                        │ │
+│  │ + canBeCancelled(): boolean                                  │ │
+│  │                                                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+```
 
 ### 4.6.2 Sequence Diagrams
 
 Sequence diagrams for VEBStore show the interaction between different components for specific use cases including user registration, product search, shopping cart operations, checkout process, and order management. Each diagram shows the flow of messages between components and the timing of interactions.
 
-**User Registration Sequence Flow:**
-The user registration sequence diagram shows the interaction between frontend components, backend controllers, authentication services, and database operations. The sequence begins with the user entering registration information in the RegistrationForm component, which validates the input and sends a registration request to the UserController.
+**User Registration Sequence Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                USER REGISTRATION SEQUENCE                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  User          Frontend        Backend         Database       Email │
+│  Actor         Component      Controller      Service        Service│
+│                                                                 │
+│  │              │              │              │              │      │
+│  │--------------│--------------│--------------│--------------│------│
+│  │              │              │              │              │      │
+│  │ 1. Enter     │              │              │              │      │
+│  │    Details   │              │              │              │      │
+│  ├─────────────→│              │              │              │      │
+│  │              │ 2. Validate  │              │              │      │
+│  │              │    Input     │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │ 3. Check     │              │      │
+│  │              │              │   Existing   │              │      │
+│  │              │              │   User       │              │      │
+│  │              │              ├─────────────→│              │      │
+│  │              │              │              │ 4. Query     │      │
+│  │              │              │              │   Users      │      │
+│  │              │              │              │   Collection │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │ 5. User      │              │      │
+│  │              │              │   Not Found  │              │      │
+│  │              │              ├─────────────←│              │      │
+│  │              │              │              │              │      │
+│  │              │ 6. Hash      │              │              │      │
+│  │              │   Password   │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │ 7. Create    │              │      │
+│  │              │              │   User       │              │      │
+│  │              │              ├─────────────→│              │      │
+│  │              │              │              │ 8. Insert    │      │
+│  │              │              │              │   User       │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │ 9. User      │              │      │
+│  │              │              │   Created    │              │      │
+│  │              │              ├─────────────←│              │      │
+│  │              │              │              │              │      │
+│  │              │10. Generate   │              │              │      │
+│  │              │    Token     │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │11. Send      │              │      │
+│  │              │    Email     │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │              │12. Send      │      │
+│  │              │              │              │   Email      │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │              │13. Email     │      │
+│  │              │              │              │   Sent       │      │
+│  │              │              │              ├─────────────←│      │
+│  │              │              │              │              │      │
+│  │              │14. Success    │              │              │      │
+│  │              │    Response  │              │              │      │
+│  │              ├─────────────←│              │              │      │
+│  │15. Show      │              │              │              │      │
+│  │   Success    │              │              │              │      │
+│  ├─────────────←│              │              │              │      │
+│  │              │              │              │              │      │
+```
 
-The UserController validates the registration data, checks for existing users, and creates a new user account through the UserService. The UserService generates a password hash, creates the user record in the database, and triggers an email verification through the EmailService. The EmailService sends a verification email to the user and tracks delivery status.
+**Product Search Sequence Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                PRODUCT SEARCH SEQUENCE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  User          Frontend        Backend         Database       Cache │
+│  Actor         Component      Controller      Service        Service│
+│                                                                 │
+│  │              │              │              │              │      │
+│  │--------------│--------------│--------------│--------------│------│
+│  │              │              │              │              │      │
+│  │ 1. Enter     │              │              │              │      │
+│  │    Search    │              │              │              │      │
+│  │    Query     │              │              │              │      │
+│  ├─────────────→│              │              │              │      │
+│  │              │ 2. Validate  │              │              │      │
+│  │              │    Query     │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │ 3. Check     │              │      │
+│  │              │              │   Cache      │              │      │
+│  │              │              ├─────────────→│              │      │
+│  │              │              │              │ 4. Get       │      │
+│  │              │              │              │   Cache      │      │
+│  │              │              │              │   Data       │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │ 5. Cache     │              │      │
+│  │              │              │   Miss       │              │      │
+│  │              │              ├─────────────←│              │      │
+│  │              │              │              │              │      │
+│  │              │              │ 6. Search    │              │      │
+│  │              │              │   Database   │              │      │
+│  │              │              ├─────────────→│              │      │
+│  │              │              │              │ 7. Query     │      │
+│  │              │              │              │   Products   │      │
+│  │              │              │              │   Collection │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │              │ 8. Apply     │      │
+│  │              │              │              │   Filters    │      │
+│  │              │              │              │   & Sort     │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │ 9. Results   │              │      │
+│  │              │              │    Found     │              │      │
+│  │              │              ├─────────────←│              │      │
+│  │              │              │              │              │      │
+│  │              │10. Update    │              │              │      │
+│  │              │    Cache     │              │              │      │
+│  │              ├─────────────→│              │              │      │
+│  │              │              │11. Store     │              │      │
+│  │              │              │    Results   │              │      │
+│  │              │              ├─────────────→│              │      │
+│  │              │              │              │12. Set       │      │
+│  │              │              │              │   Cache      │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │              │      │
+│  │              │              │13. Cache     │              │      │
+│  │              │              │   Updated    │              │      │
+│  │              │              ├─────────────←│              │      │
+│  │              │              │              │              │      │
+│  │              │14. Search    │              │              │      │
+│  │              │    Results   │              │              │      │
+│  │              ├─────────────←│              │              │      │
+│  │15. Display    │              │              │              │      │
+│  │   Results    │              │              │              │      │
+│ ├─────────────←│              │              │              │      │
+│  │              │              │              │              │      │
+```
 
-The sequence includes comprehensive error handling for various scenarios including invalid input, duplicate email addresses, and email delivery failures. The sequence also includes success scenarios where the user receives confirmation and can proceed to log in with their new account.
-
-**Product Search Sequence Flow:**
-The product search sequence diagram shows the interaction between frontend components, backend controllers, search services, and database operations. The sequence begins with the user entering search criteria in the SearchBar component, which validates the input and sends a search request to the ProductController.
+**Checkout Process Sequence Diagram:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                CHECKOUT PROCESS SEQUENCE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  User          Frontend        Backend         Database    Payment │
+│  Actor         Component      Controller      Service     Gateway │
+│                                                                 │
+│  │              │              │              │            │      │
+│  │--------------│--------------│--------------│------------│------│
+│  │              │              │              │            │      │
+│  │ 1. Initiate  │              │              │            │      │
+│  │    Checkout  │              │              │            │      │
+│  ├─────────────→│              │              │            │      │
+│  │              │ 2. Validate  │              │            │      │
+│  │              │    Cart      │              │            │      │
+│  │              ├─────────────→│              │            │      │
+│  │              │              │ 3. Check     │            │      │
+│  │              │              │   Inventory  │            │      │
+│  │              │              ├─────────────→│            │      │
+│  │              │              │              │ 4. Verify   │      │
+│  │              │              │              │   Stock     │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │            │      │
+│  │              │              │ 5. Stock     │            │      │
+│  │              │              │   Available  │            │      │
+│  │              │              ├─────────────←│            │      │
+│  │              │              │              │            │      │
+│  │              │ 6. Create    │              │            │      │
+│  │              │    Order     │              │            │      │
+│  │              ├─────────────→│              │            │      │
+│  │              │              │ 7. Save      │            │      │
+│  │              │              │   Order      │            │      │
+│  │              │              ├─────────────→│            │      │
+│  │              │              │              │ 8. Insert   │      │
+│  │              │              │              │   Order     │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │            │      │
+│  │              │              │ 9. Order     │            │      │
+│  │              │              │   Created    │            │      │
+│  │              │              ├─────────────←│            │      │
+│  │              │              │              │            │      │
+│  │              │10. Initiate  │              │            │      │
+│  │              │    Payment   │              │            │      │
+│  │              ├─────────────→│              │            │      │
+│  │              │              │11. Create    │            │      │
+│  │              │    Payment   │              │      │
+│  │              │              │    Request   │            │      │
+│  │              │              ├─────────────→│            │      │
+│  │              │              │              │12. Process  │      │
+│  │              │              │              │   Payment   │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │            │      │
+│  │              │              │              │13. Payment  │      │
+│  │              │              │              │   Response  │      │
+│  │              │              │              ├─────────────←│      │
+│  │              │              │              │            │      │
+│  │              │14. Payment   │              │            │      │
+│  │              │    Response  │              │            │      │
+│  │              ├─────────────←│              │            │      │
+│  │              │              │              │            │      │
+│  │              │15. Update    │              │            │      │
+│  │              │    Order     │              │            │      │
+│  │              │    Status    │              │            │      │
+│  │              ├─────────────→│              │            │      │
+│  │              │              │16. Save      │            │      │
+│  │              │              │   Status     │            │      │
+│  │              │              ├─────────────→│            │      │
+│  │              │              │              │17. Update   │      │
+│  │              │              │              │   Order     │      │
+│  │              │              │              ├─────────────→│      │
+│  │              │              │              │            │      │
+│  │              │              │18. Status    │            │      │
+│  │              │              │   Updated    │            │      │
+│  │              │              ├─────────────←│            │      │
+│  │              │              │              │            │      │
+│  │              │19. Order      │              │            │      │
+│  │              │    Confirm   │              │            │      │
+│  │              ├─────────────←│              │            │      │
+│  │20. Show      │              │              │            │      │
+│  │   Success    │              │              │            │      │
+│ ├─────────────←│              │              │            │      │
+│  │              │              │              │            │      │
+```
 
 The ProductController processes the search request, applies filters and sorting, and queries the ProductService for matching products. The ProductService searches the ProductModel database, applies relevance scoring, and returns search results with pagination information.
 
@@ -442,9 +1374,532 @@ Wireframes and UI/UX design for VEBStore focus on creating an intuitive, engagin
 
 The wireframe design process for VEBStore started with low-fidelity sketches to establish basic layout and navigation. These sketches evolved into detailed wireframes that showed the complete user interface including all pages and interactions.
 
-The wireframe process included consideration of different user personas and their specific needs and preferences. Each wireframe was designed to be responsive and accessible, ensuring optimal experience across different devices and screen sizes.
+**Homepage Wireframe:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     HOMEPAGE WIREFRAME                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HEADER NAVIGATION                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │     LOGO    │ │   SEARCH    │ │   CART      │ │   LOGIN     │ │
+│  │             │ │   BAR       │ │   ICON      │ │   BUTTON    │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HERO SECTION                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │  [BANNER IMAGE: Featured Products/Seasonal Sale]           │ │
+│  │                                                             │ │
+│  │  [HEADLINE: Discover Amazing Products]                      │ │
+│  │  [SUBHEADLINE: Up to 50% Off Selected Items]               │ │
+│  │  [CTA BUTTON: Shop Now]                                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   CATEGORY NAVIGATION                      │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │    MEN      │ │   WOMEN     │ │    KIDS     │ │  ACCESSORIES │ │
+│  │  CATEGORY   │ │  CATEGORY   │ │  CATEGORY   │ │  CATEGORY   │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [ICON]      │ │ [ICON]      │ │ [ICON]      │ │ [ICON]      │ │
+│  │ Shop Men    │ │ Shop Women  │ │ Shop Kids   │ │ Shop Acc.   │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  FEATURED PRODUCTS                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │
+│  │   CARD 1    │ │   CARD 2    │ │   CARD 3    │ │   CARD 4    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │
+│  │ Product     │ │ Product     │ │ Product     │ │ Product     │ │
+│  │ Name        │ │ Name        │ │ Name        │ │ Name        │ │
+│  │ $19.99      │ │ $24.99      │ │ $29.99      │ │ $34.99      │ │
+│  │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │
+│  │  CART]      │ │  CART]      │ │  CART]      │ │  CART]      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    FOOTER SECTION                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   ABOUT     │ │   CUSTOMER  │ │   CONTACT   │ │   SOCIAL    │ │
+│  │   US        │ │   SERVICE   │ │   US        │ │   MEDIA     │ │
+│  └─────────────┘ └─────────────┘ ┌─────────────┘ ┌─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   COPYRIGHT INFO                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-The process also included usability testing with mock users to identify potential issues and optimization opportunities. This user feedback was incorporated into the final wireframe designs to ensure optimal user experience.
+**Product Listing Page Wireframe:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                PRODUCT LISTING PAGE WIREFRAME                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HEADER NAVIGATION                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │     LOGO    │ │   SEARCH    │ │   CART      │ │   LOGIN     │ │
+│  │             │ │   BAR       │ │   ICON      │ │   BUTTON    │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   BREADCRUMBS                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  Home > Men > Clothing > T-Shirts                                │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  PAGE HEADER                                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  Men's T-Shirts (24 Products)                                    │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   FILTERS & SORT                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   FILTERS   │ │   SORT BY   │ │   VIEW AS   │ │   ITEMS     │ │
+│  │   SIDEBAR   │ │   DROPDOWN  │ │   GRID/LIST │ │   PER PAGE  │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ • Size       │ │ • Featured  │ │ • Grid      │ │ • 12        │ │
+│  │ • Color      │ │ • Price     │ │ • List      │ │ • 24        │ │
+│  │ • Brand      │ │ • New       │ │             │ │ • 48        │ │
+│  │ • Price      │ │ • Popular   │ │             │ │             │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  PRODUCT GRID                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │
+│  │   CARD 1    │ │   CARD 2    │ │   CARD 3    │ │   CARD 4    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │
+│  │ Product     │ │ Product     │ │ Product     │ │ Product     │ │
+│  │ Name        │ │ Name        │ │ Name        │ │ Name        │ │
+│  │ $19.99      │ │ $24.99      │ │ $29.99      │ │ $34.99      │ │
+│  │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │
+│  │  CART]      │ │  CART]      │ │  CART]      │ │  CART]      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │
+│  │   CARD 5    │ │   CARD 6    │ │   CARD 7    │ │   CARD 8    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │
+│  │ Product     │ │ Product     │ │ Product     │ │ Product     │ │
+│  │ Name        │ │ Name        │ │ Name        │ │ Name        │ │
+│  │ $39.99      │ │ $44.99      │ │ $49.99      │ │ $54.99      │ │
+│  │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │ [ADD TO    │ │
+│  │  CART]      │ │  CART]      │ │  CART]      │ │  CART]      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    PAGINATION                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ◀ PREVIOUS  1 2 3 [4] 5 6  NEXT ▶                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Product Detail Page Wireframe:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                PRODUCT DETAIL PAGE WIREFRAME                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HEADER NAVIGATION                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │     LOGO    │ │   SEARCH    │ │   CART      │ │   LOGIN     │ │
+│  │             │ │   BAR       │ │   ICON      │ │   BUTTON    │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   BREADCRUMBS                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  Home > Men > Clothing > T-Shirts > Classic White T-Shirt        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  PRODUCT CONTENT                            │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               PRODUCT INFO                   │ │
+│  │   PRODUCT   │ │                                             │ │
+│  │   GALLERY   │ │  Classic White T-Shirt                        │ │
+│  │             │ │  ★★★★★ (4.5/5) - 128 Reviews               │ │
+│  │ [MAIN IMG]  │ │  $24.99                                       │ │
+│  │             │ │                                             │ │
+│  │ [IMG 1]     │ │  [SIZE SELECTOR]                             │ │
+│  │ [IMG 2]     │ │  S M L XL XXL                               │ │
+│  │ [IMG 3]     │ │                                             │ │
+│  │ [IMG 4]     │ │  [QUANTITY SELECTOR]                         │ │
+│  │             │ │  [-] 1 [+]                                   │ │
+│  │             │ │                                             │ │
+│  │             │ │  [ADD TO CART] [ADD TO WISHLIST]            │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  PRODUCT DETAILS                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │   PRODUCT   │ │               DESCRIPTION                    │ │
+│  │   SPECS     │ │                                             │ │
+│  │             │ │  Premium quality cotton t-shirt with       │ │
+│  │ • Material:  │ │  comfortable fit and durable construction.   │ │
+│  │   Cotton    │ │  Perfect for casual wear and everyday       │ │
+│  │ • Fit:      │ │  styling. Available in multiple colors.      │ │
+│  │   Regular   │ │                                             │ │
+│  │ • Care:     │ │  Features:                                    │ │
+│  │   Machine   │ │  • 100% Cotton                              │ │
+│  │   Wash      │ │  • Regular Fit                              │ │
+│  │ • Origin:   │ │  • Crew Neck                               │ │
+│  │   Made in   │ │  • Short Sleeves                            │ │
+│  │   USA       │ │  • Machine Washable                       │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  CUSTOMER REVIEWS                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   REVIEW    │ │   REVIEW    │ │   REVIEW    │ │   REVIEW    │ │
+│  │   CARD 1    │ │   CARD 2    │ │   CARD 3    │ │   CARD 4    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ ★★★★★      │ │ ★★★★☆      │ │ ★★★★★      │ │ ★★★☆☆      │ │
+│  │ John D.     │ │ Sarah M.    │ │ Mike R.     │ │ Lisa K.     │ │
+│  │ "Great fit!" │ │ "Love it!"  │ │ "Perfect!"  │ │ "Good value"│ │
+│  │ 2 days ago  │ │ 1 week ago  │ │ 2 weeks ago │ │ 3 weeks ago │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  RELATED PRODUCTS                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │
+│  │   CARD 1    │ │   CARD 2    │ │   CARD 3    │ │   CARD 4    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │
+│  │ Product     │ │ Product     │ │ Product     │ │ Product     │ │
+│  │ Name        │ │ Name        │ │ Name        │ │ Name        │ │
+│  │ $19.99      │ │ $24.99      │ │ $29.99      │ │ $34.99      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Shopping Cart Page Wireframe:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                SHOPPING CART PAGE WIREFRAME                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HEADER NAVIGATION                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │     LOGO    │ │   SEARCH    │ │   CART      │ │   LOGIN     │ │
+│  │             │ │   BAR       │ │   ICON      │ │   BUTTON    │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   PAGE HEADER                                │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  Shopping Cart (3 Items)                                         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  CART CONTENTS                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │             CART ITEM 1                                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               ITEM DETAILS                  │ │
+│  │   ITEM IMG  │ │                                             │ │
+│  │             │ │  Classic White T-Shirt                        │ │
+│  │ [IMAGE]     │ │  Size: M | Color: White                        │ │
+│  │             │ │                                             │ │
+│  │             │ │  [-] 1 [+]  | $24.99                       │ │
+│  │             │ │                                             │ │
+│  │             │ │  [REMOVE] [SAVE FOR LATER]                  │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │             CART ITEM 2                                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               ITEM DETAILS                  │ │
+│  │   ITEM IMG  │ │                                             │ │
+│  │             │ │  Blue Jeans                                   │ │
+│  │ [IMAGE]     │ │  Size: 32 | Color: Blue                        │ │
+│  │             │ │                                             │ │
+│  │             │ │  [-] 1 [+]  | $49.99                       │ │
+│  │             │ │                                             │ │
+│  │             │ │  [REMOVE] [SAVE FOR LATER]                  │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │             CART ITEM 3                                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               ITEM DETAILS                  │ │
+│  │   ITEM IMG  │ │                                             │ │
+│  │             │ │  Black Sneakers                                │ │
+│  │ [IMAGE]     │ │  Size: 10 | Color: Black                       │ │
+│  │             │ │                                             │ │
+│  │             │ │  [-] 1 [+]  | $79.99                       │ │
+│  │             │ │                                             │ │
+│  │             │ │  [REMOVE] [SAVE FOR LATER]                  │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  CART SUMMARY                               │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               ORDER SUMMARY                 │ │
+│  │   EMPTY     │ │                                             │ │
+│  │   CART     │ │  Subtotal: $154.97                            │ │
+│  │   BUTTON   │ │  Shipping: $5.99                              │ │
+│  │             │ │  Tax: $12.40                                   │ │ │
+│  │             │ │  ───────────────────────                     │ │
+│  │             │ │  Total: $173.36                                │ │
+│  │             │ │                                             │ │
+│  │             │ │  [PROMO CODE] [APPLY]                       │ │
+│  │             │ │                                             │ │
+│  │             │ │  [PROCEED TO CHECKOUT]                       │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  RECOMMENDATIONS                           │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │   PRODUCT   │ │
+│  │   CARD 1    │ │   CARD 2    │ │   CARD 3    │ │   CARD 4    │ │
+│  │             │ │             │ │             │ │             │ │
+│  │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │ [IMAGE]     │ │
+│  │ Product     │ │ Product     │ │ Product     │ │ Product     │ │
+│  │ Name        │ │ Name        │ │ Name        │ │ Name        │ │
+│  │ $19.99      │ │ $24.99      │ │ $29.99      │ │ $34.99      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Checkout Page Wireframe:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                CHECKOUT PAGE WIREFRAME                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                    HEADER NAVIGATION                        │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │     LOGO    │ │   SEARCH    │ │   CART      │ │   LOGIN     │ │
+│  │             │ │   BAR       │ │   ICON      │ │   BUTTON    │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                   CHECKOUT PROGRESS                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │   CART      │ │   SHIPPING  │ │   PAYMENT   │ │   REVIEW    │ │
+│  │   ✓ DONE    │ │   ✓ DONE    │ │   CURRENT   │ │   PENDING   │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  CHECKOUT FORM                             │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────────────────────────────────────┐ │
+│  │             │ │               PAYMENT INFO                  │ │
+│  │   ORDER     │ │                                             │ │
+│  │   SUMMARY   │ │  Payment Method:                              │ │
+│  │             │ │  ◉ Credit Card                                │ │
+│  │  3 Items    │ │  ○ Debit Card                                 │ │
+│  │  $173.36    │ │  ○ Net Banking                                │ │
+│  │             │ │  ○ UPI                                        │ │
+│  │             │ │  ○ Wallet                                     │ │
+│  │             │ │                                             │ │
+│  │             │ │  Card Number: [____ ____ ____ ____]           │ │
+│  │             │ │  Expiry: [__/__]  CVV: [___]                │ │
+│  │             │ │  Cardholder Name: [________________]          │ │
+│  │             │ │                                             │ │
+│  │             │ │  Billing Address:                             │ │
+│  │             │ │  Same as Shipping ◉                            │ │
+│  │             │ │  Different Address ○                          │ │
+│  │             │ │                                             │ │
+│  │             │ │  [Street Address]                             │ │
+│  │             │ │  [City] [State] [ZIP Code]                   │ │
+│  │             │ │                                             │ │
+│  │             │ │  Save card for future purchases ☑             │ │
+│  │             │ │                                             │ │
+│  │             │ │  [PLACE ORDER] $173.36                         │ │
+│  └─────────────┘ └─────────────────────────────────────────────┘ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  SECURITY INFO                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  🔒 Secure Payment | SSL Encrypted | PCI DSS Compliant         │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  TRUST BADGES                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ │
+│  │  VISA       │ │ MASTERCARD  │ │   RAZORPAY │ │   SSL SEC   │ │
+│  │  LOGO       │ │   LOGO      │ │   LOGO      │ │   LOGO      │ │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.7.2 UI/UX Design Principles
+
+The UI/UX design for VEBStore follows established design principles to ensure optimal user experience and conversion rates. These principles guide all design decisions from color selection to interaction patterns.
+
+**Design Principles Overview:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                UI/UX DESIGN PRINCIPLES                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  USER-CENTERED DESIGN                       │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • User Research & Personas                                     │ │
+│  • User Journey Mapping                                         │ │
+│  • Usability Testing                                            │ │
+│  • Accessibility Compliance (WCAG 2.1)                           │ │
+│  • Responsive Design                                            │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  VISUAL DESIGN                              │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Consistent Color Palette                                     │ │
+│  • Typography Hierarchy                                         │ │
+│  • Visual Balance & White Space                                 │ │
+│  • High-Quality Imagery                                        │ │
+│  • Brand Consistency                                           │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  INTERACTION DESIGN                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Clear Call-to-Actions                                        │ │
+│  • Intuitive Navigation                                         │ │
+│  • Micro-interactions                                            │ │
+│  • Loading States                                               │ │
+│  • Error Handling                                                │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  PERFORMANCE OPTIMIZATION                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Fast Loading Times                                           │ │
+│  • Image Optimization                                           │ │
+│  • Lazy Loading                                                 │ │
+│  • Code Splitting                                               │ │
+│  • Caching Strategies                                            │ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.7.3 Mobile-First Responsive Design
+
+VEBStore implements a mobile-first responsive design approach to ensure optimal experience across all devices. The design starts with mobile layouts and progressively enhances for larger screens.
+
+**Responsive Design Breakpoints:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                RESPONSIVE DESIGN BREAKPOINTS                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  MOBILE (320px - 768px)                   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Single Column Layout                                         │ │
+│  • Collapsible Navigation                                        │ │
+│  • Touch-Friendly Interactions                                   │ │
+│  • Optimized Images                                             │ │
+│  • Simplified Forms                                             │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  TABLET (768px - 1024px)                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Two-Column Layout                                             │ │
+│  • Expanded Navigation                                           │ │
+│  • Enhanced Product Grid                                         │ │
+│  • Improved Form Layouts                                         │ │
+│  • Better Use of Screen Space                                    │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  DESKTOP (1024px+)                          │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Multi-Column Layout                                           │ │
+│  • Full Navigation Menu                                          │ │
+│  • Rich Product Displays                                        │ │
+│  • Advanced Filtering                                            │ │
+│  • Enhanced User Experience                                      │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  LARGE DESKTOP (1440px+)                    │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Maximum Content Width                                        │ │
+│  • Optimized for Wide Screens                                   │ │
+│  • Enhanced Visual Elements                                     │ │
+│  • Premium User Experience                                      │ │
+│  • Advanced Features                                           │ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.7.4 Accessibility and Inclusivity
+
+VEBStore is designed to be accessible and inclusive, ensuring that all users can access and use the platform regardless of their abilities or disabilities.
+
+**Accessibility Features:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                ACCESSIBILITY FEATURES                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  VISUAL ACCESSIBILITY                       │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • High Contrast Mode                                           │ │
+│  • Scalable Text                                                │ │
+│  • Color Blind Friendly                                         │ │
+│  • Clear Typography                                            │ │
+│  • Focus Indicators                                             │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  MOTOR ACCESSIBILITY                         │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Keyboard Navigation                                          │ │
+│  • Large Click Targets                                          │ │
+│  • Touch-Friendly                                              │ │
+│  • Voice Commands                                               │ │
+│  • Gesture Support                                              │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  COGNITIVE ACCESSIBILITY                     │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Clear Language                                               │ │
+│  • Consistent Layout                                            │ │
+│  • Error Prevention                                             │ │
+│  • Help & Guidance                                              │ │
+│  • Progress Indicators                                          │ │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │                  HEARING ACCESSIBILITY                       │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│  • Visual Notifications                                         │ │
+│  • Caption Support                                              │ │
+│  • Volume Controls                                              │ │
+│  • Alternative Text                                             │ │
+│  • Sign Language Support                                        │ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ### 4.7.2 User Interface Design
 
