@@ -30,6 +30,11 @@ function Collections() {
         setFilterOptions(response.data)
       } catch (error) {
         console.error('Error fetching filter options:', error)
+        // Set default options if API fails
+        setFilterOptions({
+          fabrics: ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen'],
+          suitableFor: ['Casual', 'Office', 'Party', 'School', 'Sports']
+        })
       }
     }
     fetchFilterOptions()
@@ -139,17 +144,22 @@ function Collections() {
 
             {/* Category Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Categories</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Categories</p>
+                <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
+                  3 options
+                </span>
+              </div>
               <div className='flex flex-col gap-2'>
                 {['Men', 'Women', 'Kids'].map((cat) => (
-                  <label key={cat} className='flex items-center gap-3 cursor-pointer group'>
+                  <label key={cat} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
                     <input
                       className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
                       type="checkbox"
                       value={cat}
                       onChange={toggleCategory}
                     />
-                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{cat}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{cat}</span>
                   </label>
                 ))}
               </div>
@@ -157,17 +167,22 @@ function Collections() {
 
             {/* SubCategory Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Product Type</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Product Type</p>
+                <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
+                  3 options
+                </span>
+              </div>
               <div className='flex flex-col gap-2'>
                 {['TopWear', 'BottomWear', 'WinterWear'].map((type) => (
-                  <label key={type} className='flex items-center gap-3 cursor-pointer group'>
+                  <label key={type} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
                     <input
                       className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
                       type="checkbox"
                       value={type}
                       onChange={toggleSubCategory}
                     />
-                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{type}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{type}</span>
                   </label>
                 ))}
               </div>
@@ -175,38 +190,64 @@ function Collections() {
 
             {/* Fabric Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
-              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
-                {filterOptions.fabrics.map((fabricType) => (
-                  <label key={fabricType} className='flex items-center gap-3 cursor-pointer group'>
-                    <input
-                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                      type="checkbox"
-                      value={fabricType}
-                      onChange={toggleFabric}
-                    />
-                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
-                  </label>
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
+                {filterOptions.fabrics.length > 0 && (
+                  <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
+                    {filterOptions.fabrics.length} options
+                  </span>
+                )}
               </div>
+              {filterOptions.fabrics.length > 0 ? (
+                <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
+                  {filterOptions.fabrics.map((fabricType) => (
+                    <label key={fabricType} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
+                      <input
+                        className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                        type="checkbox"
+                        value={fabricType}
+                        onChange={toggleFabric}
+                      />
+                      <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <div className={`text-sm ${dk ? 'text-slate-500' : 'text-gray-400'} italic`}>
+                  No fabric types available
+                </div>
+              )}
             </div>
 
             {/* Suitable For Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
-              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
-                {filterOptions.suitableFor.map((occasion) => (
-                  <label key={occasion} className='flex items-center gap-3 cursor-pointer group'>
-                    <input
-                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                      type="checkbox"
-                      value={occasion}
-                      onChange={toggleSuitableFor}
-                    />
-                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
-                  </label>
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
+                {filterOptions.suitableFor.length > 0 && (
+                  <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
+                    {filterOptions.suitableFor.length} options
+                  </span>
+                )}
               </div>
+              {filterOptions.suitableFor.length > 0 ? (
+                <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
+                  {filterOptions.suitableFor.map((occasion) => (
+                    <label key={occasion} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
+                      <input
+                        className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                        type="checkbox"
+                        value={occasion}
+                        onChange={toggleSuitableFor}
+                      />
+                      <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <div className={`text-sm ${dk ? 'text-slate-500' : 'text-gray-400'} italic`}>
+                  No suitable options available
+                </div>
+              )}
             </div>
 
             {/* Clear Filters Button */}
