@@ -59,7 +59,17 @@ function Lists() {
       const cats = [...new Set(result.data.map(item => item.category))]
       const subCats = [...new Set(result.data.map(item => item.subCategory))]
       const fabricTypes = [...new Set(result.data.map(item => item.fabric).filter(f => f))]
-      const suitableForTypes = [...new Set(result.data.map(item => item.suitableFor).filter(s => s))]
+      
+      // Extract unique suitableFor options (handle arrays)
+      const allSuitableFor = result.data.flatMap(item => {
+        if (Array.isArray(item.suitableFor)) {
+          return item.suitableFor;
+        } else if (item.suitableFor && typeof item.suitableFor === 'string') {
+          return [item.suitableFor];
+        }
+        return [];
+      });
+      const suitableForTypes = [...new Set(allSuitableFor)]
       
       setAllCategories(cats)
       setAllSubCategories(subCats)
@@ -235,12 +245,22 @@ function Lists() {
                          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.subCategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (item.fabric && item.fabric.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         (item.suitableFor && item.suitableFor.toLowerCase().includes(searchTerm.toLowerCase()))
+                         (item.suitableFor && (
+                           Array.isArray(item.suitableFor) 
+                             ? item.suitableFor.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
+                             : item.suitableFor.toLowerCase().includes(searchTerm.toLowerCase())
+                         ))
     
     const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
     const matchesSubCategory = selectedSubCategory === 'all' || item.subCategory === selectedSubCategory
     const matchesFabric = selectedFabric === 'all' || item.fabric === selectedFabric
-    const matchesSuitableFor = selectedSuitableFor === 'all' || item.suitableFor === selectedSuitableFor
+    const matchesSuitableFor = selectedSuitableFor === 'all' || (
+      item.suitableFor && (
+        Array.isArray(item.suitableFor) 
+          ? item.suitableFor.includes(selectedSuitableFor)
+          : item.suitableFor === selectedSuitableFor
+      )
+    )
     
     return matchesSearch && matchesCategory && matchesSubCategory && matchesFabric && matchesSuitableFor
   })

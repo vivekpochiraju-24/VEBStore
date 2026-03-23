@@ -181,3 +181,32 @@ export const addReview = async (req, res) => {
         return res.status(500).json({ message: `AddReview error: ${error.message}` });
     }
 }
+
+// Get filter options for fabric and suitableFor
+export const getFilterOptions = async (req, res) => {
+    try {
+        const products = await Product.find({});
+        
+        // Extract unique fabric types
+        const fabricTypes = [...new Set(products.map(p => p.fabric).filter(fabric => fabric))];
+        
+        // Extract unique suitableFor options (handle arrays)
+        const allSuitableFor = products.flatMap(p => {
+            if (Array.isArray(p.suitableFor)) {
+                return p.suitableFor;
+            } else if (p.suitableFor && typeof p.suitableFor === 'string') {
+                return [p.suitableFor];
+            }
+            return [];
+        });
+        const suitableForTypes = [...new Set(allSuitableFor)];
+        
+        res.json({
+            fabrics: fabricTypes,
+            suitableFor: suitableForTypes
+        });
+    } catch (error) {
+        console.log("GetFilterOptions error", error);
+        return res.status(500).json({ message: `GetFilterOptions error: ${error.message}` });
+    }
+}
