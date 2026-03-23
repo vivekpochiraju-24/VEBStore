@@ -294,6 +294,7 @@ function Collections() {
             <p className={`text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Try adjusting your filters or search terms</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   )
