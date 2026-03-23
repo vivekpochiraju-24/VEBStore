@@ -4,7 +4,7 @@ import Product from "../model/productModel.js"
 
 export const addProduct = async (req,res) => {
     try {
-        let {name,description,price,category,subCategory,sizes,bestseller} = req.body
+        let {name,description,price,category,subCategory,sizes,fabric,suitableFor,bestseller} = req.body
 
         let image1 = await uploadOnCloudinary(req.files.image1[0].path)
         let image2 = await uploadOnCloudinary(req.files.image2[0].path)
@@ -18,6 +18,8 @@ export const addProduct = async (req,res) => {
             category,
             subCategory,
             sizes :JSON.parse(sizes),
+            fabric,
+            suitableFor,
             bestseller :bestseller === "true" ? true : false,
             date :Date.now(),
             image1,
@@ -66,7 +68,7 @@ export const removeProduct = async (req,res) => {
 export const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, category, subCategory, sizes, bestseller, stock } = req.body;
+        const { name, description, price, category, subCategory, sizes, fabric, suitableFor, bestseller, stock } = req.body;
         
         const updateData = {};
         if (name) updateData.name = name;
@@ -75,6 +77,8 @@ export const editProduct = async (req, res) => {
         if (category) updateData.category = category;
         if (subCategory) updateData.subCategory = subCategory;
         if (sizes) updateData.sizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes);
+        if (fabric) updateData.fabric = fabric;
+        if (suitableFor) updateData.suitableFor = suitableFor;
         if (stock !== undefined) updateData.stock = Number(stock);
         if (bestseller !== undefined) updateData.bestseller = bestseller === "true" || bestseller === true;
         
@@ -112,6 +116,28 @@ export const getCategories = async (req,res) => {
     } catch (error) {
         console.log("GetCategories error", error);
         return res.status(500).json({message: `GetCategories error: ${error.message}`});
+    }
+}
+
+export const getFilterOptions = async (req,res) => {
+    try {
+        const products = await Product.find({});
+        
+        // Extract all unique fabric types and suitable occasions
+        const fabrics = [...new Set(products.map(product => product.fabric).filter(fabric => fabric))];
+        const suitableFor = [...new Set(products.map(product => product.suitableFor).filter(occasion => occasion))];
+        
+        // Define default filter options if no products exist
+        const defaultFabrics = ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen', 'Rayon', 'Denim', 'Nylon', 'Velvet', 'Leather', 'Synthetic', 'Blend'];
+        const defaultSuitableFor = ['Casual', 'Office', 'Party', 'School', 'College', 'Sports', 'Formal', 'Traditional', 'Beach', 'Travel', 'Festive', 'Wedding'];
+        
+        return res.status(200).json({
+            fabrics: fabrics.length > 0 ? fabrics : defaultFabrics,
+            suitableFor: suitableFor.length > 0 ? suitableFor : defaultSuitableFor
+        });
+    } catch (error) {
+        console.log("GetFilterOptions error", error);
+        return res.status(500).json({message: `GetFilterOptions error: ${error.message}`});
     }
 }
 

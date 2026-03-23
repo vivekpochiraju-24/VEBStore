@@ -41,6 +41,16 @@ const productSchema = new mongoose.Schema({
         type:Array,
         required:true
     },
+    fabric:{
+        type:String,
+        required:true,
+        enum: ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen', 'Rayon', 'Denim', 'Nylon', 'Velvet', 'Leather', 'Synthetic', 'Blend']
+    },
+    suitableFor:{
+        type:String,
+        required:true,
+        enum: ['Casual', 'Office', 'Party', 'School', 'College', 'Sports', 'Formal', 'Traditional', 'Beach', 'Travel', 'Festive', 'Wedding']
+    },
     date:{
         type:Number,
         required:true

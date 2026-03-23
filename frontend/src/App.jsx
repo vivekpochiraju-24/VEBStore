@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify'
 import NotFound from './pages/NotFound'
 import Ai from './component/Ai'
 import Profile from './pages/Profile'
+import AddProduct from './pages/AddProduct'
 import WhatsappModal from './component/WhatsappModal'
 
 function App() {
@@ -69,6 +70,9 @@ function App() {
 
         <Route path='/profile'
           element={userData ? <Profile /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/add-product'
+          element={userData ? <AddProduct /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

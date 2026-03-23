@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Title from '../component/Title'
 import { shopDataContext } from '../context/ShopContext'
+import { authDataContext } from '../context/AuthContext'
 import { themeDataContext } from '../context/ThemeContext'
 import Card from '../component/Card'
 import { LuSettings2 } from "react-icons/lu"
+import axios from 'axios'
 
 function Collections() {
   const { isDark } = useContext(themeDataContext)
+  const { serverUrl } = useContext(authDataContext)
   const dk = isDark
 
   const [showFilter, setShowFilter] = useState(false)
@@ -14,7 +17,23 @@ function Collections() {
   const [filterProduct, setFilterProduct] = useState([])
   const [category, setCaterory] = useState([])
   const [subCategory, setSubCaterory] = useState([])
+  const [fabric, setFabric] = useState([])
+  const [suitableFor, setSuitableFor] = useState([])
   const [sortType, SetSortType] = useState("relavent")
+  const [filterOptions, setFilterOptions] = useState({ fabrics: [], suitableFor: [] })
+
+  // Fetch filter options on component mount
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}/api/product/filter-options`)
+        setFilterOptions(response.data)
+      } catch (error) {
+        console.error('Error fetching filter options:', error)
+      }
+    }
+    fetchFilterOptions()
+  }, [serverUrl])
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -32,6 +51,22 @@ function Collections() {
     }
   }
 
+  const toggleFabric = (e) => {
+    if (fabric.includes(e.target.value)) {
+      setFabric(prev => prev.filter(item => item !== e.target.value))
+    } else {
+      setFabric(prev => [...prev, e.target.value])
+    }
+  }
+
+  const toggleSuitableFor = (e) => {
+    if (suitableFor.includes(e.target.value)) {
+      setSuitableFor(prev => prev.filter(item => item !== e.target.value))
+    } else {
+      setSuitableFor(prev => [...prev, e.target.value])
+    }
+  }
+
   const applyFilter = () => {
     let productCopy = products.slice()
     if (showSearch && search) {
@@ -42,6 +77,12 @@ function Collections() {
     }
     if (subCategory.length > 0) {
       productCopy = productCopy.filter(item => subCategory.includes(item.subCategory))
+    }
+    if (fabric.length > 0) {
+      productCopy = productCopy.filter(item => fabric.includes(item.fabric))
+    }
+    if (suitableFor.length > 0) {
+      productCopy = productCopy.filter(item => suitableFor.includes(item.suitableFor))
     }
     setFilterProduct(productCopy)
   }
@@ -63,7 +104,7 @@ function Collections() {
 
   useEffect(() => { sortProducts() }, [sortType])
   useEffect(() => { setFilterProduct(products) }, [products])
-  useEffect(() => { applyFilter() }, [category, subCategory, search, showSearch])
+  useEffect(() => { applyFilter() }, [category, subCategory, fabric, suitableFor, search, showSearch])
 
   return (
     <div className={`w-full min-h-screen pt-[100px] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] pb-32 flex flex-col sm:flex-row gap-6 sm:gap-10 transition-colors duration-300 ${dk ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
@@ -120,6 +161,42 @@ function Collections() {
                 ))}
               </div>
             </div>
+
+            {/* Fabric Filter */}
+            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
+              <div className='flex flex-col gap-3 max-h-48 overflow-y-auto'>
+                {filterOptions.fabrics.map((fabricType) => (
+                  <label key={fabricType} className='flex items-center gap-3 cursor-pointer group'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={fabricType}
+                      onChange={toggleFabric}
+                    />
+                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Suitable For Filter */}
+            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+              <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
+              <div className='flex flex-col gap-3 max-h-48 overflow-y-auto'>
+                {filterOptions.suitableFor.map((occasion) => (
+                  <label key={occasion} className='flex items-center gap-3 cursor-pointer group'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={occasion}
+                      onChange={toggleSuitableFor}
+                    />
+                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -159,7 +236,13 @@ function Collections() {
             <div className={`col-span-full flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-400' : 'bg-white border-gray-300 text-gray-500'}`}>
               <p className="text-lg">No products found matching your filters.</p>
               <button
-                onClick={() => { setCaterory([]); setSubCaterory([]); document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false) }}
+                onClick={() => { 
+                  setCaterory([]); 
+                  setSubCaterory([]); 
+                  setFabric([]); 
+                  setSuitableFor([]); 
+                  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false) 
+                }}
                 className="mt-4 text-blue-500 font-medium hover:underline"
               >
                 Clear all filters
