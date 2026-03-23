@@ -19,6 +19,8 @@ function Add() {
   const [subCategory, setSubCategory] = useState("TopWear")
   const [bestseller, setBestSeller] = useState(false)
   const [sizes, setSizes] = useState([])
+  const [fabric, setFabric] = useState("Cotton")
+  const [suitableFor, setSuitableFor] = useState("Casual")
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -51,6 +53,8 @@ function Add() {
       formData.append("subCategory", subCategory)
       formData.append("bestseller", bestseller)
       formData.append("sizes", JSON.stringify(sizes))
+      formData.append("fabric", fabric)
+      formData.append("suitableFor", suitableFor)
 
       images.forEach((img, i) => {
         if (img) formData.append(`image${i + 1}`, img)
@@ -67,6 +71,8 @@ function Add() {
       setImages([null, null, null, null])
       setSizes([])
       setBestSeller(false)
+      setFabric("Cotton")
+      setSuitableFor("Casual")
 
     } catch (error) {
       console.error(error)
@@ -77,6 +83,8 @@ function Add() {
   }
 
   const allSizes = ["S", "M", "L", "XL", "XXL"]
+  const fabricOptions = ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen', 'Rayon', 'Denim', 'Nylon', 'Velvet', 'Leather', 'Synthetic', 'Blend']
+  const suitableForOptions = ['Casual', 'Office', 'Party', 'School', 'College', 'Sports', 'Formal', 'Traditional', 'Beach', 'Travel', 'Festive', 'Wedding']
 
   return (
     <div className={`w-full min-h-screen flex flex-col transition-colors duration-500 ${dk ? 'bg-[#0f172a]' : 'bg-[#f8fafc]'}`}>
@@ -218,6 +226,37 @@ function Add() {
                       <option value="TopWear">TopWear</option>
                       <option value="BottomWear">BottomWear</option>
                       <option value="WinterWear">WinterWear</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Product Attributes */}
+              <div className={`p-6 sm:p-8 rounded-3xl border shadow-xl shadow-gray-200/40 ${dk ? 'bg-[#1e293b] border-slate-700/50' : 'bg-white border-gray-100'}`}>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
+                  <div className='space-y-4'>
+                    <label className={`text-[13px] font-bold ml-1 ${dk ? 'text-slate-400' : 'text-gray-700'}`}>Fabric Type</label>
+                    <select
+                      className={`w-full h-11 px-4 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/10 outline-none transition-all appearance-none cursor-pointer border ${dk ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-gray-50 border-gray-100 text-gray-700'}`}
+                      value={fabric}
+                      onChange={(e) => setFabric(e.target.value)}
+                    >
+                      {fabricOptions.map(fabric => (
+                        <option key={fabric} value={fabric}>{fabric}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className='space-y-4'>
+                    <label className={`text-[13px] font-bold ml-1 ${dk ? 'text-slate-400' : 'text-gray-700'}`}>Suitable For</label>
+                    <select
+                      className={`w-full h-11 px-4 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/10 outline-none transition-all appearance-none cursor-pointer border ${dk ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-gray-50 border-gray-100 text-gray-700'}`}
+                      value={suitableFor}
+                      onChange={(e) => setSuitableFor(e.target.value)}
+                    >
+                      {suitableForOptions.map(occasion => (
+                        <option key={occasion} value={occasion}>{occasion}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
