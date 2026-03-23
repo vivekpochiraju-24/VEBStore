@@ -19,12 +19,18 @@ function Lists() {
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedSubCategory, setSelectedSubCategory] = useState('all')
+  const [selectedFabric, setSelectedFabric] = useState('all')
+  const [selectedSuitableFor, setSelectedSuitableFor] = useState('all')
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
+  const [fabrics, setFabrics] = useState([])
+  const [suitableFors, setSuitableFors] = useState([])
   const [allCategories, setAllCategories] = useState([])
   const [allSubCategories, setAllSubCategories] = useState([])
   const [showCategoryFilter, setShowCategoryFilter] = useState(false)
   const [showSubCategoryFilter, setShowSubCategoryFilter] = useState(false)
+  const [showFabricFilter, setShowFabricFilter] = useState(false)
+  const [showSuitableForFilter, setShowSuitableForFilter] = useState(false)
 
   // Edit State
   const [editingProduct, setEditingProduct] = useState(null)
@@ -34,7 +40,9 @@ function Lists() {
     category: "",
     subCategory: "",
     description: "",
-    stock: ""
+    stock: "",
+    fabric: "",
+    suitableFor: ""
   })
   const [reviewName, setReviewName] = useState("Admin")
   const [reviewRating, setReviewRating] = useState(5)
@@ -49,6 +57,15 @@ function Lists() {
       // Extract unique categories and subcategories for filters
       const cats = [...new Set(result.data.map(item => item.category))]
       const subCats = [...new Set(result.data.map(item => item.subCategory))]
+      const fabricTypes = [...new Set(result.data.map(item => item.fabric).filter(f => f))]
+      const suitableForTypes = [...new Set(result.data.map(item => item.suitableFor).filter(s => s))]
+      
+      setAllCategories(cats)
+      setAllSubCategories(subCats)
+      setFabrics(fabricTypes)
+      setSuitableFors(suitableForTypes)
+      
+      // Set default filters to show all
       setCategories(cats)
       setSubCategories(subCats)
     } catch (error) {
@@ -99,7 +116,9 @@ function Lists() {
       category: item.category || "",
       subCategory: item.subCategory || "",
       description: item.description || "",
-      stock: item.stock || ""
+      stock: item.stock || "",
+      fabric: item.fabric || "",
+      suitableFor: item.suitableFor || ""
     })
     setReviewName("Admin")
     setReviewRating(5)
@@ -157,21 +176,31 @@ function Lists() {
       if (showSubCategoryFilter && !event.target.closest('.subcategory-filter')) {
         setShowSubCategoryFilter(false)
       }
+      if (showFabricFilter && !event.target.closest('.fabric-filter')) {
+        setShowFabricFilter(false)
+      }
+      if (showSuitableForFilter && !event.target.closest('.suitablefor-filter')) {
+        setShowSuitableForFilter(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [showCategoryFilter, showSubCategoryFilter])
+  }, [showCategoryFilter, showSubCategoryFilter, showFabricFilter, showSuitableForFilter])
 
   const filteredList = list.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.subCategory.toLowerCase().includes(searchTerm.toLowerCase())
+                         item.subCategory.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (item.fabric && item.fabric.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         (item.suitableFor && item.suitableFor.toLowerCase().includes(searchTerm.toLowerCase()))
     
     const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory
     const matchesSubCategory = selectedSubCategory === 'all' || item.subCategory === selectedSubCategory
+    const matchesFabric = selectedFabric === 'all' || item.fabric === selectedFabric
+    const matchesSuitableFor = selectedSuitableFor === 'all' || item.suitableFor === selectedSuitableFor
     
-    return matchesSearch && matchesCategory && matchesSubCategory
+    return matchesSearch && matchesCategory && matchesSubCategory && matchesFabric && matchesSuitableFor
   })
 
   return (
@@ -325,12 +354,96 @@ function Lists() {
                   )}
                 </div>
 
+                {/* Fabric Filter */}
+                <div className='relative fabric-filter'>
+                  <button 
+                    onClick={() => setShowFabricFilter(!showFabricFilter)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
+                      selectedFabric !== 'all' 
+                        ? 'bg-green-50 text-green-600 border-green-200' 
+                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Filter size={16} /> 
+                    Fabric {selectedFabric !== 'all' && `(${selectedFabric})`}
+                  </button>
+                  
+                  {showFabricFilter && (
+                    <div className='absolute top-full mt-2 left-0 z-50 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[200px] animate-fade-in-up'>
+                      <div className='max-h-60 overflow-y-auto'>
+                        <button
+                          onClick={() => {setSelectedFabric('all'); setShowFabricFilter(false)}}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                            selectedFabric === 'all' ? 'bg-green-50 text-green-600' : 'hover:bg-gray-50 text-gray-700'
+                          }`}
+                        >
+                          All Fabrics
+                        </button>
+                        {fabrics.map(fabric => (
+                          <button
+                            key={fabric}
+                            onClick={() => {setSelectedFabric(fabric); setShowFabricFilter(false)}}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors capitalize ${
+                              selectedFabric === fabric ? 'bg-green-50 text-green-600' : 'hover:bg-gray-50 text-gray-700'
+                            }`}
+                          >
+                            {fabric}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Suitable For Filter */}
+                <div className='relative suitablefor-filter'>
+                  <button 
+                    onClick={() => setShowSuitableForFilter(!showSuitableForFilter)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
+                      selectedSuitableFor !== 'all' 
+                        ? 'bg-orange-50 text-orange-600 border-orange-200' 
+                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Filter size={16} /> 
+                    Suitable For {selectedSuitableFor !== 'all' && `(${selectedSuitableFor})`}
+                  </button>
+                  
+                  {showSuitableForFilter && (
+                    <div className='absolute top-full mt-2 left-0 z-50 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[200px] animate-fade-in-up'>
+                      <div className='max-h-60 overflow-y-auto'>
+                        <button
+                          onClick={() => {setSelectedSuitableFor('all'); setShowSuitableForFilter(false)}}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                            selectedSuitableFor === 'all' ? 'bg-orange-50 text-orange-600' : 'hover:bg-gray-50 text-gray-700'
+                          }`}
+                        >
+                          All Occasions
+                        </button>
+                        {suitableFors.map(occasion => (
+                          <button
+                            key={occasion}
+                            onClick={() => {setSelectedSuitableFor(occasion); setShowSuitableForFilter(false)}}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors capitalize ${
+                              selectedSuitableFor === occasion ? 'bg-orange-50 text-orange-600' : 'hover:bg-gray-50 text-gray-700'
+                            }`}
+                          >
+                            {occasion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* Clear Filters */}
-                {(selectedCategory !== 'all' || selectedSubCategory !== 'all' || searchTerm) && (
+                {(selectedCategory !== 'all' || selectedSubCategory !== 'all' || selectedFabric !== 'all' || selectedSuitableFor !== 'all' || searchTerm) && (
                   <button
                     onClick={() => {
                       setSelectedCategory('all')
                       setSelectedSubCategory('all')
+                      setSelectedFabric('all')
+                      setSelectedSuitableFor('all')
                       setSearchTerm('')
                     }}
                     className='px-4 py-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-100 transition-all'
@@ -532,15 +645,44 @@ function Lists() {
                   </div>
                 </div>
 
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-xs font-bold text-gray-500 uppercase mb-1.5'>Stock Quantity</label>
+                    <input 
+                      type="number" 
+                      value={editForm.stock}
+                      onChange={(e) => setEditForm({...editForm, stock: e.target.value})}
+                      className='w-full p-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none'
+                      placeholder='0'
+                    />
+                  </div>
+                  <div>
+                    <label className='block text-xs font-bold text-gray-500 uppercase mb-1.5'>Fabric Type</label>
+                    <select 
+                      value={editForm.fabric}
+                      onChange={(e) => setEditForm({...editForm, fabric: e.target.value})}
+                      className='w-full p-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none capitalize'
+                    >
+                      <option value="">Select Fabric</option>
+                      {fabrics.map(fabric => (
+                        <option key={fabric} value={fabric}>{fabric}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
                 <div>
-                  <label className='block text-xs font-bold text-gray-500 uppercase mb-1.5'>Stock Quantity</label>
-                  <input 
-                    type="number" 
-                    value={editForm.stock}
-                    onChange={(e) => setEditForm({...editForm, stock: e.target.value})}
-                    className='w-full p-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none'
-                    placeholder='0'
-                  />
+                  <label className='block text-xs font-bold text-gray-500 uppercase mb-1.5'>Suitable For</label>
+                  <select 
+                    value={editForm.suitableFor}
+                    onChange={(e) => setEditForm({...editForm, suitableFor: e.target.value})}
+                    className='w-full p-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none capitalize'
+                  >
+                    <option value="">Select Occasion</option>
+                    {suitableFors.map(occasion => (
+                      <option key={occasion} value={occasion}>{occasion}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
