@@ -19,6 +19,8 @@ import NotFound from './pages/NotFound'
 import Ai from './component/Ai'
 import Profile from './pages/Profile'
 import AddProduct from './pages/AddProduct'
+import AdminDashboard from './pages/AdminDashboard'
+import EditProduct from './pages/EditProduct'
 import WhatsappModal from './component/WhatsappModal'
 
 function App() {
@@ -73,6 +75,12 @@ function App() {
 
         <Route path='/add-product'
           element={userData ? <AddProduct /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/admin-dashboard'
+          element={userData ? <AdminDashboard /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/edit-product/:id'
+          element={userData ? <EditProduct /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

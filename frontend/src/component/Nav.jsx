@@ -13,7 +13,7 @@ import { themeDataContext } from '../context/ThemeContext';
 import { IoMdHome } from "react-icons/io";
 import { HiOutlineCollection } from "react-icons/hi";
 import { MdContacts } from "react-icons/md";
-import { User, LogOut, Package, ChevronDown, X, Sun, Moon, Plus } from 'lucide-react'
+import { User, LogOut, Package, ChevronDown, X, Sun, Moon, Plus, Layout } from 'lucide-react'
 
 function Nav() {
   const { getCurrentUser, userData } = useContext(userDataContext)
@@ -150,6 +150,7 @@ function Nav() {
 
                   <div className='py-2 space-y-1'>
                     {[
+                      { name: 'Admin Dashboard', path: '/admin-dashboard', icon: <Layout size={16} /> },
                       { name: 'Add Product', path: '/add-product', icon: <Plus size={16} /> },
                       { name: 'Order History', path: '/order', icon: <Package size={16} /> },
                       { name: 'Edit Profile', path: '/profile', icon: <User size={16} /> },
