@@ -53,9 +53,20 @@ function Card({ name, image, id, price, fabric, suitableFor }) {
               {fabric}
             </span>
           )}
-          {suitableFor && (
+          {suitableFor && Array.isArray(suitableFor) ? (
+            suitableFor.slice(0, 2).map((occasion, index) => (
+              <span key={index} className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}`}>
+                {occasion}
+              </span>
+            ))
+          ) : suitableFor && (
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}`}>
               {suitableFor}
+            </span>
+          )}
+          {suitableFor && Array.isArray(suitableFor) && suitableFor.length > 2 && (
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-600'}`}>
+              +{suitableFor.length - 2}
             </span>
           )}
         </div>

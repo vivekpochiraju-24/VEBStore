@@ -19,7 +19,7 @@ export const addProduct = async (req,res) => {
             subCategory,
             sizes :JSON.parse(sizes),
             fabric,
-            suitableFor,
+            suitableFor :JSON.parse(suitableFor),
             bestseller :bestseller === "true" ? true : false,
             date :Date.now(),
             image1,
@@ -78,7 +78,7 @@ export const editProduct = async (req, res) => {
         if (subCategory) updateData.subCategory = subCategory;
         if (sizes) updateData.sizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes);
         if (fabric) updateData.fabric = fabric;
-        if (suitableFor) updateData.suitableFor = suitableFor;
+        if (suitableFor) updateData.suitableFor = Array.isArray(suitableFor) ? suitableFor : JSON.parse(suitableFor);
         if (stock !== undefined) updateData.stock = Number(stock);
         if (bestseller !== undefined) updateData.bestseller = bestseller === "true" || bestseller === true;
         

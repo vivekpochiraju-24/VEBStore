@@ -42,7 +42,7 @@ function Lists() {
     description: "",
     stock: "",
     fabric: "",
-    suitableFor: ""
+    suitableFor: []
   })
   const [reviewName, setReviewName] = useState("Admin")
   const [reviewRating, setReviewRating] = useState(5)
@@ -118,7 +118,7 @@ function Lists() {
       description: item.description || "",
       stock: item.stock || "",
       fabric: item.fabric || "",
-      suitableFor: item.suitableFor || ""
+      suitableFor: item.suitableFor || []
     })
     setReviewName("Admin")
     setReviewRating(5)
@@ -673,16 +673,25 @@ function Lists() {
 
                 <div>
                   <label className='block text-xs font-bold text-gray-500 uppercase mb-1.5'>Suitable For</label>
-                  <select 
-                    value={editForm.suitableFor}
-                    onChange={(e) => setEditForm({...editForm, suitableFor: e.target.value})}
-                    className='w-full p-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none capitalize'
-                  >
-                    <option value="">Select Occasion</option>
+                  <div className='flex flex-wrap gap-2'>
                     {suitableFors.map(occasion => (
-                      <option key={occasion} value={occasion}>{occasion}</option>
+                      <label key={occasion} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={editForm.suitableFor.includes(occasion)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setEditForm({...editForm, suitableFor: [...editForm.suitableFor, occasion]})
+                            } else {
+                              setEditForm({...editForm, suitableFor: editForm.suitableFor.filter(o => o !== occasion)})
+                            }
+                          }}
+                          className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{occasion}</span>
+                      </label>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
                 <div>

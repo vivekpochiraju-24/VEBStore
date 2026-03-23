@@ -82,7 +82,11 @@ function Collections() {
       productCopy = productCopy.filter(item => fabric.includes(item.fabric))
     }
     if (suitableFor.length > 0) {
-      productCopy = productCopy.filter(item => suitableFor.includes(item.suitableFor))
+      productCopy = productCopy.filter(item => {
+        // Check if any of the item's suitableFor options match the selected ones
+        const itemSuitableFor = Array.isArray(item.suitableFor) ? item.suitableFor : [item.suitableFor];
+        return suitableFor.some(selected => itemSuitableFor.includes(selected));
+      })
     }
     setFilterProduct(productCopy)
   }

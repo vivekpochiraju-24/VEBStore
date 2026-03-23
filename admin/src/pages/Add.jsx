@@ -20,7 +20,7 @@ function Add() {
   const [bestseller, setBestSeller] = useState(false)
   const [sizes, setSizes] = useState([])
   const [fabric, setFabric] = useState("Cotton")
-  const [suitableFor, setSuitableFor] = useState("Casual")
+  const [suitableFor, setSuitableFor] = useState([])
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -36,6 +36,10 @@ function Add() {
 
   const toggleSize = (size) => {
     setSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size])
+  }
+
+  const toggleSuitableFor = (occasion) => {
+    setSuitableFor(prev => prev.includes(occasion) ? prev.filter(o => o !== occasion) : [...prev, occasion])
   }
 
   const handleAddProduct = async (e) => {
@@ -54,7 +58,7 @@ function Add() {
       formData.append("bestseller", bestseller)
       formData.append("sizes", JSON.stringify(sizes))
       formData.append("fabric", fabric)
-      formData.append("suitableFor", suitableFor)
+      formData.append("suitableFor", JSON.stringify(suitableFor))
 
       images.forEach((img, i) => {
         if (img) formData.append(`image${i + 1}`, img)
@@ -72,7 +76,7 @@ function Add() {
       setSizes([])
       setBestSeller(false)
       setFabric("Cotton")
-      setSuitableFor("Casual")
+      setSuitableFor([])
 
     } catch (error) {
       console.error(error)
@@ -249,15 +253,22 @@ function Add() {
 
                   <div className='space-y-4'>
                     <label className={`text-[13px] font-bold ml-1 ${dk ? 'text-slate-400' : 'text-gray-700'}`}>Suitable For</label>
-                    <select
-                      className={`w-full h-11 px-4 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500/10 outline-none transition-all appearance-none cursor-pointer border ${dk ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-gray-50 border-gray-100 text-gray-700'}`}
-                      value={suitableFor}
-                      onChange={(e) => setSuitableFor(e.target.value)}
-                    >
+                    <div className='flex flex-wrap gap-2'>
                       {suitableForOptions.map(occasion => (
-                        <option key={occasion} value={occasion}>{occasion}</option>
+                        <button
+                          key={occasion}
+                          type="button"
+                          onClick={() => toggleSuitableFor(occasion)}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border-2 ${
+                            suitableFor.includes(occasion)
+                              ? (dk ? "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-600/20" : "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-600/20")
+                              : (dk ? "bg-slate-900 text-slate-500 border-slate-700 hover:border-slate-500" : "bg-gray-50 text-gray-500 border-gray-100 hover:border-gray-300")
+                          }`}
+                        >
+                          {occasion}
+                        </button>
                       ))}
-                    </select>
+                    </div>
                   </div>
                 </div>
               </div>
