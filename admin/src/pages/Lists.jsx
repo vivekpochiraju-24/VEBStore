@@ -6,7 +6,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { themeDataContext } from '../context/ThemeContext'
 import { useNavigate } from 'react-router-dom'
-import { Trash2, Package, Search, Filter, LayoutGrid, List as ListIcon, Edit2, X, Star, MessageSquare } from 'lucide-react'
+import { Trash2, Package, Search, Filter, LayoutGrid, List as ListIcon, Edit2, X, Star, MessageSquare, Sparkles } from 'lucide-react'
 
 function Lists() {
   const [list, setList] = useState([])
@@ -42,7 +42,8 @@ function Lists() {
     description: "",
     stock: "",
     fabric: "",
-    suitableFor: []
+    suitableFor: [],
+    bestseller: false
   })
   const [reviewName, setReviewName] = useState("Admin")
   const [reviewRating, setReviewRating] = useState(5)
@@ -118,7 +119,8 @@ function Lists() {
       description: item.description || "",
       stock: item.stock || "",
       fabric: item.fabric || "",
-      suitableFor: item.suitableFor || []
+      suitableFor: item.suitableFor || [],
+      bestseller: item.bestseller || false
     })
     setReviewName("Admin")
     setReviewRating(5)
@@ -126,10 +128,52 @@ function Lists() {
   }
 
   const handleUpdateProduct = async () => {
+    // Validation
+    if (!editForm.name.trim()) {
+      toast.error("Product name is required")
+      return
+    }
+    if (!editForm.price || editForm.price <= 0) {
+      toast.error("Price must be greater than 0")
+      return
+    }
+    if (!editForm.category) {
+      toast.error("Category is required")
+      return
+    }
+    if (!editForm.subCategory) {
+      toast.error("Subcategory is required")
+      return
+    }
+    if (!editForm.fabric) {
+      toast.error("Fabric type is required")
+      return
+    }
+    if (!editForm.suitableFor || editForm.suitableFor.length === 0) {
+      toast.error("At least one suitable for occasion is required")
+      return
+    }
+    if (!editForm.description.trim()) {
+      toast.error("Description is required")
+      return
+    }
+
     setIsUpdating(true)
     try {
+      const updateData = {
+        name: editForm.name.trim(),
+        price: Number(editForm.price),
+        category: editForm.category,
+        subCategory: editForm.subCategory,
+        fabric: editForm.fabric,
+        suitableFor: editForm.suitableFor,
+        description: editForm.description.trim(),
+        stock: editForm.stock ? Number(editForm.stock) : 0,
+        bestseller: editForm.bestseller
+      }
+
       await axios.post(`${serverUrl}/api/product/edit/${editingProduct._id}`, 
-        editForm,
+        updateData,
         { withCredentials: true }
       )
       toast.success("Product updated successfully")
@@ -137,7 +181,7 @@ function Lists() {
       fetchList()
     } catch (error) {
       console.error(error)
-      toast.error("Failed to update product")
+      toast.error(error.response?.data?.message || "Failed to update product")
     } finally {
       setIsUpdating(false)
     }
@@ -734,6 +778,19 @@ function Lists() {
                         <span className="text-sm text-gray-700">{occasion}</span>
                       </label>
                     ))}
+                  </div>
+                </div>
+
+                <div className='flex items-center gap-3 p-4 border rounded-2xl cursor-pointer group transition-all bg-blue-50/30 border-blue-100 hover:bg-blue-50'>
+                  <input
+                    type="checkbox"
+                    className='w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500'
+                    checked={editForm.bestseller}
+                    onChange={(e) => setEditForm({...editForm, bestseller: e.target.checked})}
+                  />
+                  <div className='flex items-center gap-2'>
+                    <Sparkles size={16} className='text-amber-500' />
+                    <span className='text-sm font-bold text-gray-900'>Mark as Best Seller Collection</span>
                   </div>
                 </div>
 
