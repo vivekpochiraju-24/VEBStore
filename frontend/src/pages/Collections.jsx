@@ -230,7 +230,15 @@ function Collections() {
         {/* Products Grid */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'>
           {filterProduct.map((item, index) => (
-            <Card key={index} name={item.name} id={item._id} price={item.price} image={item.image1} />
+            <Card 
+              key={index} 
+              name={item.name} 
+              id={item._id} 
+              price={item.price} 
+              image={item.image1} 
+              fabric={item.fabric}
+              suitableFor={item.suitableFor}
+            />
           ))}
           {filterProduct.length === 0 && (
             <div className={`col-span-full flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-400' : 'bg-white border-gray-300 text-gray-500'}`}>

@@ -4,7 +4,7 @@ import { themeDataContext } from '../context/ThemeContext'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Heart } from 'lucide-react'
 
-function Card({ name, image, id, price }) {
+function Card({ name, image, id, price, fabric, suitableFor }) {
   const { currency, products } = useContext(shopDataContext)
   const { isDark } = useContext(themeDataContext)
   const navigate = useNavigate()
@@ -45,6 +45,20 @@ function Card({ name, image, id, price }) {
       {/* Content */}
       <div className='px-3 py-4 flex flex-col gap-1.5'>
         <p className={`text-[15px] font-bold group-hover:text-blue-500 transition-colors line-clamp-1 leading-tight ${dk ? 'text-slate-100' : 'text-gray-900'}`}>{name}</p>
+
+        {/* Fabric and Suitable For Badges */}
+        <div className='flex flex-wrap gap-1.5 mt-1'>
+          {fabric && (
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-800'}`}>
+              {fabric}
+            </span>
+          )}
+          {suitableFor && (
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}`}>
+              {suitableFor}
+            </span>
+          )}
+        </div>
 
         {/* Reviews */}
         <div className='flex items-center gap-1.5 mt-0.5'>

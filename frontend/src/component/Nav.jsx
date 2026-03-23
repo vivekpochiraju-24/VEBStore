@@ -13,7 +13,7 @@ import { themeDataContext } from '../context/ThemeContext';
 import { IoMdHome } from "react-icons/io";
 import { HiOutlineCollection } from "react-icons/hi";
 import { MdContacts } from "react-icons/md";
-import { User, LogOut, Package, ChevronDown, X, Sun, Moon, Plus } from 'lucide-react'
+import { User, LogOut, Package, ChevronDown, X, Sun, Moon, Settings } from 'lucide-react'
 
 function Nav() {
   const { getCurrentUser, userData } = useContext(userDataContext)
@@ -150,14 +150,21 @@ function Nav() {
 
                   <div className='py-2 space-y-1'>
                     {[
-                      { name: 'Add Product', path: '/add-product', icon: <Plus size={16} /> },
+                      { name: 'Admin Portal', path: 'http://localhost:5174', icon: <Settings size={16} />, external: true },
                       { name: 'Order History', path: '/order', icon: <Package size={16} /> },
                       { name: 'Edit Profile', path: '/profile', icon: <User size={16} /> },
                     ].map(item => (
                       <button
                         key={item.name}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold rounded-xl transition-all ${dk ? 'text-slate-400 hover:text-blue-400 hover:bg-slate-800' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'}`}
-                        onClick={() => { navigate(item.path); setShowProfile(false); }}
+                        onClick={() => { 
+                      if (item.external) {
+                        window.open(item.path, '_blank');
+                      } else {
+                        navigate(item.path);
+                      }
+                      setShowProfile(false);
+                    }}
                       >
                         {item.icon}
                         {item.name}
