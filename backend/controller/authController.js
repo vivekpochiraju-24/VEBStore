@@ -68,28 +68,52 @@ export const login = async (req, res) => {
     try {
         let { email, password } = req.body;
         
+        console.log("Login attempt:", { email, passwordReceived: !!password });
+        
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+        
         let user = await User.findOne({ email })
         if (!user) {
+            console.log("User not found:", email);
             return res.status(404).json({ message: "User not found" })
         }
         
+        console.log("User found:", { id: user._id, email: user.email });
+        
         let isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
+            console.log("Password mismatch for:", email);
             return res.status(400).json({ message: "Incorrect password" })
         }
         
+        console.log("Password verified for:", email);
+        
         let token = await genToken(user._id)
+        if (!token) {
+            console.log("Token generation failed for:", email);
+            return res.status(500).json({ message: "Token generation failed" });
+        }
+        
+        console.log("Token generated for:", email);
+        
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "Strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
-        return res.status(200).json({ success: true, user: { _id: user._id, name: user.name, email: user.email }, message: "Login successful" })
+        console.log("Cookie set for:", email);
+        
+        const responseUser = { _id: user._id, name: user.name, email: user.email };
+        console.log("Login successful for:", email);
+        
+        return res.status(200).json({ success: true, user: responseUser, message: "Login successful" })
 
     } catch (error) {
-        console.error("Login error:", error.message)
+        console.error("Login error:", error);
         return res.status(500).json({ message: "Server error during login" })
     }
 }
@@ -137,7 +161,11 @@ export const adminLogin = async (req, res) => {
     try {
         let { email, password } = req.body;
         
-        console.log("Admin login attempt:", { email, passwordReceived: password ? "***" : "undefined" });
+        console.log("Admin login attempt:", { email, passwordReceived: !!password });
+        
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
         
         // Priority:
         // 1. ADMIN_EMAIL / ADMIN_PASSWORD (From .env)
@@ -146,24 +174,37 @@ export const adminLogin = async (req, res) => {
         const adminEmail = process.env.ADMIN_EMAIL || process.env.ADMIN_LOGIN_EMAIL || "bhargavisurampudi1@gmail.com";
         const adminPassword = process.env.ADMIN_PASSWORD || process.env.ADMIN_LOGIN_PASSWORD || "bhargavi10";
         
-        console.log("Expected credentials:", { adminEmail, adminPassword: "***" });
+        console.log("Expected credentials:", { adminEmail, passwordReceived: !!adminPassword });
         console.log("Email match:", email === adminEmail);
         console.log("Password match:", password === adminPassword);
         
         if (email === adminEmail && password === adminPassword) {
             let token = await genToken1(email)
+            if (!token) {
+                console.log("Admin token generation failed for:", email);
+                return res.status(500).json({ message: "Token generation failed" });
+            }
+            
+            console.log("Admin token generated for:", email);
+            
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // Secure in production
+                secure: process.env.NODE_ENV === "production",
                 sameSite: "Strict",
                 maxAge: 1 * 24 * 60 * 60 * 1000
             })
+            
+            console.log("Admin cookie set for:", email);
+            console.log("Admin login successful for:", email);
+            
             return res.status(200).json({ success: true, token, message: "Admin login successful" })
         }
+        
+        console.log("Admin credentials invalid for:", email);
         return res.status(400).json({ message: "Invalid administrator credentials" })
 
     } catch (error) {
-        console.error("AdminLogin error:", error.message)
+        console.error("AdminLogin error:", error);
         return res.status(500).json({ message: "Server error during admin login" })
     }
 }
