@@ -536,6 +536,49 @@ function Lists() {
                          onClick={() => openEditModal(item)}
                          title="Click to edit subcategory">{item.subCategory}</p>
                     </div>
+
+                    {/* Product Attributes Table */}
+                    <div className='mb-3'>
+                      <table className='w-full text-xs border-collapse'>
+                        <tbody>
+                          <tr className='border-b border-gray-100'>
+                            <td className='py-1 text-gray-500 font-medium w-20'>Fabric:</td>
+                            <td className='py-1 text-gray-900 font-medium capitalize'>
+                              <span className='px-2 py-0.5 bg-blue-100 text-blue-800 rounded-md text-xs'>
+                                {item.fabric || 'N/A'}
+                              </span>
+                            </td>
+                          </tr>
+                          <tr className='border-b border-gray-100'>
+                            <td className='py-1 text-gray-500 font-medium w-20'>Suitable:</td>
+                            <td className='py-1 text-gray-900 font-medium'>
+                              {item.suitableFor && Array.isArray(item.suitableFor) ? (
+                                <div className='flex flex-wrap gap-1'>
+                                  {item.suitableFor.slice(0, 3).map((occasion, index) => (
+                                    <span key={index} className='px-2 py-0.5 bg-green-100 text-green-800 rounded-md text-xs capitalize'>
+                                      {occasion}
+                                    </span>
+                                  ))}
+                                  {item.suitableFor.length > 3 && (
+                                    <span className='px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md text-xs'>
+                                      +{item.suitableFor.length - 3}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : item.suitableFor ? (
+                                <span className='px-2 py-0.5 bg-green-100 text-green-800 rounded-md text-xs capitalize'>
+                                  {item.suitableFor}
+                                </span>
+                              ) : (
+                                <span className='px-2 py-0.5 bg-gray-100 text-gray-500 rounded-md text-xs'>
+                                  Not Set
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                     
                     <div className='flex items-center justify-between'>
                       <div>
