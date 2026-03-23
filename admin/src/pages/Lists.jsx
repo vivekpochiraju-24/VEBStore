@@ -145,14 +145,6 @@ function Lists() {
       toast.error("Subcategory is required")
       return
     }
-    if (!editForm.fabric) {
-      toast.error("Fabric type is required")
-      return
-    }
-    if (!editForm.suitableFor || editForm.suitableFor.length === 0) {
-      toast.error("At least one suitable for occasion is required")
-      return
-    }
     if (!editForm.description.trim()) {
       toast.error("Description is required")
       return
@@ -165,11 +157,17 @@ function Lists() {
         price: Number(editForm.price),
         category: editForm.category,
         subCategory: editForm.subCategory,
-        fabric: editForm.fabric,
-        suitableFor: editForm.suitableFor,
         description: editForm.description.trim(),
         stock: editForm.stock ? Number(editForm.stock) : 0,
         bestseller: editForm.bestseller
+      }
+
+      // Only include fabric and suitableFor if they have values
+      if (editForm.fabric) {
+        updateData.fabric = editForm.fabric
+      }
+      if (editForm.suitableFor && editForm.suitableFor.length > 0) {
+        updateData.suitableFor = editForm.suitableFor
       }
 
       await axios.post(`${serverUrl}/api/product/edit/${editingProduct._id}`, 

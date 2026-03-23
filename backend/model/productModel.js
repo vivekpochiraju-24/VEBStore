@@ -43,12 +43,12 @@ const productSchema = new mongoose.Schema({
     },
     fabric:{
         type:String,
-        required:true,
+        required:false,
         enum: ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen', 'Rayon', 'Denim', 'Nylon', 'Velvet', 'Leather', 'Synthetic', 'Blend']
     },
     suitableFor:{
         type:Array,
-        required:true
+        required:false
     },
     date:{
         type:Number,

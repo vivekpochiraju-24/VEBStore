@@ -46,6 +46,8 @@ function Add() {
     e.preventDefault()
     if (!images[0]) return toast.error("Please upload at least the primary image")
     if (sizes.length === 0) return toast.error("Please select at least one size")
+    if (!fabric) return toast.error("Please select a fabric type")
+    if (suitableFor.length === 0) return toast.error("Please select at least one suitable for occasion")
 
     setLoading(true)
     try {
