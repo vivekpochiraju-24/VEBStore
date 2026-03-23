@@ -123,17 +123,23 @@ export const getFilterOptions = async (req,res) => {
     try {
         const products = await Product.find({});
         
-        // Extract all unique fabric types and suitable occasions
-        const fabrics = [...new Set(products.map(product => product.fabric).filter(fabric => fabric))];
-        const suitableFor = [...new Set(products.map(product => product.suitableFor).filter(occasion => occasion))];
+        // Extract unique fabric types
+        const fabricTypes = [...new Set(products.map(p => p.fabric).filter(fabric => fabric))];
         
-        // Define default filter options if no products exist
-        const defaultFabrics = ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen', 'Rayon', 'Denim', 'Nylon', 'Velvet', 'Leather', 'Synthetic', 'Blend'];
-        const defaultSuitableFor = ['Casual', 'Office', 'Party', 'School', 'College', 'Sports', 'Formal', 'Traditional', 'Beach', 'Travel', 'Festive', 'Wedding'];
+        // Extract unique suitableFor options (handle arrays)
+        const allSuitableFor = products.flatMap(p => {
+            if (Array.isArray(p.suitableFor)) {
+                return p.suitableFor;
+            } else if (p.suitableFor && typeof p.suitableFor === 'string') {
+                return [p.suitableFor];
+            }
+            return [];
+        });
+        const suitableForTypes = [...new Set(allSuitableFor)];
         
-        return res.status(200).json({
-            fabrics: fabrics.length > 0 ? fabrics : defaultFabrics,
-            suitableFor: suitableFor.length > 0 ? suitableFor : defaultSuitableFor
+        res.json({
+            fabrics: fabricTypes,
+            suitableFor: suitableForTypes
         });
     } catch (error) {
         console.log("GetFilterOptions error", error);
@@ -179,34 +185,5 @@ export const addReview = async (req, res) => {
     } catch (error) {
         console.log("AddReview error", error);
         return res.status(500).json({ message: `AddReview error: ${error.message}` });
-    }
-}
-
-// Get filter options for fabric and suitableFor
-export const getFilterOptions = async (req, res) => {
-    try {
-        const products = await Product.find({});
-        
-        // Extract unique fabric types
-        const fabricTypes = [...new Set(products.map(p => p.fabric).filter(fabric => fabric))];
-        
-        // Extract unique suitableFor options (handle arrays)
-        const allSuitableFor = products.flatMap(p => {
-            if (Array.isArray(p.suitableFor)) {
-                return p.suitableFor;
-            } else if (p.suitableFor && typeof p.suitableFor === 'string') {
-                return [p.suitableFor];
-            }
-            return [];
-        });
-        const suitableForTypes = [...new Set(allSuitableFor)];
-        
-        res.json({
-            fabrics: fabricTypes,
-            suitableFor: suitableForTypes
-        });
-    } catch (error) {
-        console.log("GetFilterOptions error", error);
-        return res.status(500).json({ message: `GetFilterOptions error: ${error.message}` });
     }
 }

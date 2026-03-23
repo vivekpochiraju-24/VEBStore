@@ -122,6 +122,13 @@ function Collections() {
           >
             <p className={`text-lg font-bold flex items-center gap-2 ${dk ? 'text-white' : 'text-gray-900'}`}>
               <LuSettings2 className="text-blue-500" size={20} /> FILTERS
+              {(category.length > 0 || subCategory.length > 0 || fabric.length > 0 || suitableFor.length > 0) && (
+                <span className={`ml-2 px-2 py-1 text-xs font-bold rounded-full ${
+                  dk ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-600'
+                }`}>
+                  {category.length + subCategory.length + fabric.length + suitableFor.length}
+                </span>
+              )}
             </p>
             <svg className={`h-4 sm:hidden transition-transform ${showFilter ? 'rotate-90' : ''} ${dk ? 'text-slate-400' : 'text-gray-500'}`} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
@@ -201,6 +208,27 @@ function Collections() {
                 ))}
               </div>
             </div>
+
+            {/* Clear Filters Button */}
+            {(category.length > 0 || subCategory.length > 0 || fabric.length > 0 || suitableFor.length > 0) && (
+              <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+                <button
+                  onClick={() => {
+                    setCaterory([]);
+                    setSubCaterory([]);
+                    setFabric([]);
+                    setSuitableFor([]);
+                  }}
+                  className={`w-full py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    dk 
+                      ? 'bg-red-900/20 text-red-400 hover:bg-red-900/30 border border-red-800/30' 
+                      : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                  }`}
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -213,16 +241,32 @@ function Collections() {
             <p className={`text-sm mt-1 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Explore our carefully curated premium collections</p>
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="relative shrink-0">
-            <select
-              onChange={(e) => SetSortType(e.target.value)}
-              className={`appearance-none font-medium text-sm px-5 py-3 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer pr-10 transition-colors w-full sm:w-auto border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 hover:border-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
-            >
-              <option value="relavent">Sort by: Relevant</option>
-              <option value="low-high">Sort by: Price (Low to High)</option>
-              <option value="high-low">Sort by: Price (High to Low)</option>
-            </select>
+          {/* Search and Sort */}
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={`pl-10 pr-4 py-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors w-full sm:w-64 border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-white border-gray-200 text-gray-700 placeholder:text-gray-400'}`}
+              />
+              <svg className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${dk ? 'text-slate-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <select
+                onChange={(e) => SetSortType(e.target.value)}
+                className={`appearance-none font-medium text-sm px-5 py-3 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer pr-10 transition-colors w-full sm:w-auto border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 hover:border-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
+              >
+                <option value="relavent">Sort by: Relevant</option>
+                <option value="low-high">Sort by: Price (Low to High)</option>
+                <option value="high-low">Sort by: Price (High to Low)</option>
+              </select>
             <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
               <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
@@ -234,34 +278,22 @@ function Collections() {
         {/* Products Grid */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'>
           {filterProduct.map((item, index) => (
-            <Card 
-              key={index} 
-              name={item.name} 
-              id={item._id} 
-              price={item.price} 
-              image={item.image1} 
-              fabric={item.fabric}
-              suitableFor={item.suitableFor}
-            />
+            <Card key={index} id={item._id} name={item.name} image={item.image1} price={item.price} fabric={item.fabric} suitableFor={item.suitableFor} />
           ))}
-          {filterProduct.length === 0 && (
-            <div className={`col-span-full flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-400' : 'bg-white border-gray-300 text-gray-500'}`}>
-              <p className="text-lg">No products found matching your filters.</p>
-              <button
-                onClick={() => { 
-                  setCaterory([]); 
-                  setSubCaterory([]); 
-                  setFabric([]); 
-                  setSuitableFor([]); 
-                  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false) 
-                }}
-                className="mt-4 text-blue-500 font-medium hover:underline"
-              >
-                Clear all filters
-              </button>
-            </div>
-          )}
         </div>
+
+        {/* No Products Found */}
+        {filterProduct.length === 0 && (
+          <div className='flex flex-col items-center justify-center py-20'>
+            <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${dk ? 'bg-slate-800' : 'bg-gray-100'}`}>
+              <svg className={`w-8 h-8 ${dk ? 'text-slate-600' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className={`text-lg font-semibold mb-2 ${dk ? 'text-white' : 'text-gray-900'}`}>No products found</h3>
+            <p className={`text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Try adjusting your filters or search terms</p>
+          </div>
+        )}
       </div>
     </div>
   )
