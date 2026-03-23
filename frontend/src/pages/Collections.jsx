@@ -114,11 +114,11 @@ function Collections() {
     <div className={`w-full min-h-screen pt-[100px] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] pb-32 flex flex-col sm:flex-row gap-6 sm:gap-10 transition-colors duration-300 ${dk ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
 
       {/* Sidebar Filters */}
-      <div className='w-full sm:min-w-[260px] sm:w-[260px]'>
+      <div className='w-full sm:min-w-[280px] sm:w-[280px]'>
         <div className={`rounded-2xl shadow-sm border p-6 sm:sticky sm:top-[100px] transition-colors duration-300 ${dk ? 'bg-[#1e293b] border-slate-700/50' : 'bg-white border-gray-200'}`}>
           <div
             onClick={() => setShowFilter(!showFilter)}
-            className='flex items-center justify-between cursor-pointer sm:cursor-default mb-4'
+            className='flex items-center justify-between cursor-pointer sm:cursor-default mb-6'
           >
             <p className={`text-lg font-bold flex items-center gap-2 ${dk ? 'text-white' : 'text-gray-900'}`}>
               <LuSettings2 className="text-blue-500" size={20} /> FILTERS
@@ -138,9 +138,9 @@ function Collections() {
           <div className={`transition-all duration-300 overflow-hidden ${showFilter ? 'max-h-[1000px] opacity-100' : 'max-h-0 sm:max-h-[1000px] opacity-0 sm:opacity-100'}`}>
 
             {/* Category Filter */}
-            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+            <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Categories</p>
-              <div className='flex flex-col gap-3'>
+              <div className='flex flex-col gap-2'>
                 {['Men', 'Women', 'Kids'].map((cat) => (
                   <label key={cat} className='flex items-center gap-3 cursor-pointer group'>
                     <input
@@ -149,16 +149,16 @@ function Collections() {
                       value={cat}
                       onChange={toggleCategory}
                     />
-                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{cat}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{cat}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* SubCategory Filter */}
-            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+            <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Product Type</p>
-              <div className='flex flex-col gap-3'>
+              <div className='flex flex-col gap-2'>
                 {['TopWear', 'BottomWear', 'WinterWear'].map((type) => (
                   <label key={type} className='flex items-center gap-3 cursor-pointer group'>
                     <input
@@ -167,16 +167,16 @@ function Collections() {
                       value={type}
                       onChange={toggleSubCategory}
                     />
-                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{type}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{type}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Fabric Filter */}
-            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+            <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
-              <div className='flex flex-col gap-3 max-h-48 overflow-y-auto'>
+              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
                 {filterOptions.fabrics.map((fabricType) => (
                   <label key={fabricType} className='flex items-center gap-3 cursor-pointer group'>
                     <input
@@ -185,16 +185,16 @@ function Collections() {
                       value={fabricType}
                       onChange={toggleFabric}
                     />
-                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Suitable For Filter */}
-            <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
+            <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <p className={`mb-3 text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
-              <div className='flex flex-col gap-3 max-h-48 overflow-y-auto'>
+              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
                 {filterOptions.suitableFor.map((occasion) => (
                   <label key={occasion} className='flex items-center gap-3 cursor-pointer group'>
                     <input
@@ -203,7 +203,7 @@ function Collections() {
                       value={occasion}
                       onChange={toggleSuitableFor}
                     />
-                    <span className={`text-[15px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-500 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
                   </label>
                 ))}
               </div>
@@ -211,23 +211,21 @@ function Collections() {
 
             {/* Clear Filters Button */}
             {(category.length > 0 || subCategory.length > 0 || fabric.length > 0 || suitableFor.length > 0) && (
-              <div className={`py-4 border-t ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-                <button
-                  onClick={() => {
-                    setCaterory([]);
-                    setSubCaterory([]);
-                    setFabric([]);
-                    setSuitableFor([]);
-                  }}
-                  className={`w-full py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                    dk 
-                      ? 'bg-red-900/20 text-red-400 hover:bg-red-900/30 border border-red-800/30' 
-                      : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
-                  }`}
-                >
-                  Clear All Filters
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setCaterory([]);
+                  setSubCaterory([]);
+                  setFabric([]);
+                  setSuitableFor([]);
+                }}
+                className={`w-full py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                  dk 
+                    ? 'bg-red-900/20 text-red-400 hover:bg-red-900/30 border border-red-800/30' 
+                    : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                }`}
+              >
+                Clear All Filters
+              </button>
             )}
           </div>
         </div>
@@ -235,42 +233,46 @@ function Collections() {
 
       {/* Main Content */}
       <div className='flex-1 w-full'>
-        <div className='flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4'>
-          <div className='mb-0'>
-            <Title text1={'ALL'} text2={'PRODUCTS'} />
-            <p className={`text-sm mt-1 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Explore our carefully curated premium collections</p>
-          </div>
-
-          {/* Search and Sort */}
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            {/* Search Bar */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className={`pl-10 pr-4 py-3 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors w-full sm:w-64 border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-white border-gray-200 text-gray-700 placeholder:text-gray-400'}`}
-              />
-              <svg className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${dk ? 'text-slate-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        {/* Header Section */}
+        <div className='mb-8'>
+          <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6'>
+            <div>
+              <Title text1={'ALL'} text2={'PRODUCTS'} />
+              <p className={`text-sm mt-1 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Explore our carefully curated premium collections</p>
             </div>
 
-            {/* Sort Dropdown */}
-            <div className="relative">
-              <select
-                onChange={(e) => SetSortType(e.target.value)}
-                className={`appearance-none font-medium text-sm px-5 py-3 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer pr-10 transition-colors w-full sm:w-auto border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 hover:border-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
-              >
-                <option value="relavent">Sort by: Relevant</option>
-                <option value="low-high">Sort by: Price (Low to High)</option>
-                <option value="high-low">Sort by: Price (High to Low)</option>
-              </select>
-            <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
-              <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
+            {/* Search and Sort Controls */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+              {/* Search Bar */}
+              <div className="relative flex-shrink-0">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className={`pl-10 pr-4 py-2.5 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors w-full sm:w-64 border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 placeholder:text-slate-500' : 'bg-white border-gray-200 text-gray-700 placeholder:text-gray-400'}`}
+                />
+                <svg className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${dk ? 'text-slate-400' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+
+              {/* Sort Dropdown */}
+              <div className="relative flex-shrink-0">
+                <select
+                  onChange={(e) => SetSortType(e.target.value)}
+                  className={`appearance-none font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer pr-10 transition-colors border ${dk ? 'bg-[#1e293b] border-slate-600 text-slate-200 hover:border-slate-500' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
+                >
+                  <option value="relavent">Sort by: Relevant</option>
+                  <option value="low-high">Price (Low to High)</option>
+                  <option value="high-low">Price (High to Low)</option>
+                </select>
+                <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -294,7 +296,6 @@ function Collections() {
             <p className={`text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Try adjusting your filters or search terms</p>
           </div>
         )}
-        </div>
       </div>
     </div>
   )
