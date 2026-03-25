@@ -29,28 +29,14 @@ function AdminContext({ children }) {
             console.log('Admin data received:', result.data)
             
         } catch (error) {
-            console.log('Admin check failed with auth, trying fallback...')
-            
-            // If authentication fails, fallback to basic admin data
-            if (error.response?.status === 401) {
-                console.log('Authentication failed, using fallback admin data')
-                setAdminData({
-                    _id: "admin123",
-                    name: "Administrator",
-                    email: "bhargavisurampudi1@gmail.com",
-                    role: "admin"
-                })
-                setError(null)
-            } else {
-                setAdminData(null)
-                setError(error.message)
-                console.log('Admin check failed:', {
-                    message: error.message,
-                    status: error.response?.status,
-                    data: error.response?.data,
-                    url: serverUrl + "/api/user/getadmin"
-                })
-            }
+            setAdminData(null)
+            setError(error.message)
+            console.log('Admin check failed:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data,
+                url: serverUrl + "/api/user/getadmin"
+            })
         } finally {
             setLoading(false)
         }

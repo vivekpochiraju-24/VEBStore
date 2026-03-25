@@ -50,6 +50,10 @@ services:
           name: vebstore-backend
           type: web
           property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
   # 🔴 Admin Static Site
   - type: static
@@ -64,3 +68,7 @@ services:
           name: vebstore-backend
           type: web
           property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
