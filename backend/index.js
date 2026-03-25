@@ -21,17 +21,24 @@ let app = express()
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 app.use(cors({
-    origin: [
-        "http://localhost:5173", 
-        "http://localhost:5174", 
-        "http://127.0.0.1:5173", 
-        "http://127.0.0.1:5174", 
-        process.env.FRONTEND_URL, 
-        process.env.ADMIN_URL,
-        "https://vebstore.netlify.app",
-        "https://admin-vebstore.netlify.app",
-        "https://vebadmin.netlify.app"
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+            "http://localhost:5173", 
+            "http://localhost:5174", 
+            "http://127.0.0.1:5173", 
+            "http://127.0.0.1:5174", 
+            process.env.FRONTEND_URL, 
+            process.env.ADMIN_URL,
+            "https://vebstore.netlify.app",
+            "https://admin-vebstore.netlify.app",
+            "https://vebadmin.netlify.app"
+        ];
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }))
