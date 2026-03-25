@@ -62,10 +62,15 @@ app.get('/health', (req, res) => {
 
 // Start server
 const server = app.listen(port, '0.0.0.0', () => {
+    const isRender = process.env.RENDER === 'true' || process.env.RENDER_EXTERNAL_URL
+    const envLabel = isRender ? 'Cloud Production (Render)' : (process.env.NODE_ENV || 'development')
+    const displayUrl = isRender ? process.env.RENDER_EXTERNAL_URL : `http://localhost:${port}`
+
     console.log("🚀 VEBStore Server Starting...")
-    console.log(`📍 Server running on: http://localhost:${port}`)
-    console.log(`📍 Also accessible on: http://0.0.0.0:${port}`)
-    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`)
+    console.log(`📍 Server internally on: 0.0.0.0:${port}`)
+    console.log(`🌐 Environment: ${envLabel}`)
+    if (displayUrl) console.log(`🔗 Public Access: ${displayUrl}`)
+
     connectDb().then(() => {
         console.log("✅ Database connected successfully")
         
