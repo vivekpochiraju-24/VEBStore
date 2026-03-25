@@ -29,8 +29,16 @@ function AdminContext({ children }) {
             console.log('Admin data received:', result.data)
             
         } catch (error) {
-            setAdminData(null)
-            setError(error.message)
+            console.log('Admin check response:', error.response?.status)
+            if (error.response?.status === 401 || error.response?.status === 400) {
+                // Not logged in is not an "error" for the whole app, just show login
+                setAdminData(null)
+                setError(null)
+            } else {
+                setAdminData(null)
+                setError(error.message)
+            }
+            
             console.log('Admin check failed:', {
                 message: error.message,
                 status: error.response?.status,
