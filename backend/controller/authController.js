@@ -51,8 +51,8 @@ export const registration = async (req, res) => {
         let token = await genToken(user._id)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "Strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(201).json(user)
@@ -100,8 +100,8 @@ export const login = async (req, res) => {
         
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false, // Set to false for localhost development
-            sameSite: "Lax", // Changed from Strict to Lax for better compatibility
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
@@ -143,8 +143,8 @@ export const googleLogin = async (req, res) => {
         let token = await genToken(user._id)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "Strict",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(200).json(user)
@@ -189,8 +189,8 @@ export const adminLogin = async (req, res) => {
             
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: false, // Set to false for localhost development
-                sameSite: "Lax", // Changed from Strict to Lax for better compatibility
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
                 maxAge: 1 * 24 * 60 * 60 * 1000
             })
             
