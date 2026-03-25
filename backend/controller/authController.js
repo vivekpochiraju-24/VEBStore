@@ -100,8 +100,8 @@ export const login = async (req, res) => {
         
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict",
+            secure: false, // Set to false for localhost development
+            sameSite: "Lax", // Changed from Strict to Lax for better compatibility
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
@@ -189,8 +189,8 @@ export const adminLogin = async (req, res) => {
             
             res.cookie("token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "Strict",
+                secure: false, // Set to false for localhost development
+                sameSite: "Lax", // Changed from Strict to Lax for better compatibility
                 maxAge: 1 * 24 * 60 * 60 * 1000
             })
             
@@ -211,7 +211,7 @@ export const adminLogin = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { name, phone, currentPassword, newPassword, preferredProductType } = req.body;
+        const { name, phone, currentPassword, newPassword, preferredProductType, emailUpdatesOptIn } = req.body;
 
         // Get user id from cookie
         const token = req.cookies?.token;
@@ -231,6 +231,7 @@ export const updateProfile = async (req, res) => {
         if (name && name.trim()) user.name = name.trim();
         user.phone = phone.trim();
         if (preferredProductType) user.preferredProductType = preferredProductType;
+        if (typeof emailUpdatesOptIn === 'boolean') user.emailUpdatesOptIn = emailUpdatesOptIn;
 
         // If changing password, verify current password first
         if (newPassword) {

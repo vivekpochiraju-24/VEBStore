@@ -6,7 +6,7 @@ import { authDataContext } from '../context/AuthContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Loading from '../component/Loading'
-import { PlusCircle, Image as ImageIcon, Sparkles, Check } from 'lucide-react'
+import { PlusCircle, Image as ImageIcon, Sparkles, Check, RefreshCw } from 'lucide-react'
 import { themeDataContext } from '../context/ThemeContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -21,6 +21,7 @@ function Add() {
   const [sizes, setSizes] = useState([])
   const [fabric, setFabric] = useState("Cotton")
   const [suitableFor, setSuitableFor] = useState([])
+  const [exchangeEligible, setExchangeEligible] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -58,6 +59,7 @@ function Add() {
       formData.append("category", category)
       formData.append("subCategory", subCategory)
       formData.append("bestseller", bestseller)
+      formData.append("exchangeEligible", exchangeEligible)
       formData.append("sizes", JSON.stringify(sizes))
       formData.append("fabric", fabric)
       formData.append("suitableFor", JSON.stringify(suitableFor))
@@ -305,6 +307,23 @@ function Add() {
                     <span className={`text-sm font-bold ${dk ? 'text-slate-200' : 'text-gray-900'}`}>Mark as Best Seller Collection</span>
                   </div>
                 </label>
+              </div>
+
+              {/* Exchange Option */}
+              <div className={`p-6 rounded-3xl border shadow-xl shadow-gray-200/40 ${dk ? 'bg-[#1e293b] border-slate-700/50' : 'bg-white border-gray-100'}`}>
+                <label className='flex items-center gap-3 cursor-pointer group'>
+                  <input
+                    type="checkbox"
+                    checked={exchangeEligible}
+                    onChange={(e) => setExchangeEligible(e.target.checked)}
+                    className='w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                  />
+                  <div className='flex items-center gap-2'>
+                    <RefreshCw size={18} className='text-green-600' />
+                    <span className={`text-sm font-bold ${dk ? 'text-slate-200' : 'text-gray-900'}`}>Eligible for Exchange Program</span>
+                  </div>
+                </label>
+                <p className={`text-xs mt-2 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Check this if customers can exchange old dresses for this product</p>
               </div>
 
               {/* Submit Button */}

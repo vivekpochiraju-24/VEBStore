@@ -32,6 +32,14 @@ const userSchema = new mongoose.Schema({
     preferredProductType: {
         type: String,
         default: "TopWear"
+    },
+    supercoins: {
+        type: Number,
+        default: 0
+    },
+    emailUpdatesOptIn: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true, minimize: false })
 

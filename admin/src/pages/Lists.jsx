@@ -6,7 +6,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { themeDataContext } from '../context/ThemeContext'
 import { useNavigate } from 'react-router-dom'
-import { Trash2, Package, Search, Filter, LayoutGrid, List as ListIcon, Edit2, X, Star, MessageSquare, Sparkles } from 'lucide-react'
+import { Trash2, Package, Search, Filter, LayoutGrid, List as ListIcon, Edit2, X, Star, MessageSquare, Sparkles, RefreshCw } from 'lucide-react'
 
 function Lists() {
   const [list, setList] = useState([])
@@ -43,7 +43,8 @@ function Lists() {
     stock: "",
     fabric: "",
     suitableFor: [],
-    bestseller: false
+    bestseller: false,
+    exchangeEligible: false
   })
   const [reviewName, setReviewName] = useState("Admin")
   const [reviewRating, setReviewRating] = useState(5)
@@ -130,7 +131,8 @@ function Lists() {
       stock: item.stock || "",
       fabric: item.fabric || "",
       suitableFor: item.suitableFor || [],
-      bestseller: item.bestseller || false
+      bestseller: item.bestseller || false,
+      exchangeEligible: item.exchangeEligible || false
     })
     setReviewName("Admin")
     setReviewRating(5)
@@ -169,7 +171,8 @@ function Lists() {
         subCategory: editForm.subCategory,
         description: editForm.description.trim(),
         stock: editForm.stock ? Number(editForm.stock) : 0,
-        bestseller: editForm.bestseller
+        bestseller: editForm.bestseller,
+        exchangeEligible: editForm.exchangeEligible
       }
 
       // Only include fabric and suitableFor if they have values
@@ -799,17 +802,32 @@ function Lists() {
                   </div>
                 </div>
 
-                <div className='flex items-center gap-3 p-4 border rounded-2xl cursor-pointer group transition-all bg-blue-50/30 border-blue-100 hover:bg-blue-50'>
-                  <input
-                    type="checkbox"
-                    className='w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500'
-                    checked={editForm.bestseller}
-                    onChange={(e) => setEditForm({...editForm, bestseller: e.target.checked})}
-                  />
-                  <div className='flex items-center gap-2'>
-                    <Sparkles size={16} className='text-amber-500' />
-                    <span className='text-sm font-bold text-gray-900'>Mark as Best Seller Collection</span>
-                  </div>
+                <div className='flex flex-col sm:flex-row gap-4'>
+                  <label className='flex-1 flex items-center gap-3 p-4 border rounded-2xl cursor-pointer group transition-all bg-blue-50/30 border-blue-100 hover:bg-blue-50'>
+                    <input
+                      type="checkbox"
+                      className='w-5 h-5 rounded-md border-gray-300 text-blue-600 focus:ring-blue-500'
+                      checked={editForm.bestseller}
+                      onChange={(e) => setEditForm({...editForm, bestseller: e.target.checked})}
+                    />
+                    <div className='flex items-center gap-2'>
+                      <Sparkles size={16} className='text-amber-500' />
+                      <span className='text-sm font-bold text-gray-900'>Bestseller</span>
+                    </div>
+                  </label>
+
+                  <label className='flex-1 flex items-center gap-3 p-4 border rounded-2xl cursor-pointer group transition-all bg-green-50/30 border-green-100 hover:bg-green-50'>
+                    <input
+                      type="checkbox"
+                      className='w-5 h-5 rounded-md border-gray-300 text-green-600 focus:ring-green-500'
+                      checked={editForm.exchangeEligible}
+                      onChange={(e) => setEditForm({...editForm, exchangeEligible: e.target.checked})}
+                    />
+                    <div className='flex items-center gap-2'>
+                      <RefreshCw size={16} className='text-green-600' />
+                      <span className='text-sm font-bold text-gray-900'>Exchangeable</span>
+                    </div>
+                  </label>
                 </div>
 
                 <div>

@@ -7,6 +7,9 @@ import Orders from './pages/Orders'
 import Login from './pages/Login'
 import Settings from './pages/Settings'
 import Support from './pages/Support'
+import ExchangeManagement from './pages/ExchangeManagement'
+import Users from './pages/Users'
+import MessageInbox from './pages/MessageInbox'
 import { adminDataContext } from './context/AdminContext'
 import { ToastContainer, toast } from 'react-toastify'
 
@@ -51,9 +54,12 @@ function App() {
                     <Route path='/add' element={<Add />} />
                     <Route path='/lists' element={<Lists />} />
                     <Route path='/orders' element={<Orders />} />
+                    <Route path='/exchange-management' element={<ExchangeManagement />} />
+                    <Route path='/users' element={<Users />} />
                     <Route path='/settings' element={<Settings />} />
                     <Route path='/support' element={<Support />} />
                     <Route path='/login' element={<Login />} />
+                    <Route path='/messages' element={<MessageInbox />} />
                 </Routes>
             )}
         </>

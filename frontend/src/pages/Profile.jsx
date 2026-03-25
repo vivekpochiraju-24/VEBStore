@@ -7,6 +7,7 @@ import { userDataContext } from '../context/UserContext'
 import { themeDataContext } from '../context/ThemeContext'
 import { FaUser, FaPhone, FaLock, FaEye, FaEyeSlash, FaTags } from 'react-icons/fa'
 import { MdEdit } from 'react-icons/md'
+import { Mail } from 'lucide-react'
 
 function Profile() {
     const { serverUrl } = useContext(authDataContext)
@@ -19,6 +20,7 @@ function Profile() {
         name: userData?.name || '',
         phone: userData?.phone || '',
         preferredProductType: userData?.preferredProductType || 'TopWear',
+        emailUpdatesOptIn: userData?.emailUpdatesOptIn ?? true,
         currentPassword: '',
         newPassword: '',
     })
@@ -33,13 +35,15 @@ function Profile() {
                 ...prev,
                 name: userData.name || '',
                 phone: userData.phone || '',
-                preferredProductType: userData.preferredProductType || 'TopWear'
+                preferredProductType: userData.preferredProductType || 'TopWear',
+                emailUpdatesOptIn: userData.emailUpdatesOptIn ?? true
             }))
         }
     }, [userData])
 
     const handleChange = (e) => {
-        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+        const { name, value, type, checked } = e.target
+        setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
     }
 
     const handleSubmit = async (e) => {
@@ -52,7 +56,8 @@ function Profile() {
             const payload = { 
                 name: form.name, 
                 phone: form.phone,
-                preferredProductType: form.preferredProductType
+                preferredProductType: form.preferredProductType,
+                emailUpdatesOptIn: form.emailUpdatesOptIn
             }
             if (changePassword) {
                 if (!form.currentPassword || !form.newPassword) {
@@ -181,6 +186,31 @@ function Profile() {
                                 </div>
                             </div>
                             <p className={`text-[10px] font-bold ml-2 ${dk ? 'text-slate-600' : 'text-gray-400'}`}>This will prioritize your initial shop view.</p>
+                        </div>
+
+                        {/* Email Updates Opt-In */}
+                        <div className={`p-6 rounded-3xl border transition-all ${dk ? 'bg-slate-800/50 border-slate-700' : 'bg-emerald-50/20 border-emerald-100'}`}>
+                            <div className='flex items-center justify-between'>
+                                <div className='flex items-center gap-4'>
+                                    <div className={`p-2.5 rounded-xl ${dk ? 'bg-emerald-600/20 text-emerald-400' : 'bg-emerald-100 text-emerald-600'}`}>
+                                        <Mail size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className={`text-sm font-black ${dk ? 'text-slate-200' : 'text-gray-900'}`}>Order Updates via Email</h3>
+                                        <p className={`text-[10px] font-bold ${dk ? 'text-slate-500' : 'text-gray-400'}`}>Get real-time tracking & delivery notifications</p>
+                                    </div>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        name="emailUpdatesOptIn"
+                                        checked={form.emailUpdatesOptIn}
+                                        onChange={handleChange}
+                                        className="sr-only peer" 
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
                         </div>
 
                         {/* Password Change Toggle */}

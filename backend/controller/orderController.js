@@ -15,11 +15,20 @@ const razorpayInstance = new Razorpay({
 export const placeOrder = async (req,res) => {
 
      try {
-         const {items , amount , address} = req.body;
+         const {items , amount , address, appliedCoins} = req.body;
          const userId = req.userId;
+         
+         // Validate user coins
+         const user = await User.findById(userId);
+         const coinsToDeduct = Number(appliedCoins) || 0;
+         if (coinsToDeduct > 0 && user.supercoins < coinsToDeduct) {
+             return res.status(400).json({message: 'Insufficient Supercoins'})
+         }
+
          const orderData = {
             items,
             amount,
+            appliedCoins: coinsToDeduct,
             userId,
             address,
             paymentMethod:'COD',
@@ -30,13 +39,20 @@ export const placeOrder = async (req,res) => {
          const newOrder = new Order(orderData)
          await newOrder.save()
 
-         await User.findByIdAndUpdate(userId,{cartData:{}})
+         let updateQuery = { cartData: {} };
+         if (coinsToDeduct > 0) {
+             updateQuery.$inc = { supercoins: -coinsToDeduct };
+         }
+         await User.findByIdAndUpdate(userId, updateQuery)
          
          // Send Confirmation Email
-         const user = await User.findById(userId);
-         if (user) {
+         const updatedUser = await User.findById(userId);
+         if (updatedUser) {
              const targetEmail = address.email || user.email;
-             if (targetEmail) sendOrderEmail(targetEmail, newOrder);
+             console.log(`[ORDER] Preparing to send email to: ${targetEmail} (Opt-in: ${updatedUser.emailUpdatesOptIn})`);
+             if (targetEmail && updatedUser.emailUpdatesOptIn) {
+                 await sendOrderEmail(targetEmail, newOrder);
+             }
              createNotification(userId, "Order Placed", `Your order #${newOrder._id.toString().slice(-6)} has been placed successfully.`, "Order");
              
              // WhatsApp Simulator
@@ -63,11 +79,19 @@ export const placeOrder = async (req,res) => {
 export const placeOrderRazorpay = async (req,res) => {
     try {
         
-         const {items , amount , address} = req.body;
+         const {items , amount , address, appliedCoins} = req.body;
          const userId = req.userId;
+
+         const user = await User.findById(userId);
+         const coinsToDeduct = Number(appliedCoins) || 0;
+         if (coinsToDeduct > 0 && user.supercoins < coinsToDeduct) {
+             return res.status(400).json({message: 'Insufficient Supercoins'})
+         }
+
          const orderData = {
             items,
             amount,
+            appliedCoins: coinsToDeduct,
             userId,
             address,
             paymentMethod:'Razorpay',
@@ -105,11 +129,18 @@ export const verifyRazorpay = async (req,res) =>{
         const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
         if(orderInfo.status === 'paid'){
             const newOrder = await Order.findByIdAndUpdate(orderInfo.receipt,{payment:true});
-            const user = await User.findByIdAndUpdate(userId , {cartData:{}})
+            
+            let updateQuery = { cartData: {} };
+            if (newOrder.appliedCoins > 0) {
+                updateQuery.$inc = { supercoins: -newOrder.appliedCoins };
+            }
+            const user = await User.findByIdAndUpdate(userId, updateQuery, { new: true })
+            
             // Send Order Confirmation Email via Razorpay
             const targetEmail = newOrder.address.email || user.email;
-            if (targetEmail) {
-                sendOrderEmail(targetEmail, newOrder);
+            console.log(`[RAZORPAY SUCCESS] Sending confirmation to: ${targetEmail} (Opt-in: ${user.emailUpdatesOptIn})`);
+            if (targetEmail && user.emailUpdatesOptIn) {
+                await sendOrderEmail(targetEmail, newOrder);
             }
             createNotification(userId, "Order Summary", `Your Razorpay order #${newOrder._id.toString().slice(-6)} has been confirmed!`, "Order");
 
@@ -188,7 +219,7 @@ try {
     // Send Tracking Email updates
     const user = await User.findById(order.userId);
     const targetEmail = order.address?.email || user?.email;
-    if (targetEmail) {
+    if (targetEmail && user?.emailUpdatesOptIn) {
         sendTrackingEmail(targetEmail, order, status);
     }
 
@@ -226,6 +257,13 @@ export const cancelOrder = async (req,res) => {
             cancellationReason: reason
         }, { new: true })
         
+        // Refund Supercoins if used
+        if (updatedOrder.appliedCoins && updatedOrder.appliedCoins > 0) {
+            await User.findByIdAndUpdate(order.userId, {
+                $inc: { supercoins: updatedOrder.appliedCoins }
+            });
+        }
+
         // Send Cancellation Email
         const user = await User.findById(order.userId);
         if (user) {

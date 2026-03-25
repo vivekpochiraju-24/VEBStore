@@ -4,33 +4,48 @@ import CartTotal from '../component/CartTotal'
 import razorpay from '../assets/Razorpay.jpg'
 import { shopDataContext } from '../context/ShopContext'
 import { authDataContext } from '../context/AuthContext'
+import { userDataContext } from '../context/UserContext'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Loading from '../component/Loading'
 import { FaMoneyBillWave } from "react-icons/fa";
 import { themeDataContext } from '../context/ThemeContext'
+import { CheckCircle2 } from 'lucide-react'
 
 function PlaceOrder() {
   let [method, setMethod] = useState('cod')
   let navigate = useNavigate()
-  const { cartItem, setCartItem, getCartAmount, delivery_fee, products } = useContext(shopDataContext)
+  const { cartItem, setCartItem, getCartAmount, delivery_fee, products, appliedCoins, setAppliedCoins } = useContext(shopDataContext)
+  const { userData } = useContext(userDataContext)
   let { serverUrl } = useContext(authDataContext)
   const { isDark } = useContext(themeDataContext)
   const dk = isDark
   let [loading, setLoading] = useState(false)
 
   let [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
+    firstName: userData?.name?.split(' ')[0] || '',
+    lastName: userData?.name?.split(' ')[1] || '',
+    email: userData?.email || '',
     street: '',
     city: '',
     state: '',
     pinCode: '',
     country: '',
-    phone: ''
+    phone: userData?.phone || ''
   })
+
+  React.useEffect(() => {
+    if (userData) {
+      setFormData(prev => ({
+        ...prev,
+        firstName: prev.firstName || userData.name?.split(' ')[0] || '',
+        lastName: prev.lastName || userData.name?.split(' ')[1] || '',
+        email: prev.email || userData.email || '',
+        phone: prev.phone || userData.phone || ''
+      }))
+    }
+  }, [userData])
 
   const onChangeHandler = (e) => {
     const name = e.target.name;
@@ -83,15 +98,17 @@ function PlaceOrder() {
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee
+        amount: getCartAmount() + delivery_fee - appliedCoins,
+        appliedCoins: appliedCoins
       }
       switch (method) {
-        case 'cod':
+        case 'cod': {
 
           const result = await axios.post(serverUrl + "/api/order/placeorder", orderData, { withCredentials: true })
           console.log(result.data)
           if (result.data) {
             setCartItem({})
+            setAppliedCoins(0) // Reset coins after order
             toast.success("Order Placed")
             navigate("/order")
             setLoading(false)
@@ -103,8 +120,9 @@ function PlaceOrder() {
           }
 
           break;
+        }
 
-        case 'razorpay':
+        case 'razorpay': {
           const resultRazorpay = await axios.post(serverUrl + "/api/order/razorpay", orderData, { withCredentials: true })
           if (resultRazorpay.data) {
             initPay(resultRazorpay.data)
@@ -112,6 +130,7 @@ function PlaceOrder() {
           }
 
           break;
+        }
 
 
 
@@ -199,6 +218,44 @@ function PlaceOrder() {
               <FaMoneyBillWave className={`text-xl ${method === 'cod' ? 'text-green-600' : 'text-gray-400'}`} />
               <span className={`text-sm font-bold tracking-tight ${method === 'cod' ? 'text-gray-900' : 'text-gray-500'}`}>CASH ON DELIVERY</span>
             </div>
+          </div>
+
+          {/* Supercoins Section */}
+          <div className={`mt-8 p-6 rounded-2xl border transition-all ${dk ? 'bg-slate-800/50 border-slate-700' : 'bg-blue-50/30 border-blue-100'}`}>
+              <div className='flex items-center justify-between mb-4'>
+                  <div className='flex items-center gap-2'>
+                      <span className='text-xl'>💛</span>
+                      <h3 className={`font-bold text-sm tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>USE SUPERCOINS</h3>
+                  </div>
+                  <span className={`text-xs font-black px-2 py-1 rounded-lg ${dk ? 'bg-yellow-500/20 text-yellow-500' : 'bg-yellow-100 text-yellow-700'}`}>
+                      BALANCE: {userData?.supercoins || 0}
+                  </span>
+              </div>
+              
+              <div className='flex gap-2'>
+                  <input 
+                    type="number" 
+                    placeholder="Enter coins to use"
+                    value={appliedCoins || ''}
+                    onChange={(e) => {
+                        const val = Math.min(Number(e.target.value), userData?.supercoins || 0, getCartAmount() + delivery_fee);
+                        setAppliedCoins(val >= 0 ? val : 0);
+                    }}
+                    className={`flex-1 h-11 px-4 rounded-xl border text-sm font-bold outline-none transition-all ${dk ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-gray-200'}`}
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setAppliedCoins(Math.min(userData?.supercoins || 0, getCartAmount() + delivery_fee))}
+                    className='px-4 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-black transition-all'
+                  >
+                    MAX
+                  </button>
+              </div>
+              {appliedCoins > 0 && (
+                  <p className='text-[10px] text-green-600 font-bold mt-2 flex items-center gap-1 uppercase tracking-widest'>
+                      <CheckCircle2 size={10} /> Extra ₹{appliedCoins} discount applied!
+                  </p>
+              )}
           </div>
 
           <button

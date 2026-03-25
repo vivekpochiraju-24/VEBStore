@@ -47,22 +47,40 @@ function Support() {
                                 </button>
                             </div>
 
-                            {/* Documentation */}
-                            <div className='md:col-span-2 bg-gray-900 p-8 rounded-[32px] shadow-2xl relative overflow-hidden'>
+                            {/* Documentation / Knowledge Base */}
+                            <div className='md:col-span-2 bg-[#0f172a] p-10 rounded-[40px] shadow-2xl relative overflow-hidden group'>
                                 <div className='relative z-10'>
-                                    <div className='flex items-center gap-2 mb-2'>
-                                        <FileText size={16} className='text-blue-400' />
-                                        <span className='text-[10px] font-black text-blue-400 uppercase tracking-widest'>Knowledge Base</span>
+                                    <div className='flex items-center gap-3 mb-4'>
+                                        <div className='p-2 bg-blue-500/10 rounded-lg'>
+                                            <FileText size={20} className='text-blue-400' />
+                                        </div>
+                                        <span className='text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]'>System Core Library</span>
                                     </div>
-                                    <h3 className='text-xl font-bold text-white mb-4'>Admin Infrastructure Documentation</h3>
-                                    <p className='text-gray-400 text-sm mb-8 max-w-lg font-medium'>Access detailed guides on product bulk-upload, order fulfillment, and API management protocols.</p>
-                                    <div className='flex flex-wrap gap-4'>
-                                        <button className='px-6 py-3 bg-white text-gray-900 rounded-xl font-bold text-xs shadow-lg active:scale-95 transition-all'>Access Library</button>
-                                        <button className='px-6 py-3 bg-white/10 text-white border border-white/10 rounded-xl font-bold text-xs hover:bg-white/20 transition-all'>Developer API Docs</button>
+                                    
+                                    <h3 className='text-3xl font-black text-white mb-4 tracking-tight'>Knowledge Base <span className='text-slate-500 block text-lg font-bold mt-1'>Admin Infrastructure Documentation</span></h3>
+                                    
+                                    <p className='text-slate-400 text-sm mb-10 max-w-xl font-medium leading-relaxed'>
+                                        Master the VEBStore ecosystem with detailed guides on product bulk-upload, 
+                                        real-time order fulfillment workflows, and secure API management protocols.
+                                    </p>
+                                    
+                                    <div className='flex flex-wrap gap-5'>
+                                        <button className='px-10 py-4 bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-blue-600/20 active:scale-95 hover:bg-blue-500 transition-all'>Access Library</button>
+                                        <button className='px-10 py-4 bg-slate-800 text-slate-300 border border-slate-700 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-slate-700 transition-all'>Developer API Docs</button>
                                     </div>
                                 </div>
-                                {/* Decorative element */}
-                                <div className='absolute top-[-20%] right-[-10%] w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]'></div>
+                                
+                                {/* Realistic Blueprint Background Effect */}
+                                <div className='absolute right-[-5%] bottom-[-10%] opacity-10 pointer-events-none'>
+                                    <div className='w-96 h-96 border-[40px] border-blue-400 rounded-full'></div>
+                                </div>
+                                <div className='absolute right-[10%] top-[10%] opacity-5 pointer-events-none'>
+                                    <div className='grid grid-cols-6 gap-2'>
+                                        {[...Array(24)].map((_, i) => (
+                                            <div key={i} className='w-2 h-2 bg-white rounded-full'></div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
 
                         </div>

@@ -1,4 +1,5 @@
 import User from "../model/userModel.js"
+import Order from "../model/orderModel.js"
 
 
 export const getCurrentUser = async (req,res) => {
@@ -72,5 +73,29 @@ export const optInWhatsapp = async (req, res) => {
     } catch (error) {
         console.log("optInWhatsapp error", error);
         return res.status(500).json({ message: `Whatsapp opt-in error: ${error.message}` });
+    }
+}
+
+export const getAllUsers = async (req, res) => {
+    try {
+        // Fetch all users (exclude password)
+        const users = await User.find({}).select('-password').sort({ createdAt: -1 })
+        
+        // For each user, fetch their order count
+        const usersWithOrders = await Promise.all(users.map(async (user) => {
+            const orders = await Order.find({ userId: user._id.toString() })
+            const totalSpent = orders.reduce((sum, o) => sum + (o.amount || 0), 0)
+            return {
+                ...user.toObject(),
+                orderCount: orders.length,
+                totalSpent,
+                lastOrderDate: orders.length > 0 ? orders[orders.length - 1].date : null
+            }
+        }))
+        
+        return res.status(200).json(usersWithOrders)
+    } catch (error) {
+        console.log('getAllUsers error:', error)
+        return res.status(500).json({ message: `getAllUsers error: ${error.message}` })
     }
 }

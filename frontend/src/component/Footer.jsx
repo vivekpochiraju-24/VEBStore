@@ -36,12 +36,11 @@ function Footer() {
           </div>
 
           {/* Navigation Links */}
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-12 lg:col-span-2'>
-            <div className='grid grid-cols-2 gap-8'>
+          <div className='lg:col-span-2 grid grid-cols-2 gap-8'>
               <div className='space-y-6'>
                 <h3 className='text-sm font-black uppercase tracking-widest text-white/50'>Collections</h3>
                 <ul className='space-y-4'>
-                  {['Men Edition', 'Women Luxe', 'Kids Play', 'Accessories'].map(link => (
+                  {['Men Edition', 'Women Luxe', 'Kids Play'].map(link => (
                     <li key={link}>
                       <a href="/products" className='text-sm text-gray-400 hover:text-white font-semibold transition-all flex items-center gap-2 group'>
                         <span className='w-0 group-hover:w-4 h-[1.5px] bg-blue-600 transition-all duration-300'></span>
@@ -54,7 +53,7 @@ function Footer() {
               <div className='space-y-6'>
                 <h3 className='text-sm font-black uppercase tracking-widest text-white/50'>Company</h3>
                 <ul className='space-y-4'>
-                  {['About Story', 'Contact Hub', 'Careers', 'Latest News'].map(link => (
+                  {['About Story', 'Contact Hub'].map(link => (
                     <li key={link}>
                       <a href={`/${link.split(' ')[0].toLowerCase()}`} className='text-sm text-gray-400 hover:text-white font-semibold transition-all flex items-center gap-2 group'>
                         <span className='w-0 group-hover:w-4 h-[1.5px] bg-blue-600 transition-all duration-300'></span>
@@ -64,39 +63,23 @@ function Footer() {
                   ))}
                 </ul>
               </div>
-            </div>
           </div>
 
-          {/* Newsletter / Contact */}
+          {/* Contact Details */}
           <div className='space-y-8'>
-            <h3 className='text-sm font-black uppercase tracking-widest text-white/50'>Our Contact</h3>
+            <h3 className='text-sm font-black uppercase tracking-widest text-white/50'>Our HQ Portal</h3>
             <div className='space-y-6'>
-              <div className='flex items-center gap-4 group'>
-                <div className='w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-blue-600/20 transition-all'>
+              <div className='flex items-center gap-4'>
                   <Phone size={16} className='text-blue-500' />
-                </div>
-                <div>
-                  <p className='text-[10px] font-bold text-gray-500 uppercase tracking-widest'>Call us directly</p>
                   <p className='text-sm font-extrabold text-white'>+91 9603673436</p>
-                </div>
               </div>
-              <div className='flex items-center gap-4 group'>
-                <div className='w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-blue-600/20 transition-all'>
+              <div className='flex items-center gap-4'>
                   <Mail size={16} className='text-blue-500' />
-                </div>
-                <div>
-                  <p className='text-[10px] font-bold text-gray-500 uppercase tracking-widest'>Email Support</p>
-                  <p className='text-sm font-extrabold text-white'>care@vebstore.com</p>
-                </div>
+                  <p className='text-sm font-extrabold text-white'>support@vebstore.com</p>
               </div>
-              <div className='flex items-center gap-4 group'>
-                <div className='w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-blue-600/20 transition-all'>
+              <div className='flex items-center gap-4'>
                   <MapPin size={16} className='text-blue-500' />
-                </div>
-                <div>
-                  <p className='text-[10px] font-bold text-gray-500 uppercase tracking-widest'>HQ Location</p>
                   <p className='text-sm font-extrabold text-white'>B-Hub, Mumbai, India</p>
-                </div>
               </div>
             </div>
           </div>

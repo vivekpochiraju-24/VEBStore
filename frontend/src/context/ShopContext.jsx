@@ -14,6 +14,7 @@ function ShopContext({children}) {
     let {serverUrl} = useContext(authDataContext)
     let [cartItem, setCartItem] = useState({});
       let [loading,setLoading] = useState(false)
+    let [showWhatsapp, setShowWhatsapp] = useState(false)
     let currency = '₹';
     let delivery_fee = 40;
 
@@ -148,8 +149,10 @@ function ShopContext({children}) {
 
 
 
+    let [appliedCoins, setAppliedCoins] = useState(0);
+    
     let value = {
-      products, currency , delivery_fee,getProducts,search,setSearch,showSearch,setShowSearch,cartItem, addtoCart, getCartCount, setCartItem ,updateQuantity,getCartAmount,loading
+      products, currency , delivery_fee,getProducts,search,setSearch,showSearch,setShowSearch,cartItem, addtoCart, getCartCount, setCartItem ,updateQuantity,getCartAmount,loading, appliedCoins, setAppliedCoins, showWhatsapp, setShowWhatsapp
     }
   return (
     <div>

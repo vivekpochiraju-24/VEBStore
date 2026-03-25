@@ -1,0 +1,49 @@
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\netlify\functions\admin-login.js
+  Line 33:21 [Error] 'Buffer' is not defined. (no-undef)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\App.jsx
+  Line 14:26 [Error] 'toast' is defined but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\component\Sidebar.jsx
+  Line 29:8 [Warning] React Hook useEffect has a missing dependency: 'fetchStats'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\context\AdminContext.jsx
+  Line 5:14 [Warning] Fast refresh only works when a file only exports components. Move your React context(s) to a separate file. (react-refresh/only-export-components)
+  Line 61:8 [Warning] React Hook useEffect has a missing dependency: 'getAdmin'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\context\AuthContext.jsx
+  Line 3:14 [Warning] Fast refresh only works when a file only exports components. Move your React context(s) to a separate file. (react-refresh/only-export-components)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\context\ThemeContext.jsx
+  Line 1:32 [Error] 'useContext' is defined but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+  Line 3:14 [Warning] Fast refresh only works when a file only exports components. Move your React context(s) to a separate file. (react-refresh/only-export-components)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\Add.jsx
+  Line 71:13 [Error] 'result' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\ExchangeManagement.jsx
+  Line 50:43 [Warning] React Hook useEffect has a missing dependency: 'fetchExchanges'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+  Line 73:18 [Error] 'err' is defined but never used. (no-unused-vars)
+  Line 98:18 [Error] 'error' is defined but never used. (no-unused-vars)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\Home.jsx
+  Line 25:23 [Error] 'setAutoRefresh' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+  Line 28:9 [Warning] The 'fetchDashboardData' function makes the dependencies of useEffect Hook (at line 61) change on every render. To fix this, wrap the definition of 'fetchDashboardData' in its own useCallback() Hook. (react-hooks/exhaustive-deps)
+  Line 72:6 [Warning] React Hook useEffect has a missing dependency: 'fetchDashboardData'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\Lists.jsx
+  Line 24:10 [Error] 'categories' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+  Line 25:10 [Error] 'subCategories' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u. (no-unused-vars)
+  Line 223:6 [Warning] React Hook useEffect has missing dependencies: 'fetchAllCategories' and 'fetchList'. Either include them or remove the dependency array. (react-hooks/exhaustive-deps)
+  Line 562:39 [Error] 'index' is defined but never used. (no-unused-vars)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\MessageInbox.jsx
+  Line 20:8 [Warning] React Hook useEffect has a missing dependency: 'fetchMessages'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+  Line 50:18 [Error] 'error' is defined but never used. (no-unused-vars)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\Orders.jsx
+  Line 54:6 [Warning] React Hook useEffect has a missing dependency: 'fetchAllOrders'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)
+
+File: C:\Users\VIVEK\Downloads\VEBStore\5.oneCart\admin\src\pages\Users.jsx
+  Line 36:39 [Warning] React Hook useEffect has a missing dependency: 'fetchUsers'. Either include it or remove the dependency array. (react-hooks/exhaustive-deps)

@@ -7,8 +7,7 @@ import Nav from './component/Nav'
 import { userDataContext } from './context/UserContext'
 import { themeDataContext } from './context/ThemeContext'
 import About from './pages/About'
-import Collections from './pages/Collections'
-import Product from './pages/Product'
+import Products from './pages/Products'
 import Contact from './pages/Contact'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
@@ -20,11 +19,26 @@ import Ai from './component/Ai'
 import Profile from './pages/Profile'
 import EditProduct from './pages/EditProduct'
 import WhatsappModal from './component/WhatsappModal'
+import Exchange from './pages/Exchange'
+import MyExchanges from './pages/MyExchanges'
+import Support from './pages/Support'
 
 function App() {
-  let { userData } = useContext(userDataContext)
+  let { userData, loading } = useContext(userDataContext)
   let { isDark } = useContext(themeDataContext)
   let location = useLocation()
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-[#0f172a] text-slate-100' : 'bg-[#f8fafc] text-gray-900'}`}>
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="text-lg font-medium">Loading VEBStore...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-[#0f172a] text-slate-100' : 'bg-[#f8fafc] text-gray-900'}`}>
@@ -47,11 +61,10 @@ function App() {
         <Route path='/about'
           element={userData ? <About /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
-        <Route path='/collections'
-          element={userData ? <Collections /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
-
-        <Route path='/product'
-          element={userData ? <Product /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+        <Route path='/collections' element={<Navigate to="/products" />} />
+        <Route path='/product' element={<Navigate to="/products" />} />
+        <Route path='/products'
+          element={userData ? <Products /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='/contact'
           element={userData ? <Contact /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
@@ -68,11 +81,20 @@ function App() {
         <Route path='/order'
           element={userData ? <Order /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
+        <Route path='/exchange'
+          element={userData ? <Exchange /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/my-exchanges'
+          element={userData ? <MyExchanges /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
         <Route path='/profile'
           element={userData ? <Profile /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='/edit-product/:id'
           element={userData ? <EditProduct /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/support'
+          element={userData ? <Support /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

@@ -4,7 +4,7 @@ import Product from "../model/productModel.js"
 
 export const addProduct = async (req,res) => {
     try {
-        let {name,description,price,category,subCategory,sizes,fabric,suitableFor,bestseller} = req.body
+        let {name,description,price,category,subCategory,sizes,fabric,suitableFor,bestseller,exchangeEligible} = req.body
 
         let image1 = await uploadOnCloudinary(req.files.image1[0].path)
         let image2 = await uploadOnCloudinary(req.files.image2[0].path)
@@ -21,6 +21,7 @@ export const addProduct = async (req,res) => {
             fabric,
             suitableFor :JSON.parse(suitableFor),
             bestseller :bestseller === "true" ? true : false,
+            exchangeEligible :exchangeEligible === "true" ? true : false,
             date :Date.now(),
             image1,
             image2,
@@ -68,7 +69,7 @@ export const removeProduct = async (req,res) => {
 export const editProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, category, subCategory, sizes, fabric, suitableFor, bestseller, stock } = req.body;
+        const { name, description, price, category, subCategory, sizes, fabric, suitableFor, bestseller, stock, exchangeEligible } = req.body;
         
         const updateData = {};
         if (name) updateData.name = name;
@@ -81,6 +82,7 @@ export const editProduct = async (req, res) => {
         if (suitableFor) updateData.suitableFor = Array.isArray(suitableFor) ? suitableFor : JSON.parse(suitableFor);
         if (stock !== undefined) updateData.stock = Number(stock);
         if (bestseller !== undefined) updateData.bestseller = bestseller === "true" || bestseller === true;
+        if (exchangeEligible !== undefined) updateData.exchangeEligible = exchangeEligible === "true" || exchangeEligible === true;
         
         // Note: Image editing is omitted for simplicity unless an image was uploaded, but the requirement is just description mostly
         const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
@@ -137,9 +139,12 @@ export const getFilterOptions = async (req,res) => {
         });
         const suitableForTypes = [...new Set(allSuitableFor)];
         
+        const defaultFabrics = ['Cotton', 'Silk', 'Wool', 'Polyester', 'Linen'];
+        const defaultSuitableFor = ['Casual', 'Office', 'Party', 'School', 'Sports'];
+        
         res.json({
-            fabrics: fabricTypes,
-            suitableFor: suitableForTypes
+            fabrics: fabricTypes.length > 0 ? fabricTypes : defaultFabrics,
+            suitableFor: suitableForTypes.length > 0 ? suitableForTypes : defaultSuitableFor
         });
     } catch (error) {
         console.log("GetFilterOptions error", error);

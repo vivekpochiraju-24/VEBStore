@@ -9,6 +9,9 @@ import userRoutes from './routes/userRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 import cartRoutes from './routes/cartRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
+import exchangeRoutes from './routes/exchangeRoutes.js'
+import messageRoutes from './routes/messageRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
 
 let port = process.env.PORT || 8000
 
@@ -39,6 +42,9 @@ app.use("/api/user", userRoutes)
 app.use("/api/product", productRoutes)
 app.use("/api/cart", cartRoutes)
 app.use("/api/order", orderRoutes)
+app.use("/api/exchange", exchangeRoutes)
+app.use("/api/message", messageRoutes)
+app.use("/api/admin", adminRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {

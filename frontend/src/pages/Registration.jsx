@@ -65,136 +65,143 @@ function Registration() {
   };
 
   return (
-    <div className='min-h-screen bg-white flex'>
-      {/* Left Split */}
-      <div className='hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gray-900'>
-        <img
-          src={fashionBg}
-          alt="Fashion Lifestyle"
-          className='absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-overlay'
-        />
-        <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent' />
-        <div className='relative z-10 flex flex-col justify-end p-16 text-white h-full'>
-          <h1 className='text-5xl font-bold mb-4 tracking-tight leading-tight'>
-            Discover the New Standard of Elegance.
-          </h1>
-          <p className='text-lg text-gray-300 max-w-md'>
-            Join VEBStore to explore exclusive collections and premium fashion curation tailored just for you.
-          </p>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col'>
+      {/* Header */}
+      <div className='w-full h-16 bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center px-8 gap-3 cursor-pointer hover:bg-white/95 transition-all' onClick={() => navigate("/")}>
+        <div className='flex items-center gap-2'>
+          <div className='relative'>
+            <img className='w-8 h-8 object-contain' src={Logo} alt="VEBStore Logo" />
+            <div className='absolute -bottom-1 -right-1 w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full animate-pulse'></div>
+          </div>
+          <div className='flex flex-col'>
+            <h1 className='text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight'>VEBStore</h1>
+            <span className='text-[10px] text-blue-500 font-extrabold uppercase tracking-[0.2em]'>Premium Fashion</span>
+          </div>
         </div>
       </div>
 
-      {/* Right Split */}
-      <div className='w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16'>
+      {/* Main Content */}
+      <div className='flex-1 flex items-center justify-center px-4 py-8'>
         <div className='w-full max-w-md'>
-
-          <div className='flex items-center gap-3 cursor-pointer hover:opacity-80 transition-all mb-10' onClick={() => navigate("/")}>
-            <div className='relative'>
-              <img className='w-11 h-11 object-contain' src={Logo} alt="VEBStore Logo" />
-              <div className='absolute -bottom-1 -right-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white shadow-sm'></div>
-            </div>
-            <div className='flex flex-col'>
-              <h2 className='text-2xl font-black bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent leading-none mb-1'>VEBStore</h2>
-              <span className='text-[10px] font-extrabold text-blue-500 uppercase tracking-[0.2em]'>Premium Fashion</span>
-            </div>
-          </div>
-
-          <div className='mb-8'>
-            <h3 className='text-3xl font-bold text-gray-900 mb-2'>Create Account</h3>
-            <p className='text-gray-500'>Enter your details to get started.</p>
-          </div>
-
-          <form onSubmit={handleSignup} className='space-y-6'>
-            <button
-              type='button'
-              onClick={googleSignup}
-              className='w-full h-12 bg-white border border-gray-300 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 group shadow-sm'
-            >
-              <img src={googleIcon} alt="Google" className='w-5 h-5' />
-              <span className='text-sm font-semibold text-gray-700 group-hover:text-gray-900'>Sign up with Google</span>
-            </button>
-
-            <div className='flex items-center gap-4 py-2'>
-              <div className='flex-1 h-px bg-gray-200'></div>
-              <span className='text-xs font-semibold text-gray-400 uppercase tracking-widest'>Or continue with</span>
-              <div className='flex-1 h-px bg-gray-200'></div>
+          {/* Signup Form Card */}
+          <div className='bg-white rounded-2xl shadow-xl border border-gray-100 p-8'>
+            {/* Welcome Section */}
+            <div className='text-center mb-8'>
+              <h2 className='text-2xl font-bold text-gray-900 mb-2'>Create Account</h2>
+              <p className='text-base text-gray-600'>Join the VEBStore elite community</p>
             </div>
 
-            <div className='space-y-4'>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="name"
-                  className='peer w-full h-14 border border-gray-300 rounded-xl px-4 pt-4 pb-1 text-base text-gray-900 outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all bg-white placeholder-transparent'
-                  placeholder='Full Name'
-                  required
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                />
-                <label htmlFor="name" className='absolute left-4 top-2 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-gray-900'>Full Name</label>
+            <form onSubmit={handleSignup} className='space-y-6'>
+              {/* Google Signup Button */}
+              <button 
+                type='button'
+                onClick={googleSignup}
+                className='w-full h-11 bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center gap-3 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 group'
+                disabled={loading}
+              >
+                <img src={googleIcon} alt="Google" className='w-5 h-5' />
+                <span className='text-sm font-medium text-gray-700 group-hover:text-gray-900'>Continue with Google</span>
+              </button>
+
+              {/* Divider */}
+              <div className='flex items-center gap-4'>
+                <div className='flex-1 h-px bg-gray-200'></div>
+                <span className='text-xs font-semibold text-gray-500 uppercase tracking-wider'>Or</span>
+                <div className='flex-1 h-px bg-gray-200'></div>
               </div>
 
-              <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  className='peer w-full h-14 border border-gray-300 rounded-xl px-4 pt-4 pb-1 text-base text-gray-900 outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all bg-white placeholder-transparent'
-                  placeholder='Email Address'
-                  required
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                />
-                <label htmlFor="email" className='absolute left-4 top-2 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-gray-900'>Email Address</label>
-              </div>
-
-              <div className="relative">
-                <input
-                  type="tel"
-                  id="phone"
-                  className='peer w-full h-14 border border-gray-300 rounded-xl px-4 pt-4 pb-1 text-base text-gray-900 outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all bg-white placeholder-transparent'
-                  placeholder='+1234567890'
-                  onChange={(e) => setPhone(e.target.value)}
-                  value={phone}
-                />
-                <label htmlFor="phone" className='absolute left-4 top-2 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-gray-900'>Phone (Optional)</label>
-              </div>
-
-              <div className="relative">
-                <input
-                  type={show ? "text" : "password"}
-                  id="password"
-                  className='peer w-full h-14 border border-gray-300 rounded-xl px-4 pr-12 pt-4 pb-1 text-base text-gray-900 outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-all bg-white placeholder-transparent'
-                  placeholder='Password'
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                />
-                <label htmlFor="password" className='absolute left-4 top-2 text-xs font-medium text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-2 peer-focus:text-xs peer-focus:text-gray-900'>Password</label>
-                <button
-                  type='button'
-                  tabIndex="-1"
-                  className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors'
-                  onClick={() => setShow(!show)}
+              {/* Form Fields */}
+              <div className='space-y-4'>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>Full Name</label>
+                  <input 
+                    type="text" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className='w-full h-11 border rounded-lg px-4 text-sm outline-none transition-all border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                    placeholder='Enter your full name' 
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>Email Address</label>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className='w-full h-11 border rounded-lg px-4 text-sm outline-none transition-all border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                    placeholder='Enter your email' 
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>Phone Number (Optional)</label>
+                  <input 
+                    type="tel" 
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className='w-full h-11 border rounded-lg px-4 text-sm outline-none transition-all border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                    placeholder='+1234567890' 
+                    disabled={loading}
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-2'>Password</label>
+                  <div className='relative'>
+                    <input 
+                      type={show ? "text" : "password"} 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className='w-full h-11 border rounded-lg px-4 pr-12 text-sm outline-none transition-all border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                      placeholder='Create a password' 
+                      required
+                      disabled={loading}
+                    />
+                    <button 
+                      type='button'
+                      className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors' 
+                      onClick={() => setShow(!show)}
+                      disabled={loading}
+                    >
+                      {show ? <IoEye size={18} /> : <IoEyeOutline size={18} />}
+                    </button>
+                  </div>
+                </div>
+                
+                {/* Signup Button */}
+                <button 
+                  type='submit'
+                  className='w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-4'
+                  disabled={loading}
                 >
-                  {show ? <IoEye size={22} /> : <IoEyeOutline size={22} />}
+                  {loading ? (
+                    <div className='flex items-center justify-center'>
+                      <Loading />
+                    </div>
+                  ) : "Create Account"}
                 </button>
+                
+                {/* Sign In Link */}
+                <div className='text-center pt-4 border-t border-gray-100'>
+                  <p className='text-sm text-gray-600'>
+                    Already have an account? 
+                    <Link 
+                      to="/login" 
+                      className='text-blue-600 font-semibold cursor-pointer hover:text-blue-700 hover:underline ml-1'
+                    >
+                      Sign In
+                    </Link>
+                  </p>
+                </div>
               </div>
-            </div>
+            </form>
+          </div>
 
-            <button
-              type='submit'
-              className='w-full h-14 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 active:scale-[0.98] transition-all duration-200 shadow-md flex items-center justify-center'
-            >
-              {loading ? <Loading /> : "Create Account"}
-            </button>
-
-            <p className='text-center text-sm text-gray-600 mt-6'>
-              Already have an account?{' '}
-              <Link to="/login" className='font-bold text-gray-900 hover:underline'>
-                Sign In
-              </Link>
-            </p>
-          </form>
+          <div className='text-center mt-6 text-xs text-gray-500'>
+            <p>By signing up, you agree to our Terms of Service and Privacy Policy</p>
+          </div>
         </div>
       </div>
     </div>

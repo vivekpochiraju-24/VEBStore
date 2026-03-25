@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Logo from "../assets/logo.png";
 import googleIcon from '../assets/google.png';
 import fashionBg from '../assets/fashion_login_bg.png';
@@ -15,7 +15,7 @@ import Loading from '../component/Loading';
 function Login() {
   const [show, setShow] = useState(false);
   const { serverUrl } = useContext(authDataContext);
-  const { getCurrentUser } = useContext(userDataContext);
+  const { getCurrentUser, userData } = useContext(userDataContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -27,6 +27,13 @@ function Login() {
   const [newPassword, setNewPassword] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (userData) {
+      navigate("/");
+    }
+  }, [userData, navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,9 +41,17 @@ function Login() {
       const result = await axios.post(serverUrl + '/api/auth/login', {
         email, password
       }, { withCredentials: true });
+      
+      // Wait for getCurrentUser to complete
       await getCurrentUser();
+      
       toast.success("User Login Successful");
-      navigate("/");
+      
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        navigate("/");
+      }, 100);
+      
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || "User Login Failed");
@@ -53,9 +68,17 @@ function Login() {
         name: user.displayName,
         email: user.email
       }, { withCredentials: true });
+      
+      // Wait for getCurrentUser to complete
       await getCurrentUser();
+      
       toast.success("Google Login Successful");
-      navigate("/");
+      
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        navigate("/");
+      }, 100);
+      
     } catch (error) {
       console.error(error);
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') return;

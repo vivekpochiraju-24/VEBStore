@@ -50,6 +50,14 @@ const productSchema = new mongoose.Schema({
         type:Array,
         required:false
     },
+    stock:{
+        type:Number,
+        required:true
+    },
+    exchangeEligible:{
+        type:Boolean,
+        default:false
+    },
     date:{
         type:Number,
         required:true

@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import axios from 'axios'
 import {
     BarChart3,
     PlusCircle,
@@ -7,21 +8,43 @@ import {
     ClipboardList,
     Settings,
     HelpCircle,
-    UserCircle,
     PackageSearch,
-    RefreshCw
+    RefreshCw,
+    Users,
+    MessageSquare
 } from 'lucide-react'
 import { themeDataContext } from '../context/ThemeContext'
 
 function Sidebar() {
     const { isDark } = useContext(themeDataContext)
+    const [stats, setStats] = useState({ pendingOrders: 0, unrepliedMessages: 0, newUsers: 0 })
     const dk = isDark
+
+    const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"
+
+    useEffect(() => {
+        fetchStats()
+        const interval = setInterval(fetchStats, 60000) // update every minute
+        return () => clearInterval(interval)
+    }, [])
+
+    const fetchStats = async () => {
+        try {
+            const response = await axios.get(serverUrl + '/api/admin/stats', { withCredentials: true })
+            setStats(response.data)
+        } catch (error) {
+            console.error("fetchStats error", error)
+        }
+    }
 
     const menuItems = [
         { name: 'Dashboard', path: '/', icon: <BarChart3 size={20} /> },
         { name: 'Add Items', path: '/add', icon: <PlusCircle size={20} /> },
         { name: 'List Items', path: '/lists', icon: <LayoutList size={20} /> },
-        { name: 'Orders', path: '/orders', icon: <ClipboardList size={20} /> },
+        { name: 'Orders', path: '/orders', icon: <ClipboardList size={20} />, count: stats.pendingOrders },
+        { name: 'Exchanges', path: '/exchange-management', icon: <RefreshCw size={20} /> },
+        { name: 'Inbox', path: '/messages', icon: <MessageSquare size={20} />, count: stats.unrepliedMessages },
+        { name: 'Users', path: '/users', icon: <Users size={20} />, count: stats.newUsers },
     ]
 
     const utilityItems = [
@@ -65,7 +88,7 @@ function Item({ item, dk }) {
         <NavLink
             to={item.path}
             className={({ isActive }) => `
-        flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-[13px] transition-all duration-300 group
+        flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold text-[13px] transition-all duration-300 group
         ${isActive
                     ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20 active:scale-95'
                     : dk 
@@ -74,10 +97,19 @@ function Item({ item, dk }) {
                 }
       `}
         >
-            <div className={`transition-transform duration-500 group-hover:scale-110 ${dk && 'group-hover:text-blue-400'}`}>
-                {item.icon}
+            <div className='flex items-center gap-3'>
+                <div className={`transition-transform duration-500 group-hover:scale-110 ${dk && 'group-hover:text-blue-400'}`}>
+                    {item.icon}
+                </div>
+                <span className='tracking-tight'>{item.name}</span>
             </div>
-            <span className='tracking-tight'>{item.name}</span>
+            {item.count > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-[9px] font-black border transition-all ${
+                    dk ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-red-500 text-white border-white shadow-sm'
+                }`}>
+                    {item.count > 99 ? '99+' : item.count}
+                </span>
+            )}
         </NavLink>
     )
 }

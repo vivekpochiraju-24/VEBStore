@@ -5,9 +5,11 @@ import { authDataContext } from '../context/AuthContext'
 import { themeDataContext } from '../context/ThemeContext'
 import Card from '../component/Card'
 import { LuSettings2 } from "react-icons/lu"
+import { CiSearch } from "react-icons/ci"
+import { X, ChevronDown } from 'lucide-react'
 import axios from 'axios'
 
-function Collections() {
+function Products() {
   const { isDark } = useContext(themeDataContext)
   const { serverUrl } = useContext(authDataContext)
   const dk = isDark
@@ -89,7 +91,6 @@ function Collections() {
     }
     if (suitableFor.length > 0) {
       productCopy = productCopy.filter(item => {
-        // Check if any of the item's suitableFor options match the selected ones
         const itemSuitableFor = Array.isArray(item.suitableFor) ? item.suitableFor : [item.suitableFor];
         return suitableFor.some(selected => itemSuitableFor.includes(selected));
       })
@@ -144,9 +145,7 @@ function Collections() {
                 </span>
               )}
             </p>
-            <svg className={`h-4 sm:hidden transition-transform ${showFilter ? 'rotate-90' : ''} ${dk ? 'text-slate-400' : 'text-gray-500'}`} fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-            </svg>
+            <ChevronDown className={`h-4 w-4 sm:hidden transition-transform ${showFilter ? 'rotate-180' : ''} ${dk ? 'text-slate-400' : 'text-gray-500'}`} />
           </div>
 
           <div className={`transition-all duration-300 overflow-hidden ${showFilter ? 'max-h-[1000px] opacity-100' : 'max-h-0 sm:max-h-[1000px] opacity-0 sm:opacity-100'}`}>
@@ -155,9 +154,6 @@ function Collections() {
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <div className="flex items-center justify-between mb-3">
                 <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Categories</p>
-                <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
-                  3 options
-                </span>
               </div>
               <div className='flex flex-col gap-2'>
                 {['Men', 'Women', 'Kids'].map((cat) => (
@@ -178,9 +174,6 @@ function Collections() {
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
               <div className="flex items-center justify-between mb-3">
                 <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Product Type</p>
-                <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
-                  3 options
-                </span>
               </div>
               <div className='flex flex-col gap-2'>
                 {['TopWear', 'BottomWear', 'WinterWear'].map((type) => (
@@ -199,64 +192,38 @@ function Collections() {
 
             {/* Fabric Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between mb-3">
-                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
-                {filterOptions.fabrics.length > 0 && (
-                  <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
-                    {filterOptions.fabrics.length} options
-                  </span>
-                )}
+              <p className={`text-sm font-semibold tracking-wide uppercase mb-3 ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Fabric Type</p>
+              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
+                {filterOptions.fabrics.map((fabricType) => (
+                  <label key={fabricType} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={fabricType}
+                      onChange={toggleFabric}
+                    />
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
+                  </label>
+                ))}
               </div>
-              {filterOptions.fabrics.length > 0 ? (
-                <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
-                  {filterOptions.fabrics.map((fabricType) => (
-                    <label key={fabricType} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
-                      <input
-                        className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                        type="checkbox"
-                        value={fabricType}
-                        onChange={toggleFabric}
-                      />
-                      <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{fabricType}</span>
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <div className={`text-sm ${dk ? 'text-slate-500' : 'text-gray-400'} italic`}>
-                  No fabric types available
-                </div>
-              )}
             </div>
 
             {/* Suitable For Filter */}
             <div className={`pb-4 mb-4 border-b ${dk ? 'border-slate-700' : 'border-gray-100'}`}>
-              <div className="flex items-center justify-between mb-3">
-                <p className={`text-sm font-semibold tracking-wide uppercase ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
-                {filterOptions.suitableFor.length > 0 && (
-                  <span className={`text-xs px-2 py-1 rounded-full ${dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-600'}`}>
-                    {filterOptions.suitableFor.length} options
-                  </span>
-                )}
+              <p className={`text-sm font-semibold tracking-wide uppercase mb-3 ${dk ? 'text-slate-300' : 'text-gray-900'}`}>Suitable For</p>
+              <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
+                {filterOptions.suitableFor.map((occasion) => (
+                  <label key={occasion} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
+                    <input
+                      className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
+                      type="checkbox"
+                      value={occasion}
+                      onChange={toggleSuitableFor}
+                    />
+                    <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
+                  </label>
+                ))}
               </div>
-              {filterOptions.suitableFor.length > 0 ? (
-                <div className='flex flex-col gap-2 max-h-40 overflow-y-auto pr-2'>
-                  {filterOptions.suitableFor.map((occasion) => (
-                    <label key={occasion} className='flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-blue-50/50 transition-colors'>
-                      <input
-                        className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer'
-                        type="checkbox"
-                        value={occasion}
-                        onChange={toggleSuitableFor}
-                      />
-                      <span className={`text-[14px] transition-colors group-hover:text-blue-600 ${dk ? 'text-slate-400' : 'text-gray-600'}`}>{occasion}</span>
-                    </label>
-                  ))}
-                </div>
-              ) : (
-                <div className={`text-sm ${dk ? 'text-slate-500' : 'text-gray-400'} italic`}>
-                  No suitable options available
-                </div>
-              )}
             </div>
 
             {/* Clear Filters Button */}
@@ -287,50 +254,40 @@ function Collections() {
         <div className='mb-8'>
           <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6'>
             <div>
-              <Title text1={'ALL'} text2={'PRODUCTS'} />
-              <p className={`text-sm mt-1 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Explore our carefully curated premium collections</p>
+              <Title text1={'ELITE'} text2={'PRODUCTS'} />
+              <p className={`text-sm mt-1 font-bold ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Premium collection for a realistic lifestyle</p>
             </div>
 
             {/* Search and Sort Controls */}
             <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-              {/* Results Count (Desktop Only) */}
               <p className={`hidden lg:block text-xs font-black uppercase tracking-widest ${dk ? 'text-slate-500' : 'text-gray-400'}`}>
                 Showing <span className={dk ? 'text-white' : 'text-gray-900'}>{filterProduct.length}</span> Results
               </p>
 
-              {/* Search Bar */}
               <div className="relative group flex-shrink-0">
                 <input
                   type="text"
-                  placeholder="Filter by name..."
+                  placeholder="Filter name..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className={`pl-11 pr-11 py-3 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all w-full sm:w-72 border ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-200 placeholder:text-slate-500 hover:border-slate-600' : 'bg-white border-gray-200 text-gray-700 placeholder:text-gray-400 hover:border-gray-300 shadow-sm shadow-gray-200/50'}`}
                 />
                 <CiSearch className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${dk ? 'text-slate-500' : 'text-gray-400'}`} />
                 {search && (
-                   <button 
-                    onClick={() => setSearch('')}
-                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-slate-200/20 transition-all ${dk ? 'text-slate-500 hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}
-                   >
-                     <X size={14} />
-                   </button>
+                   <button onClick={() => setSearch('')} className={`absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-slate-200/20 transition-all ${dk ? 'text-slate-500 hover:text-white' : 'text-gray-400 hover:text-gray-600'}`}><X size={14} /></button>
                 )}
               </div>
 
-              {/* Sort Dropdown */}
               <div className="relative flex-shrink-0">
                 <select
                   onChange={(e) => SetSortType(e.target.value)}
-                  className={`appearance-none font-black text-[11px] uppercase tracking-wider px-5 py-3.5 rounded-2xl shadow-sm outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 cursor-pointer pr-12 transition-all border ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-200 hover:border-slate-600' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
+                  className={`appearance-none font-black text-[11px] uppercase tracking-wider px-5 py-3.5 rounded-2xl shadow-sm border ${dk ? 'bg-[#1e293b] border-slate-700 text-slate-200 hover:border-slate-600' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}
                 >
                   <option value="relavent">Relevant</option>
-                  <option value="low-high">Price: Low to High</option>
-                  <option value="high-low">Price: High to Low</option>
+                  <option value="low-high">Price: Low-High</option>
+                  <option value="high-low">Price: High-Low</option>
                 </select>
-                <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
-                  <ChevronDown size={16} />
-                </div>
+                <ChevronDown className={`pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 ${dk ? 'text-slate-400' : 'text-gray-500'}`} />
               </div>
             </div>
           </div>
@@ -338,26 +295,18 @@ function Collections() {
 
         {/* Products Grid */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'>
-          {filterProduct && filterProduct.length > 0 && filterProduct.map((item, index) => (
+          {filterProduct.length > 0 ? filterProduct.map((item, index) => (
             <Card key={index} id={item._id} name={item.name} image={item.image1} price={item.price} fabric={item.fabric} suitableFor={item.suitableFor} />
-          ))}
-        </div>
-
-        {/* No Products Found */}
-        {filterProduct.length === 0 && (
-          <div className='flex flex-col items-center justify-center py-20'>
-            <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${dk ? 'bg-slate-800' : 'bg-gray-100'}`}>
-              <svg className={`w-8 h-8 ${dk ? 'text-slate-600' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+          )) : (
+            <div className='col-span-full py-20 text-center opacity-50'>
+                <p className='text-lg font-bold'>No products matched your criteria</p>
+                <button onClick={() => { setSearch(''); setCaterory([]); setSubCaterory([]); setFabric([]); setSuitableFor([]); }} className='text-blue-500 underline mt-2'>Clear all filters</button>
             </div>
-            <h3 className={`text-lg font-semibold mb-2 ${dk ? 'text-white' : 'text-gray-900'}`}>No products found</h3>
-            <p className={`text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Try adjusting your filters or search terms</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
-export default Collections
+export default Products

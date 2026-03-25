@@ -14,7 +14,21 @@ export const getAdminStats = async (req, res) => {
 
         const recentOrders = await Order.find().sort({ createdAt: -1 }).limit(5);
 
-        // Chart Data (last 6 months)
+        // Advanced Statistics
+        const statusDistribution = await Order.aggregate([
+            { $group: { _id: "$status", value: { $sum: "$amount" }, count: { $sum: 1 } } }
+        ]);
+
+        const customerTypeDistribution = await Order.aggregate([
+            { $group: { _id: "$userId", orderCount: { $sum: 1 }, totalSpent: { $sum: "$amount" } } },
+            { $group: { 
+                _id: { $cond: [{ $gt: ["$orderCount", 1] }, "Returning", "New"] },
+                value: { $sum: "$totalSpent" },
+                count: { $sum: 1 }
+            } }
+        ]);
+
+        // Monthly Chart Data (last 6 months)
         const chartDataRaw = await Order.aggregate([
             {
                 $match: {
@@ -25,17 +39,27 @@ export const getAdminStats = async (req, res) => {
                 $group: {
                     _id: { $month: "$createdAt" },
                     sales: { $sum: "$amount" },
-                    orders: { $sum: 1 }
+                    orders: { $sum: 1 },
+                    products: { 
+                        $sum: { 
+                            $reduce: { 
+                                input: "$items", 
+                                initialValue: 0, 
+                                in: { $add: ["$$value", { $ifNull: ["$$this.quantity", 1] }] } 
+                            } 
+                        } 
+                    }
                 }
             },
             { $sort: { "_id": 1 } }
         ]);
 
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthNamesFull = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const chartData = chartDataRaw.map(item => ({
-            month: monthNames[item._id - 1],
+            month: monthNamesFull[item._id - 1],
             sales: item.sales,
-            orders: item.orders
+            orders: item.orders,
+            products: item.products
         }));
 
         res.status(200).json({
@@ -46,7 +70,9 @@ export const getAdminStats = async (req, res) => {
                 returnsCancellations
             },
             recentOrders,
-            chartData
+            chartData,
+            statusDistribution: statusDistribution.map(d => ({ name: d._id, value: d.value, count: d.count })),
+            customerTypeDistribution: customerTypeDistribution.map(d => ({ name: d._id, value: d.value, count: d.count }))
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -4,20 +4,24 @@ import axios from 'axios'
 
 export const userDataContext = createContext()
 function UserContext({children}) {
-    let [userData,setUserData] = useState("")
+    let [userData,setUserData] = useState(null)
+    let [loading, setLoading] = useState(true)
     let {serverUrl} = useContext(authDataContext)
 
 
    const getCurrentUser = async () => {
         try {
+            setLoading(true)
             let result = await axios.get(serverUrl + "/api/user/getcurrentuser",{withCredentials:true})
 
             setUserData(result.data)
-            console.log(result.data)
+            console.log("User data loaded:", result.data)
 
         } catch (error) {
             setUserData(null)
-            console.log(error)
+            console.log("No user logged in:", error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -25,10 +29,8 @@ function UserContext({children}) {
      getCurrentUser()
     },[])
 
-
-
     let value = {
-     userData,setUserData,getCurrentUser
+     userData,setUserData,getCurrentUser,loading
     }
     
    

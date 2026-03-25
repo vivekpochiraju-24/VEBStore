@@ -4,9 +4,16 @@ import Sidebar from '../component/Sidebar'
 import { authDataContext } from '../context/AuthContext'
 import axios from 'axios'
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
+  BarChart, Bar, AreaChart, Area, CartesianGrid, XAxis, YAxis
 } from 'recharts';
 import { ShoppingBag, Users, Package, RefreshCcw, TrendingUp, Calendar, ArrowUpRight } from 'lucide-react';
+
+const PIE_COLORS = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+  '#8b5cf6', '#06b6d4', '#f97316', '#ec4899',
+  '#14b8a6', '#6366f1', '#84cc16', '#fb923c'
+]
 
 function Home() {
   const [stats, setStats] = useState({
@@ -116,52 +123,178 @@ function Home() {
 
           {/* Charts Row */}
           <div className='grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10'>
-            <div className='bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 animate-fade-in-up delay-100'>
-              <div className='flex items-center justify-between mb-8'>
-                <h3 className='text-lg font-bold text-gray-900'>Sales Performance</h3>
-                <span className='px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full uppercase tracking-wider'>Revenue (INR)</span>
+            {/* Customer Performance Donut */}
+            <div className='bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 animate-fade-in-up delay-100 relative'>
+              <div className='flex items-center justify-between mb-6'>
+                <div>
+                  <h3 className='text-lg font-bold text-gray-900'>Customer Loyalty</h3>
+                  <p className='text-xs text-gray-400 font-medium mt-0.5'>Revenue share: New vs Returning</p>
+                </div>
+                <span className='px-3 py-1 bg-purple-50 text-purple-600 text-[10px] font-bold rounded-full uppercase tracking-wider'>Loyalty</span>
               </div>
-              <div className='h-[350px]'>
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.15} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                    <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} tickFormatter={(v) => `₹${v}`} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #f1f5f9', borderRadius: '16px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
-                      itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
-                    />
-                    <Area type="monotone" dataKey="sales" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorSales)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div className='h-[300px] relative'>
+                {stats.customerTypeDistribution && stats.customerTypeDistribution.length > 0 ? (
+                  <>
+                    {/* Center Label */}
+                    <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Total</p>
+                        <p className="text-xl font-black text-gray-900">₹{(stats.customerTypeDistribution.reduce((acc, curr) => acc + curr.value, 0) / 1000).toFixed(1)}K</p>
+                    </div>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                        <Pie
+                            data={stats.customerTypeDistribution}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="45%"
+                            innerRadius={75}
+                            outerRadius={105}
+                            paddingAngle={8}
+                            strokeWidth={0}
+                            animationBegin={0}
+                            animationDuration={1500}
+                        >
+                            {stats.customerTypeDistribution.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip
+                            contentStyle={{ backgroundColor: '#fff', border: '1px solid #f1f5f9', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}
+                            itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+                            formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Revenue']}
+                        />
+                        <Legend iconType='circle' iconSize={8} formatter={(value) => <span style={{ color: '#64748b', fontWeight: 600, fontSize: 12 }}>{value}</span>} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                  </>
+                ) : (
+                  <DashboardEmpty icon="👥" text="No customer data" />
+                )}
               </div>
             </div>
 
-            <div className='bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 animate-fade-in-up delay-100'>
-              <div className='flex items-center justify-between mb-8'>
-                <h3 className='text-lg font-bold text-gray-900'>Order Volumes</h3>
-                <span className='px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-full uppercase tracking-wider'>Transactions</span>
+            {/* Order Status Donut */}
+            <div className='bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 animate-fade-in-up delay-100 relative'>
+              <div className='flex items-center justify-between mb-6'>
+                <div>
+                  <h3 className='text-lg font-bold text-gray-900'>Operations Distribution</h3>
+                  <p className='text-xs text-gray-400 font-medium mt-0.5'>Revenue grouped by order status</p>
+                </div>
+                <span className='px-3 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold rounded-full uppercase tracking-wider'>Operations</span>
               </div>
-              <div className='h-[350px]'>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                    <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} dy={10} />
-                    <YAxis stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      cursor={{ fill: '#f8fafc' }}
-                      contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #f1f5f9', borderRadius: '16px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
-                      itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
-                    />
-                    <Bar dataKey="orders" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className='h-[300px] relative'>
+                {stats.statusDistribution && stats.statusDistribution.length > 0 ? (
+                  <>
+                    {/* Center Label */}
+                    <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Revenue</p>
+                        <p className="text-xl font-black text-gray-900">₹{(stats.statusDistribution.reduce((acc, curr) => acc + curr.value, 0) / 1000).toFixed(1)}K</p>
+                    </div>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                        <Pie
+                            data={stats.statusDistribution}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="45%"
+                            innerRadius={75}
+                            outerRadius={105}
+                            paddingAngle={8}
+                            strokeWidth={0}
+                            animationBegin={200}
+                            animationDuration={1500}
+                        >
+                            {stats.statusDistribution.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={PIE_COLORS[(index + 4) % PIE_COLORS.length]} />
+                            ))}
+                        </Pie>
+                        <Tooltip
+                            contentStyle={{ backgroundColor: '#fff', border: '1px solid #f1f5f9', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}
+                            itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+                            formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Revenue']}
+                        />
+                        <Legend iconType='circle' iconSize={8} formatter={(value) => <span style={{ color: '#64748b', fontWeight: 600, fontSize: 12 }}>{value}</span>} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                  </>
+                ) : (
+                  <DashboardEmpty icon="📦" text="No order data" />
+                )}
+              </div>
+            </div>
+
+            {/* Monthly Trend Section */}
+            <div className='col-span-1 xl:col-span-2 bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 animate-fade-in-up delay-100'>
+              <div className='flex items-center justify-between mb-8'>
+                <div>
+                  <h3 className='text-lg font-bold text-gray-900'>Commercial Performance</h3>
+                  <p className='text-xs text-gray-400 font-medium mt-0.5'>Growth in monthly transactions vs items sold</p>
+                </div>
+                <div className='flex items-center gap-6 text-right'>
+                  <div className='hidden sm:block'>
+                    <p className='text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1'>Volume Peek</p>
+                    <p className='text-[13px] font-black'>
+                        <span className='text-blue-600'>{stats.chartData?.[stats.chartData.length-1]?.orders || 0} Orders</span> • 
+                        <span className='text-emerald-600 ml-1.5'>{stats.chartData?.[stats.chartData.length-1]?.products || 0} Items</span>
+                    </p>
+                  </div>
+                  <span className='px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-full uppercase tracking-wider'>Real-time Growth</span>
+                </div>
+              </div>
+              <div className='h-[350px] w-full'>
+                {stats.chartData && stats.chartData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorProducts" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis stroke="#94a3b8" fontSize={11} fontWeight={600} axisLine={false} tickLine={false} />
+                      <Tooltip
+                        contentStyle={{ 
+                            backgroundColor: '#ffffff', 
+                            border: '1px solid #f1f5f9', 
+                            borderRadius: '16px', 
+                            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+                            padding: '12px 16px'
+                        }}
+                        itemStyle={{ fontWeight: '900', fontSize: '13px' }}
+                        labelStyle={{ color: '#64748b', marginBottom: '8px', fontSize: '10px', textTransform: 'uppercase', fontWeight: '800', letterSpacing: '1px' }}
+                      />
+                      <Legend verticalAlign='top' align='right' iconType='circle' iconSize={8} height={36} formatter={(value) => <span className='text-[10px] font-black uppercase tracking-wider text-gray-500'>{value}</span>} />
+                      <Area 
+                        type="monotone" 
+                        dataKey="orders" 
+                        name="Orders"
+                        stroke="#3b82f6" 
+                        strokeWidth={3}
+                        fillOpacity={1} 
+                        fill="url(#colorOrders)" 
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="products" 
+                        name="Items Sold"
+                        stroke="#10b981" 
+                        strokeWidth={3}
+                        fillOpacity={1} 
+                        fill="url(#colorProducts)" 
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <DashboardEmpty icon="📈" text="No trend data" />
+                )}
               </div>
             </div>
           </div>
@@ -261,6 +394,20 @@ function getStatusColor(status) {
     case 'Shipped': return 'bg-purple-50 text-purple-600 border border-purple-100';
     default: return 'bg-amber-50 text-amber-600 border border-amber-100';
   }
+}
+
+function DashboardEmpty({ icon, text }) {
+  return (
+    <div className='h-full flex flex-col items-center justify-center gap-4'>
+      <div className='w-24 h-24 rounded-full border-4 border-dashed border-gray-100 flex items-center justify-center text-3xl opacity-50'>
+        {icon}
+      </div>
+      <div className='text-center'>
+        <p className='font-bold text-gray-400'>{text}</p>
+        <p className='text-[10px] text-gray-300 uppercase tracking-widest mt-1'>Waiting for activity</p>
+      </div>
+    </div>
+  )
 }
 
 export default Home

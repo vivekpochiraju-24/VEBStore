@@ -1,12 +1,32 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { themeDataContext } from '../context/ThemeContext'
+import { authDataContext } from '../context/AuthContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 function NewLetterBox() {
   const { isDark } = useContext(themeDataContext)
+  const { serverUrl } = useContext(authDataContext)
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
   const dk = isDark
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!email) return;
+    
+    setLoading(true)
+    try {
+        const response = await axios.post(`${serverUrl}/api/admin/subscribe`, { email });
+        if (response.data.success) {
+            toast.success("💎 Welcome to the Elite! Check your email for your 20% off code.");
+            setEmail("");
+        }
+    } catch (error) {
+        toast.error("Subscription failed. Please try again.");
+    } finally {
+        setLoading(false)
+    }
   }
 
   return (
@@ -17,18 +37,22 @@ function NewLetterBox() {
       <p className={`md:text-lg text-base text-center font-medium px-6 max-w-2xl mt-2 ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
         Subscribe now and enjoy exclusive savings, special deals, and early access to new collections.
       </p>
-      <form action="" onSubmit={handleSubmit} className='w-full flex sm:flex-row flex-col items-center justify-center mt-8 gap-4 px-6'>
+      <form onSubmit={handleSubmit} className='w-full flex sm:flex-row flex-col items-center justify-center mt-8 gap-4 px-6'>
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder='Enter your email address'
           className={`w-full sm:w-[450px] h-14 px-6 rounded-2xl shadow-sm border focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all outline-none font-medium ${dk ? 'bg-[#0f172a] border-slate-600 text-white placeholder:text-slate-500' : 'bg-white border-gray-200 text-gray-900 placeholder:text-gray-400'}`}
           required
+          disabled={loading}
         />
         <button
           type='submit'
-          className={`h-14 px-10 font-bold rounded-2xl transition-all active:scale-[0.98] shadow-md tracking-wide w-full sm:w-auto ${dk ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20' : 'bg-gray-900 text-white hover:bg-black shadow-gray-900/10'}`}
+          disabled={loading}
+          className={`h-14 px-10 font-bold rounded-2xl transition-all active:scale-[0.98] shadow-md tracking-wide w-full sm:w-auto flex items-center justify-center ${dk ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20' : 'bg-gray-900 text-white hover:bg-black shadow-gray-900/10'} ${loading ? 'opacity-70' : ''}`}
         >
-          SUBSCRIBE
+          {loading ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
         </button>
       </form>
     </div>

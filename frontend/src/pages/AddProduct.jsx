@@ -58,10 +58,12 @@ function AddProduct() {
 
   const handleImageChange = (e) => {
     const { name, files } = e.target
-    setImages(prev => ({
-      ...prev,
-      [name]: files[0]
-    }))
+    if (files && files.length > 0) {
+      setImages(prev => ({
+        ...prev,
+        [name]: files[0]
+      }))
+    }
   }
 
   const handleSubmit = async (e) => {
