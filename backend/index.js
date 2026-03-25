@@ -16,6 +16,7 @@ import adminRoutes from './routes/adminRoutes.js'
 let port = process.env.PORT || 8000
 
 let app = express()
+app.set("trust proxy", 1);
 
 // Middleware
 app.use(express.json({ limit: '10mb' }))
