@@ -20,7 +20,7 @@ function Sidebar() {
     const [stats, setStats] = useState({ pendingOrders: 0, unrepliedMessages: 0, newUsers: 0 })
     const dk = isDark
 
-    const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"
+    const serverUrl = import.meta.env.VITE_SERVER_URL || "https://vebstore-backend.onrender.com"
 
     useEffect(() => {
         fetchStats()

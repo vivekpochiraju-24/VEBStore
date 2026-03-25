@@ -13,7 +13,7 @@ function MessageInbox() {
     const [searchTerm, setSearchTerm] = useState("")
     const [filter, setFilter] = useState("All")
 
-    const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"
+    const serverUrl = import.meta.env.VITE_SERVER_URL || "https://vebstore-backend.onrender.com"
 
     useEffect(() => {
         fetchMessages()
