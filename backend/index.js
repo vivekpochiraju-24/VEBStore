@@ -28,8 +28,6 @@ app.use(cors({
             "http://localhost:5174", 
             "http://127.0.0.1:5173", 
             "http://127.0.0.1:5174", 
-            "https://vebstore-frontend.onrender.com",
-            "https://vebstore-admin.onrender.com",
             process.env.FRONTEND_URL, 
             process.env.ADMIN_URL,
             "https://vebstore.netlify.app",
@@ -37,7 +35,7 @@ app.use(cors({
             "https://vebadmin.netlify.app",
             "https://veb-store.vercel.app"
         ];
-        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -64,14 +62,9 @@ app.get('/health', (req, res) => {
 
 // Start server
 const server = app.listen(port, '0.0.0.0', () => {
-    const isRender = process.env.RENDER === 'true' || process.env.RENDER_EXTERNAL_URL
-    const envLabel = isRender ? 'Cloud Production (Render)' : (process.env.NODE_ENV || 'development')
-    const displayUrl = isRender ? process.env.RENDER_EXTERNAL_URL : `http://localhost:${port}`
-
     console.log("🚀 VEBStore Server Starting...")
-    console.log(`📍 Server internally on: 0.0.0.0:${port}`)
-    console.log(`🌐 Environment: ${envLabel}`)
-    if (displayUrl) console.log(`🔗 Public Access: ${displayUrl}`)
+    console.log(`📍 Local Access: http://localhost:${port}`)
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`)
 
     connectDb().then(() => {
         console.log("✅ Database connected successfully")

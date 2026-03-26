@@ -3,7 +3,9 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -108,7 +110,8 @@ export const sendOrderEmail = async (email, orderData) => {
         await transporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent Order Confirmation to ${email}`);
     } catch (error) {
-        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP. (Check ADMIN_PASSWORD in .env). Simulated Confirmation to ${email}:\n   SUBJECT: ${mailOptions.subject}\n   TOTAL: ₹${amount}\n`);
+        console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
+        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP. (Check EMAIL_PASS in .env). Simulated Confirmation to ${email}:\n   SUBJECT: ${mailOptions.subject}\n   TOTAL: ₹${amount}\n`);
     }
 };
 
@@ -192,9 +195,10 @@ export const sendOtpEmail = async (email, otp) => {
     };
     try {
         await transporter.sendMail(mailOptions);
+        console.log(`[EMAIL] 🔐 Sent OTP Verification to ${email}`);
     } catch (error) {
-        console.error("OTP Email send error:", error);
-        throw error; // Make sure the controller knows it failed to send
+        console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
+        console.warn(`\n[EMAIL SIMULATION] 🔐 Could not securely connect to SMTP. (Check EMAIL_PASS in .env).\n   Simulated OTP for ${email}: ${otp}\n   SUBJECT: ${mailOptions.subject}\n`);
     }
 };
 

@@ -66,8 +66,8 @@ const MyExchanges = () => {
                             <div className='w-12 h-[2px] bg-blue-600 rounded-full blur-[1px]'></div>
                             <span className={`text-[10px] font-black uppercase tracking-[0.4em] ${dk ? 'text-blue-400' : 'text-blue-600'}`}>Eco-System Dashboard</span>
                         </div>
-                        <h1 className={`text-5xl sm:text-6xl font-black tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>My Portfolio<span className='text-blue-600'>.</span></h1>
-                        <p className={`text-base font-medium max-w-xl ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Manage your circular fashion assets and track real-time credit valuations.</p>
+                        <h1 className={`text-5xl sm:text-6xl font-black tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>My Exchanges<span className='text-blue-600'>.</span></h1>
+                        <p className={`text-base font-medium max-w-xl ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Manage your circular fashion assets and track your exchange requests.</p>
                     </div>
                     
                     <div className={`p-2 rounded-[2rem] flex items-center gap-8 border-2 transition-all hover:shadow-2xl ${dk ? 'bg-slate-800/40 border-slate-700 shadow-blue-500/5' : 'bg-white border-gray-100 shadow-gray-200/50'}`}>
