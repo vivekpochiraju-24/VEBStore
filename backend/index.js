@@ -34,7 +34,8 @@ app.use(cors({
             process.env.ADMIN_URL,
             "https://vebstore.netlify.app",
             "https://admin-vebstore.netlify.app",
-            "https://vebadmin.netlify.app"
+            "https://vebadmin.netlify.app",
+            "https://veb-store.vercel.app"
         ];
         if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
             callback(null, true);
