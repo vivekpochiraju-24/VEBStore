@@ -54,8 +54,14 @@ function PlaceOrder() {
   }
 
   const initPay = (order) => {
+    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_SSMJtAPB3B3MTE';
+    
+    if (!import.meta.env.VITE_RAZORPAY_KEY_ID) {
+      console.warn("⚠️ Razorpay VITE_RAZORPAY_KEY_ID is missing from .env. Using fallback.");
+    }
+
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      key: razorpayKey,
       amount: order.amount,
       currency: order.currency,
       name: 'Order Payment',
@@ -63,17 +69,38 @@ function PlaceOrder() {
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
-        console.log(response)
-        const { data } = await axios.post(serverUrl + '/api/order/verifyrazorpay', response, { withCredentials: true })
-        if (data) {
-          navigate("/order")
-          setCartItem({})
-
+        try {
+          const { data } = await axios.post(serverUrl + '/api/order/verifyrazorpay', response, { withCredentials: true })
+          if (data) {
+            navigate("/order")
+            setCartItem({})
+            toast.success("Payment Received! 🎉")
+          }
+        } catch (err) {
+          console.error("Verification failed", err)
+          toast.error("Payment verification failed")
         }
+      },
+      prefill: {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        contact: formData.phone
+      },
+      theme: {
+        color: "#3b82f6"
       }
     }
-    const rzp = new window.Razorpay(options)
-    rzp.open()
+
+    try {
+      const rzp = new window.Razorpay(options)
+      rzp.on('payment.failed', function (response) {
+        toast.error("Payment Connection Error: " + response.error.description)
+      });
+      rzp.open()
+    } catch (err) {
+      console.error("Razorpay Open Error:", err)
+      toast.error("Could not initialize payment gateway")
+    }
   }
 
 
