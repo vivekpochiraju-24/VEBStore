@@ -38,22 +38,14 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("=== LOGIN START ===")
-      
       const result = await axios.post(serverUrl + '/api/auth/login', {
         email, password
       }, { withCredentials: true });
       
-      console.log("Login API response:", result.data)
-      
-      // Fetch fresh user data to update the context state
-      console.log("Fetching fresh user data...")
+      // Update state and refresh user data
       await getCurrentUser(true);
       
-      console.log("Login completed successfully!")
-      toast.success("Welcome back to VEBStore! ✨");
-      
-      // Redirect seamlessly
+      toast.success("Welcome back! ✨");
       navigate("/");
       
     } catch (error) {

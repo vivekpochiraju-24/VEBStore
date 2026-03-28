@@ -33,6 +33,7 @@ export const sendOtp = async (req, res) => {
 
 export const registration = async (req, res) => {
     try {
+        console.log(`[AUTH] Registration attempt in ${process.env.NODE_ENV} mode`);
         const { name, email, password, phone } = req.body;
 
         const existUser = await User.findOne({ email })
@@ -49,10 +50,12 @@ export const registration = async (req, res) => {
 
         const user = await User.create({ name, email, password: hashPassword, phone })
         let token = await genToken(user._id)
+        const isProduction = process.env.NODE_ENV === "production" || req.get('host')?.includes('onrender.com');
+        
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(201).json(user)
@@ -98,10 +101,12 @@ export const login = async (req, res) => {
         
         console.log("Token generated for:", email);
         
+        const isProduction = process.env.NODE_ENV === "production" || req.get('host')?.includes('onrender.com');
+        
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         
@@ -120,15 +125,17 @@ export const login = async (req, res) => {
 
 export const logOut = async (req, res) => {
     try {
+        const isProduction = process.env.NODE_ENV === "production" || req.get('host')?.includes('onrender.com');
+        
         res.clearCookie("token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax"
         })
         res.clearCookie("admin_token", {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax"
         })
         return res.status(200).json({ success: true, message: "Logged out from all sessions" })
     } catch (error) {
@@ -196,10 +203,12 @@ export const adminLogin = async (req, res) => {
             
             console.log("Admin token generated for:", email);
             
+            const isProduction = process.env.NODE_ENV === "production" || req.get('host')?.includes('onrender.com');
+            
             res.cookie("admin_token", token, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                secure: isProduction,
+                sameSite: isProduction ? "none" : "lax",
                 maxAge: 1 * 24 * 60 * 60 * 1000
             })
             
