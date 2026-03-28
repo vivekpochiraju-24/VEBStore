@@ -21,29 +21,84 @@ app.set("trust proxy", 1);
 // Middleware
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
-app.use(cors({
+
+// CORS Configuration with fallback
+const corsOptions = {
     origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, etc.)
+        if (!origin) return callback(null, true);
+        
         const allowedOrigins = [
             "http://localhost:5173", 
             "http://localhost:5174", 
             "http://127.0.0.1:5173", 
-            "http://127.0.0.1:5174", 
-            process.env.FRONTEND_URL, 
-            process.env.ADMIN_URL,
+            "http://127.0.0.1:5174",
             "https://vebstore.netlify.app",
             "https://admin-vebstore.netlify.app",
             "https://vebadmin.netlify.app",
             "https://veb-store.vercel.app"
         ];
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
+        
+        // Add environment-specific origins
+        if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
+        if (process.env.ADMIN_URL) allowedOrigins.push(process.env.ADMIN_URL);
+        
+        // In production, be more permissive to avoid CORS issues
+        if (process.env.NODE_ENV === 'production') {
+            // Allow common deployment platforms
+            const productionOrigins = [
+                ...allowedOrigins,
+                /\.netlify\.app$/,  // All Netlify apps
+                /\.vercel\.app$/,   // All Vercel apps
+                /\.onrender\.com$/, // All Render apps
+                /\.github\.dev$/,   // GitHub Codespaces
+                /\.web\.app$/,      // GitHub Pages
+            ];
+            
+            // Check if origin matches any allowed pattern
+            const isAllowed = productionOrigins.some(allowedOrigin => {
+                if (allowedOrigin instanceof RegExp) {
+                    return allowedOrigin.test(origin);
+                }
+                return allowedOrigin === origin;
+            });
+            
+            if (isAllowed) {
+                return callback(null, true);
+            }
         }
+        
+        // Development: strict checking
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        
+        // Log the blocked origin for debugging
+        console.log(`[CORS] Blocked origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}))
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Set-Cookie']
+};
+
+// Apply CORS with error handling
+app.use(cors(corsOptions));
+
+// Fallback CORS for any missed requests
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 // Routes
 app.use("/api/auth", authRoutes)
