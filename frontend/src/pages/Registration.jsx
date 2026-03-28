@@ -28,18 +28,25 @@ function Registration() {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    
     try {
       const result = await axios.post(serverUrl + '/api/auth/registration', {
         name, email, password, phone
       }, { withCredentials: true });
-
+      
+      // Add a small delay to ensure user is saved in database
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Clear any existing user data and fetch fresh data
+      setUserData(null);
       await getCurrentUser();
+      
       toast.success("User Registration Successful!");
       navigate("/");
+      
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "User Registration Failed");
+      console.error("Registration error:", error);
+      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
