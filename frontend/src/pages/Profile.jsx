@@ -11,7 +11,7 @@ import { Mail } from 'lucide-react'
 
 function Profile() {
     const { serverUrl } = useContext(authDataContext)
-    const { userData, getCurrentUser, forceRefreshUser } = useContext(userDataContext)
+    const { userData, getCurrentUser, forceRefreshUser, userLoading } = useContext(userDataContext)
     const { isDark } = useContext(themeDataContext)
     const navigate = useNavigate()
     const dk = isDark
@@ -31,17 +31,9 @@ function Profile() {
 
     useEffect(() => {
         console.log("=== PROFILE COMPONENT MOUNT ===")
-        console.log("Current userData:", userData)
-        
-        // Force refresh user data when component mounts to ensure we have the latest data
-        console.log("Forcing user data refresh...")
-        forceRefreshUser();
-        
-        // Add delay and then fetch fresh data
-        setTimeout(async () => {
-            console.log("Fetching fresh user data in profile...")
-            await getCurrentUser(true);
-        }, 500);
+        // The UserContext already fetches the user data on mount via refreshKey
+        // We only need to trigger a fresh fetch if we really want to be sure
+        getCurrentUser(true);
     }, []);
 
     useEffect(() => {
@@ -160,6 +152,17 @@ function Profile() {
         } finally {
             setLoading(false)
         }
+    }
+
+    if (userLoading) {
+        return (
+            <div className={`w-full min-h-screen flex items-center justify-center pt-[70px] ${dk ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent animate-spin rounded-full"></div>
+                    <p className={`${dk ? 'text-slate-400' : 'text-gray-500'} font-black text-xs uppercase tracking-widest`}>Syncing Profile Hub...</p>
+                </div>
+            </div>
+        )
     }
 
     if (!userData) {

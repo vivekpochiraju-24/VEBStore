@@ -5,7 +5,7 @@ import axios from 'axios'
 export const userDataContext = createContext()
 function UserContext({children}) {
     let [userData,setUserData] = useState(null)
-    let [loading, setLoading] = useState(true)
+    let [userLoading, setUserLoading] = useState(true)
     let [refreshKey, setRefreshKey] = useState(0)
     let [lastFetchTime, setLastFetchTime] = useState(0)
     let {serverUrl} = useContext(authDataContext)
@@ -14,7 +14,7 @@ function UserContext({children}) {
         try {
             if (!serverUrl) return;
             
-            setLoading(true)
+            setUserLoading(true)
             
             // Add timestamp to prevent caching
             const timestamp = Date.now()
@@ -29,7 +29,7 @@ function UserContext({children}) {
             setUserData(null)
             console.log("No user logged in:", error.message)
         } finally {
-            setLoading(false)
+            setUserLoading(false)
         }
     }
 
@@ -69,7 +69,7 @@ function UserContext({children}) {
     },[refreshKey])
 
     let value = {
-     userData,setUserData,getCurrentUser,loading,logoutUser,forceRefreshUser
+     userData,setUserData,getCurrentUser,userLoading,logoutUser,forceRefreshUser
     }
     
    
