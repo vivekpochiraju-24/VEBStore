@@ -52,6 +52,15 @@ function Nav() {
 
   const handleLogout = async () => {
     try {
+      console.log("Logout button clicked!")
+      console.log("Current user:", userData)
+      
+      if (!userData) {
+        console.log("No user to logout, navigating to login")
+        navigate("/login")
+        return
+      }
+      
       console.log("Attempting logout...")
       await logoutUser()
       
