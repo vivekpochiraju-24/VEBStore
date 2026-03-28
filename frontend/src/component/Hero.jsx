@@ -12,10 +12,10 @@ function Hero({ heroData, heroCount, setHeroCount }) {
 
       {/* Dynamic Text Box */}
       <div className='flex flex-col gap-6 animate-fade-in'>
-        <h1 className={`text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>
+        <h1 className={`text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight ${dk ? 'text-white' : 'text-gray-900'}`}>
           {heroData.text1}
         </h1>
-        <p className={`text-xl sm:text-2xl font-medium border-l-[6px] border-blue-500 pl-4 py-1 ${dk ? 'text-slate-300' : 'text-gray-600'}`}>
+        <p className={`text-lg sm:text-2xl font-medium border-l-[6px] border-blue-500 pl-4 py-1 ${dk ? 'text-slate-300' : 'text-gray-600'}`}>
           {heroData.text2}
         </p>
       </div>
