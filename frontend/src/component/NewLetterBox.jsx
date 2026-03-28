@@ -23,7 +23,7 @@ function NewLetterBox() {
             setEmail("");
         }
     } catch (error) {
-        toast.error("Subscription failed. Please try again.");
+        toast.error(error.response?.data?.message || "Subscription failed. Please try again.");
     } finally {
         setLoading(false)
     }
