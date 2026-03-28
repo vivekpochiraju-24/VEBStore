@@ -22,15 +22,24 @@ adminRoutes.post('/subscribe', async (req, res) => {
 });
 
 adminRoutes.get('/test-email', async (req, res) => {
+    // Check env var first before even trying
+    if (!process.env.BREVO_API_KEY) {
+        return res.status(500).json({ 
+            success: false, 
+            message: 'BREVO_API_KEY is NOT SET in Render Environment Variables. Go to Render Dashboard → Backend Service → Environment → Add BREVO_API_KEY.' 
+        });
+    }
     try {
-        const { sendSubscriptionEmail, resetTransporter } = await import('../utils/emailService.js');
-        resetTransporter(); // CRITICAL: Reset the cache for diagnostic to pick up NEW settings
-        const testEmail = req.query.email || "test@gmail.com";
+        const { sendSubscriptionEmail } = await import('../utils/emailService.js');
+        const testEmail = req.query.email || process.env.EMAIL_USER || 'test@example.com';
         await sendSubscriptionEmail(testEmail);
-        res.json({ success: true, message: `Diagnostic mail dispatched to ${testEmail} via Port 465 SSL. If it doesn't arrive in 60s, check Spam or Render Logs.` });
+        res.json({ success: true, message: `✅ Brevo HTTP API: Mail dispatched to ${testEmail}. Check your inbox (and Spam folder).` });
     } catch (err) {
-        console.error("DIAGNOSTIC ERROR [SMTP]:", err.message);
-        res.status(500).json({ success: false, message: `SMTP HANDSHAKE FAILURE: ${err.message}. Please verify 'EMAIL_USER' & 'EMAIL_PASS' in Render Environment.` });
+        console.error('DIAGNOSTIC ERROR [BREVO]:', err.message);
+        res.status(500).json({ 
+            success: false, 
+            message: `❌ Brevo API Error: ${err.message}. Likely cause: Sender email '${process.env.EMAIL_USER}' is not verified in your Brevo account. Go to Brevo → Senders & IPs → Verify your email.`
+        });
     }
 });
 
