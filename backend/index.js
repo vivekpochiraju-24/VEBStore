@@ -22,12 +22,13 @@ app.set("trust proxy", 1);
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 
-// CORS Configuration with fallback
-const corsOptions = {
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps, curl, etc.)
+// Simple and effective CORS configuration
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
         
+        // List of allowed origins
         const allowedOrigins = [
             "http://localhost:5173", 
             "http://localhost:5174", 
@@ -36,69 +37,46 @@ const corsOptions = {
             "https://vebstore.netlify.app",
             "https://admin-vebstore.netlify.app",
             "https://vebadmin.netlify.app",
-            "https://veb-store.vercel.app"
+            "https://veb-store.vercel.app",
+            "https://vebstore-frontend.onrender.com"
         ];
         
         // Add environment-specific origins
         if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
         if (process.env.ADMIN_URL) allowedOrigins.push(process.env.ADMIN_URL);
         
-        // In production, be more permissive to avoid CORS issues
+        // Allow common deployment platforms in production
         if (process.env.NODE_ENV === 'production') {
-            // Allow common deployment platforms
-            const productionOrigins = [
-                ...allowedOrigins,
-                /\.netlify\.app$/,  // All Netlify apps
-                /\.vercel\.app$/,   // All Vercel apps
-                /\.onrender\.com$/, // All Render apps
-                /\.github\.dev$/,   // GitHub Codespaces
-                /\.web\.app$/,      // GitHub Pages
-            ];
-            
-            // Check if origin matches any allowed pattern
-            const isAllowed = productionOrigins.some(allowedOrigin => {
-                if (allowedOrigin instanceof RegExp) {
-                    return allowedOrigin.test(origin);
-                }
-                return allowedOrigin === origin;
-            });
-            
-            if (isAllowed) {
-                return callback(null, true);
-            }
+            allowedOrigins.push(
+                /\.netlify\.app$/,
+                /\.vercel\.app$/,
+                /\.onrender\.com$/,
+                /\.github\.dev$/,
+                /\.web\.app$/
+            );
         }
         
-        // Development: strict checking
-        if (allowedOrigins.includes(origin)) {
+        // Check if origin is allowed
+        const isAllowed = allowedOrigins.some(allowed => {
+            if (allowed instanceof RegExp) {
+                return allowed.test(origin);
+            }
+            return allowed === origin;
+        });
+        
+        if (isAllowed) {
+            console.log(`[CORS] Allowing origin: ${origin}`);
             return callback(null, true);
         }
         
-        // Log the blocked origin for debugging
-        console.log(`[CORS] Blocked origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
+        console.log(`[CORS] Blocking origin: ${origin}`);
+        return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     exposedHeaders: ['Set-Cookie']
-};
-
-// Apply CORS with error handling
-app.use(cors(corsOptions));
-
-// Fallback CORS for any missed requests
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(200);
-    } else {
-        next();
-    }
-});
+}));
 
 // Routes
 app.use("/api/auth", authRoutes)
