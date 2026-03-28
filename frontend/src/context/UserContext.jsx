@@ -7,34 +7,39 @@ function UserContext({children}) {
     let [userData,setUserData] = useState(null)
     let [loading, setLoading] = useState(true)
     let [refreshKey, setRefreshKey] = useState(0)
+    let [lastFetchTime, setLastFetchTime] = useState(0)
     let {serverUrl} = useContext(authDataContext)
 
    const getCurrentUser = async (forceRefresh = false) => {
         try {
             setLoading(true)
             
-            // If force refresh, clear all cached data
+            // Always clear user data on force refresh
             if (forceRefresh) {
                 setUserData(null)
-                // Clear any localStorage/sessionStorage data
-                localStorage.removeItem('userData')
-                sessionStorage.removeItem('userData')
+                // Clear ALL storage to prevent any cached data
+                localStorage.clear()
+                sessionStorage.clear()
+                setLastFetchTime(0)
             }
             
-            let result = await axios.get(serverUrl + "/api/user/getcurrentuser",{withCredentials:true})
+            // Add timestamp to prevent caching
+            const timestamp = Date.now()
+            let result = await axios.get(serverUrl + `/api/user/getcurrentuser?t=${timestamp}`,{withCredentials:true})
 
             setUserData(result.data)
-            
-            // Store fresh data in localStorage for debugging
-            localStorage.setItem('userData', JSON.stringify(result.data))
+            setLastFetchTime(timestamp)
             
             console.log("User data loaded:", result.data)
+            console.log("User ID:", result.data?._id)
+            console.log("User Email:", result.data?.email)
 
         } catch (error) {
             setUserData(null)
-            // Clear storage on error
-            localStorage.removeItem('userData')
-            sessionStorage.removeItem('userData')
+            // Clear all storage on error
+            localStorage.clear()
+            sessionStorage.clear()
+            setLastFetchTime(0)
             console.log("No user logged in:", error.message)
         } finally {
             setLoading(false)
@@ -51,8 +56,9 @@ function UserContext({children}) {
             
             // Clear all user data
             setUserData(null)
-            localStorage.removeItem('userData')
-            sessionStorage.removeItem('userData')
+            localStorage.clear()
+            sessionStorage.clear()
+            setLastFetchTime(0)
             
             console.log("User logged out successfully")
             
@@ -64,13 +70,15 @@ function UserContext({children}) {
             console.error("Logout error:", error)
             // Clear all data even if API fails
             setUserData(null)
-            localStorage.removeItem('userData')
-            sessionStorage.removeItem('userData')
+            localStorage.clear()
+            sessionStorage.clear()
+            setLastFetchTime(0)
         }
     }
 
     useEffect(()=>{
-     getCurrentUser()
+        // Always fetch fresh user data on mount and refresh
+        getCurrentUser(true)
     },[refreshKey])
 
     let value = {

@@ -38,27 +38,41 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Clear all cached data before login
+      console.log("=== LOGIN START ===")
+      console.log("Clearing all cached data...")
+      
+      // Clear ALL browser storage
       localStorage.clear();
       sessionStorage.clear();
+      
+      // Clear React state
       setUserData(null);
+      
+      console.log("Storage cleared, making login API call...")
       
       const result = await axios.post(serverUrl + '/api/auth/login', {
         email, password
       }, { withCredentials: true });
       
-      // Force refresh user data
+      console.log("Login API response:", result.data)
+      console.log("Logged in user ID:", result.data.user._id)
+      console.log("Logged in user email:", result.data.user.email)
+      
+      // Force refresh user data with delay
+      console.log("Forcing user data refresh...")
       forceRefreshUser();
       
-      // Add delay to ensure login is processed
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add delay to ensure login is processed on server
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Fetch fresh user data with force refresh
+      console.log("Fetching fresh user data...")
       await getCurrentUser(true);
       
       // Additional delay to ensure state is updated
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      console.log("Login completed successfully!")
       toast.success("User Login Successful");
       
       // Small delay to ensure state is updated
@@ -67,7 +81,7 @@ function Login() {
       }, 100);
       
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
       toast.error(error.response?.data?.message || "User Login Failed");
     } finally {
       setLoading(false);
@@ -76,34 +90,49 @@ function Login() {
 
   const googlelogin = async () => {
     try {
-      // Clear all cached data before login
+      console.log("=== GOOGLE LOGIN START ===")
+      console.log("Clearing all cached data...")
+      
+      // Clear ALL browser storage
       localStorage.clear();
       sessionStorage.clear();
+      
+      // Clear React state
       setUserData(null);
+      
+      console.log("Storage cleared, starting Google auth...")
       
       const response = await signInWithPopup(auth, provider);
       const user = response.user;
+      
+      console.log("Google user authenticated:", user.email)
+      
       await axios.post(serverUrl + "/api/auth/googlelogin", {
         name: user.displayName,
         email: user.email
       }, { withCredentials: true })
       
-      // Force refresh user data
+      console.log("Google login API call completed")
+      
+      // Force refresh user data with delay
+      console.log("Forcing user data refresh...")
       forceRefreshUser();
       
-      // Add delay to ensure login is processed
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add delay to ensure login is processed on server
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Fetch fresh user data with force refresh
+      console.log("Fetching fresh user data...")
       await getCurrentUser(true);
       
       // Additional delay to ensure state is updated
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      console.log("Google login completed successfully!")
       toast.success("User Login Successful");
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error("Google login error:", error);
       toast.error("Google Login Failed");
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') return;
       toast.error(error.code === 'auth/operation-not-allowed' ? "Enable Google Auth in Firebase Console first!" : (error.response?.data?.message || error.message || "Google Login Failed"));

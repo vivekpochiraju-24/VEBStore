@@ -30,12 +30,27 @@ function Profile() {
     const [changePassword, setChangePassword] = useState(false)
 
     useEffect(() => {
+        console.log("=== PROFILE COMPONENT MOUNT ===")
+        console.log("Current userData:", userData)
+        
         // Force refresh user data when component mounts to ensure we have the latest data
+        console.log("Forcing user data refresh...")
         forceRefreshUser();
-        getCurrentUser(true);
+        
+        // Add delay and then fetch fresh data
+        setTimeout(async () => {
+            console.log("Fetching fresh user data in profile...")
+            await getCurrentUser(true);
+        }, 500);
     }, []);
 
     useEffect(() => {
+        console.log("=== PROFILE USER DATA UPDATE ===")
+        console.log("Updated userData:", userData)
+        console.log("User ID:", userData?._id)
+        console.log("User Email:", userData?.email)
+        console.log("User Name:", userData?.name)
+        
         if (userData) {
             setForm(prev => ({
                 ...prev,
