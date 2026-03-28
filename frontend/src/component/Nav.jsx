@@ -16,7 +16,7 @@ import { MdContacts } from "react-icons/md";
 import { User, LogOut, Package, ChevronDown, X, Sun, Moon, RefreshCw, MessageCircle, Sparkles, Menu } from 'lucide-react'
 
 function Nav() {
-  const { getCurrentUser, userData } = useContext(userDataContext)
+  const { getCurrentUser, userData, logoutUser } = useContext(userDataContext)
   const { serverUrl } = useContext(authDataContext)
   const { showSearch, setShowSearch, search, setSearch, cartItem, setShowWhatsapp } = useContext(shopDataContext)
   const { isDark, toggleTheme } = useContext(themeDataContext)
@@ -52,7 +52,7 @@ function Nav() {
 
   const handleLogout = async () => {
     try {
-      await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+      await logoutUser()
       navigate("/login")
       setShowProfile(false)
     } catch (error) {

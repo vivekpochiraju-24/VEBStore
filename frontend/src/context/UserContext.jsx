@@ -25,12 +25,22 @@ function UserContext({children}) {
         }
     }
 
+    const logoutUser = async () => {
+        try {
+            await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+            setUserData(null)
+            console.log("User logged out successfully")
+        } catch (error) {
+            console.error("Logout error:", error)
+        }
+    }
+
     useEffect(()=>{
      getCurrentUser()
     },[])
 
     let value = {
-     userData,setUserData,getCurrentUser,loading
+     userData,setUserData,getCurrentUser,loading,logoutUser
     }
     
    
