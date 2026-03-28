@@ -4,7 +4,7 @@ import Product from "../model/productModel.js"
 
 export const addProduct = async (req,res) => {
     try {
-        let {name,description,price,category,subCategory,sizes,fabric,suitableFor,bestseller,exchangeEligible} = req.body
+        let {name,description,price,category,subCategory,sizes,fabric,suitableFor,bestseller,exchangeEligible,stock} = req.body
 
         // Check for primary image
         if (!req.files.image1) {
@@ -28,6 +28,7 @@ export const addProduct = async (req,res) => {
             suitableFor :JSON.parse(suitableFor),
             bestseller :bestseller === "true" ? true : false,
             exchangeEligible :exchangeEligible === "true" ? true : false,
+            stock: Number(stock) || 0,
             date :Date.now(),
             image1,
             image2,

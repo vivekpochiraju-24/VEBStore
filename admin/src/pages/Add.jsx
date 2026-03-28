@@ -23,6 +23,7 @@ function Add() {
   const [suitableFor, setSuitableFor] = useState([])
   const [exchangeEligible, setExchangeEligible] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [stock, setStock] = useState("100")
   const navigate = useNavigate()
 
   const { serverUrl } = useContext(authDataContext)
@@ -63,6 +64,7 @@ function Add() {
       formData.append("sizes", JSON.stringify(sizes))
       formData.append("fabric", fabric)
       formData.append("suitableFor", JSON.stringify(suitableFor))
+      formData.append("stock", stock)
 
       images.forEach((img, i) => {
         if (img) formData.append(`image${i + 1}`, img)
@@ -183,13 +185,24 @@ function Add() {
                       <span className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold'>₹</span>
                       <input
                         type="number"
-                        placeholder="0.00"
+                        placeholder="0"
                         className={`w-full h-12 pl-8 pr-4 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all ${dk ? 'bg-slate-900 border-slate-700 text-white placeholder:text-slate-600' : 'bg-gray-50 border-gray-200 text-gray-900'}`}
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         required
                       />
                     </div>
+                  </div>
+                  <div className='space-y-2'>
+                    <label className={`text-[13px] font-bold ml-1 ${dk ? 'text-slate-400' : 'text-gray-700'}`}>Inventory Stock</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 100"
+                      className={`w-full h-12 px-4 rounded-xl text-sm font-medium focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all ${dk ? 'bg-slate-900 border-slate-700 text-white placeholder:text-slate-600' : 'bg-gray-50 border-gray-200 text-gray-900'}`}
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
 
