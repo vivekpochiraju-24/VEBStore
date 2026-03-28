@@ -19,14 +19,42 @@ function Nav() {
 
   const logOut = async () => {
     try {
-      await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+      console.log("=== ADMIN LOGOUT START ===")
+      console.log("Server URL:", serverUrl)
+      
+      // Make logout API call
+      const response = await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+      console.log("Logout API response:", response.data)
+      
       toast.success("Logged out successfully")
+      
+      // Clear admin data
+      console.log("Clearing admin data...")
       getAdmin()
-      navigate("/login")
+      
+      // Close mobile menu
       setMobileMenuOpen(false)
+      
+      // Navigate to login
+      console.log("Navigating to login...")
+      navigate("/login")
+      
+      console.log("=== ADMIN LOGOUT COMPLETE ===")
+      
     } catch (error) {
-      console.log(error)
-      toast.error("Logout failed")
+      console.error("Admin logout error:", error)
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        serverUrl
+      })
+      
+      // Force logout even if API fails
+      toast.error("Logout completed")
+      getAdmin()
+      setMobileMenuOpen(false)
+      navigate("/login")
     }
   }
 

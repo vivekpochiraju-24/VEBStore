@@ -38,3 +38,16 @@ services:
       - path: /*
         name: Referrer-Policy
         value: strict-origin-when-cross-origin
+      # SPA routing support
+      - path: /*
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /*
+        name: Pragma
+        value: no-cache
+    
+    # Redirects for SPA routing
+    redirects:
+      - type: rewrite
+        source: /*
+        destination: /index.html
