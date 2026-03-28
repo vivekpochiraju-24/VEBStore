@@ -3,6 +3,8 @@ import Nav from '../component/Nav'
 import Sidebar from '../component/Sidebar'
 import { Settings as SettingsIcon, Save, Bell, Shield, Palette, Database, Mail, Volume2, LayoutDashboard, Moon, Sun, Check } from 'lucide-react'
 import { themeDataContext } from '../context/ThemeContext'
+import { authDataContext } from '../context/AuthContext'
+import axios from 'axios'
 import { toast } from 'react-toastify'
 
 function Toggle({ enabled, onToggle }) {
@@ -18,13 +20,29 @@ function Toggle({ enabled, onToggle }) {
 
 function Settings() {
     const { isDark, setIsDark, settings, toggleSetting } = useContext(themeDataContext)
+    const { serverUrl } = useContext(authDataContext)
     const [saved, setSaved] = useState(false)
+    const [verifying, setVerifying] = useState(false)
     const dk = isDark
 
     const handleSave = () => {
         setSaved(true)
         toast.success('Settings saved successfully!')
         setTimeout(() => setSaved(false), 2000)
+    }
+
+    const verifyEmail = async () => {
+        try {
+            setVerifying(true)
+            const res = await axios.get(`${serverUrl}/api/admin/test-email`, { withCredentials: true })
+            if (res.data.success) {
+                toast.success(res.data.message)
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || err.message)
+        } finally {
+            setVerifying(false)
+        }
     }
 
     return (
@@ -102,6 +120,28 @@ function Settings() {
                                     <div className={`hidden sm:flex px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border shadow-sm ${dk ? 'bg-indigo-900/30 text-indigo-400 border-indigo-700/50' : 'bg-white text-blue-600 border-blue-100'}`}>
                                         ACTIVE
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Mail Diagnostic Card */}
+                            <div className={`p-8 rounded-[32px] border transition-all duration-500 shadow-2xl ${dk ? 'bg-slate-900/40 border-slate-800' : 'bg-white border-blue-50'}`}>
+                                <div className='flex flex-col sm:flex-row items-center justify-between gap-6'>
+                                    <div className='flex items-center gap-4'>
+                                        <div className={`p-4 rounded-2xl ${dk ? 'bg-blue-600/10 text-blue-400' : 'bg-blue-600 text-white'}`}>
+                                            <Mail size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className={`text-[15px] font-black uppercase tracking-widest ${dk ? 'text-white' : 'text-slate-900'}`}>Email Gateway Diagnostic</h3>
+                                            <p className={`text-xs font-semibold opacity-60 ${dk ? 'text-slate-400' : 'text-slate-500'}`}>Verify SMTP credentials and cloud network connectivity.</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={verifyEmail}
+                                        disabled={verifying}
+                                        className={`h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all active:scale-[0.98] shadow-2xl ${verifying ? 'bg-gray-400 opacity-50' : dk ? 'bg-blue-600/10 border border-blue-500/30 text-blue-400 hover:bg-blue-600/20' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20'}`}
+                                    >
+                                        {verifying ? 'VERIFYING...' : 'Verify Mail Service'}
+                                    </button>
                                 </div>
                             </div>
 
