@@ -15,7 +15,7 @@ import Loading from '../component/Loading';
 function Login() {
   const [show, setShow] = useState(false);
   const { serverUrl } = useContext(authDataContext);
-  const { getCurrentUser, userData } = useContext(userDataContext);
+  const { getCurrentUser, userData, setUserData } = useContext(userDataContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
