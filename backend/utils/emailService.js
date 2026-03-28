@@ -398,5 +398,6 @@ export const sendSubscriptionEmail = async (email) => {
         console.log(`[EMAIL] 📧 Welcome Subscription sent to ${email}`);
     } catch (error) {
         console.error('Subscription Email Error:', error);
+        throw error; // Rethrow to let the UI See it
     }
 };
