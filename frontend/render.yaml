@@ -1,0 +1,40 @@
+services:
+  # Frontend Static Site
+  - type: web
+    name: vebstore-frontend
+    env: static
+    plan: free
+    rootDir: frontend  # Tell Render to use frontend as root
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    buildFilter:
+      paths:
+        - frontend/**
+      ignored: 
+        - backend/**
+        - admin/**
+        - docs/**
+        - "*.md"
+    
+    # Environment Variables
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://vebstore-backend.onrender.com
+        
+    # Health Check
+    healthCheckPath: /
+    
+    # Build settings
+    nodeVersion: "18"
+    
+    # Headers for SPA
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
