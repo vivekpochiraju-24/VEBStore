@@ -30,6 +30,11 @@ function Profile() {
     const [changePassword, setChangePassword] = useState(false)
 
     useEffect(() => {
+        // Refresh user data when component mounts to ensure we have the latest data
+        getCurrentUser();
+    }, []);
+
+    useEffect(() => {
         if (userData) {
             setForm(prev => ({
                 ...prev,
@@ -39,7 +44,7 @@ function Profile() {
                 emailUpdatesOptIn: userData.emailUpdatesOptIn ?? true
             }))
         }
-    }, [userData])
+    }, [userData]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target

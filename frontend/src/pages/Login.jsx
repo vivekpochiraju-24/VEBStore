@@ -45,11 +45,14 @@ function Login() {
       // Clear any existing user data and fetch fresh data
       setUserData(null);
       
-      // Add small delay to ensure login is processed
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Add delay to ensure login is processed
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Fetch fresh user data
       await getCurrentUser();
+      
+      // Add another delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       toast.success("User Login Successful");
       
