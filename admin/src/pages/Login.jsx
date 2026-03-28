@@ -24,13 +24,13 @@ function Login() {
     setLoading(true)
     try {
       console.log("Frontend - Sending login request:", { 
-        url: serverUrl + '/api/auth/adminlogin',
+        url: serverUrl + '/api/adminlogin',
         email, 
         password: password ? "***" : "undefined",
         serverUrl 
       });
       
-      const result = await axios.post(serverUrl + '/api/auth/adminlogin', { email, password }, { withCredentials: true })
+      const result = await axios.post(serverUrl + '/api/adminlogin', { email, password }, { withCredentials: true })
       
       console.log("Frontend - Login successful:", result.data);
       toast.success("Welcome back, Administrator")
