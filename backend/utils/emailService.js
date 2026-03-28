@@ -18,14 +18,15 @@ const createTransporter = () => {
         transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
-            secure: false, // Use STARTTLS
-            pool: true,    // Connection pooling
+            secure: false, // STARTTLS
+            family: 4,     // FORCE IPv4 to resolve ENETUNREACH IPv6 issues on Render
+            pool: true,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
             tls: {
-                rejectUnauthorized: false // Fix handshake issues on Render
+                rejectUnauthorized: false
             },
             connectionTimeout: 20000, 
             greetingTimeout: 15000,     
@@ -35,9 +36,9 @@ const createTransporter = () => {
         // Verify connection immediately
         transporter.verify((error, success) => {
             if (error) {
-                console.error('[EMAIL RESILIENCE] ❌ Check failed:', error.message);
+                console.error('[EMAIL IPV4 FORCE] ❌ Check failed:', error.message);
             } else {
-                console.log('[EMAIL RESILIENCE] ✅ PERSISTENT PORT 587 CONNECTED');
+                console.log('[EMAIL IPV4 FORCE] ✅ IPv4 PERSISTENT PORT 587 CONNECTED');
             }
         });
 
