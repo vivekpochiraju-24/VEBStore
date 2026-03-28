@@ -69,16 +69,20 @@ const server = app.listen(port, '0.0.0.0', () => {
     connectDb().then(() => {
         console.log("✅ Database connected successfully")
         
-        // SMTP Verification
-        import('./utils/emailService.js').then(({ transporter }) => {
-            transporter.verify((error, success) => {
-                if (error) {
-                    console.error("❌ Email Service (SMTP) Error:", error.message);
-                } else {
-                    console.log("📨 Email Service (SMTP) Verified & Ready!");
-                }
+        // SMTP Verification - only in development
+        if (process.env.NODE_ENV !== 'production') {
+            import('./utils/emailService.js').then(({ transporter }) => {
+                transporter.verify((error, success) => {
+                    if (error) {
+                        console.error("❌ Email Service (SMTP) Error:", error.message);
+                    } else {
+                        console.log("📨 Email Service (SMTP) Verified & Ready!");
+                    }
+                });
             });
-        });
+        } else {
+            console.log("📨 Email Service disabled in production");
+        }
 
         console.log("🎯 VEBStore Backend Ready!")
     }).catch(err => {
@@ -92,6 +96,15 @@ process.on('SIGTERM', () => {
     console.log('SIGTERM received, shutting down gracefully')
     server.close(() => {
         console.log('Process terminated')
+        process.exit(0)
+    })
+})
+
+process.on('SIGINT', () => {
+    console.log('SIGINT received, shutting down gracefully')
+    server.close(() => {
+        console.log('Process terminated')
+        process.exit(0)
     })
 })
 

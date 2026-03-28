@@ -1,0 +1,33 @@
+services:
+  # Backend API Service
+  - type: web
+    name: vebstore-backend
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node index.js"
+    autoDeploy: true
+    
+    # Environment Variables (set these in Render dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000  # Render's default port
+        
+    # Health Check
+    healthCheckPath: /health
+    
+    # Instance settings
+    instanceCount: 1
+    maxResponseSize: 10mb
+    
+    # Build settings
+    buildFilter:
+      paths:
+        - backend/**
+      ignored: 
+        - frontend/**
+        - admin/**
+        - docs/**
+        - "*.md"
