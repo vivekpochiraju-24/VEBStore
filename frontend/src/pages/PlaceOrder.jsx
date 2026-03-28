@@ -69,24 +69,32 @@ function PlaceOrder() {
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
+        console.log("Payment Confirmed. Response:", response);
         try {
           const { data } = await axios.post(serverUrl + '/api/order/verifyrazorpay', response, { withCredentials: true })
+          console.log("Verification Result:", data);
           if (data && data.message === "Payment Successful") {
             toast.success("Payment Received! 🎉")
             setCartItem({})
             
-            // Wait 2 seconds before navigating so the user sees the success
+            // Wait 2 seconds before navigating
             setTimeout(() => {
+              console.log("Redirecting to /order...");
               navigate("/order")
+              // Atomic fallback
+              setTimeout(() => {
+                if (window.location.pathname !== "/order") {
+                  window.location.href = "/order";
+                }
+              }, 1000);
             }, 2000)
             
           } else {
             toast.warning("Payment Status: " + (data?.message || "Incomplete"))
           }
         } catch (err) {
-          console.error("Verification failed", err)
-          toast.error("Payment verification failed on server. Please check your Orders.")
-          // Still navigate after error to let user see their order list
+          console.error("Verification error", err)
+          toast.error("Payment verification failed. Checking orders...")
           setTimeout(() => navigate("/order"), 3000)
         }
       },
