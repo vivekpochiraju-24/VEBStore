@@ -39,8 +39,12 @@ function UserContext({children}) {
         try {
             await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
             setUserData(null)
-            forceRefreshUser() // Force refresh after logout
             console.log("User logged out successfully")
+            
+            // Force refresh after a short delay to ensure state is cleared
+            setTimeout(() => {
+                forceRefreshUser()
+            }, 100)
         } catch (error) {
             console.error("Logout error:", error)
         }

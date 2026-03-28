@@ -16,7 +16,7 @@ import { MdContacts } from "react-icons/md";
 import { User, LogOut, Package, ChevronDown, X, Sun, Moon, RefreshCw, MessageCircle, Sparkles, Menu } from 'lucide-react'
 
 function Nav() {
-  const { getCurrentUser, userData, logoutUser } = useContext(userDataContext)
+  const { getCurrentUser, userData, logoutUser, setUserData } = useContext(userDataContext)
   const { serverUrl } = useContext(authDataContext)
   const { showSearch, setShowSearch, search, setSearch, cartItem, setShowWhatsapp } = useContext(shopDataContext)
   const { isDark, toggleTheme } = useContext(themeDataContext)
@@ -52,11 +52,21 @@ function Nav() {
 
   const handleLogout = async () => {
     try {
+      console.log("Attempting logout...")
       await logoutUser()
-      navigate("/login")
+      
+      // Add small delay to ensure logout is processed
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
       setShowProfile(false)
+      navigate("/login")
+      console.log("Logout completed, navigating to login")
     } catch (error) {
-      console.error(error)
+      console.error("Logout failed:", error)
+      // Even if API fails, try to clear local state and navigate
+      setUserData(null)
+      setShowProfile(false)
+      navigate("/login")
     }
   }
 
