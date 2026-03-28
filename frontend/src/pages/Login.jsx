@@ -15,7 +15,7 @@ import Loading from '../component/Loading';
 function Login() {
   const [show, setShow] = useState(false);
   const { serverUrl } = useContext(authDataContext);
-  const { getCurrentUser, userData, setUserData } = useContext(userDataContext);
+  const { getCurrentUser, userData, setUserData, forceRefreshUser } = useContext(userDataContext);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -42,17 +42,14 @@ function Login() {
         email, password
       }, { withCredentials: true });
       
-      // Clear any existing user data and fetch fresh data
-      setUserData(null);
+      // Force refresh user data
+      forceRefreshUser();
       
       // Add delay to ensure login is processed
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Fetch fresh user data
-      await getCurrentUser();
-      
-      // Add another delay to ensure state is updated
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Fetch fresh user data with force refresh
+      await getCurrentUser(true);
       
       toast.success("User Login Successful");
       
@@ -78,14 +75,14 @@ function Login() {
         email: user.email
       }, { withCredentials: true })
       
-      // Clear any existing user data and fetch fresh data
-      setUserData(null);
+      // Force refresh user data
+      forceRefreshUser();
       
-      // Add small delay to ensure login is processed
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Add delay to ensure login is processed
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Fetch fresh user data
-      await getCurrentUser();
+      // Fetch fresh user data with force refresh
+      await getCurrentUser(true);
       
       toast.success("User Login Successful");
       navigate("/");

@@ -11,7 +11,7 @@ import { Mail } from 'lucide-react'
 
 function Profile() {
     const { serverUrl } = useContext(authDataContext)
-    const { userData, getCurrentUser } = useContext(userDataContext)
+    const { userData, getCurrentUser, forceRefreshUser } = useContext(userDataContext)
     const { isDark } = useContext(themeDataContext)
     const navigate = useNavigate()
     const dk = isDark
@@ -30,8 +30,9 @@ function Profile() {
     const [changePassword, setChangePassword] = useState(false)
 
     useEffect(() => {
-        // Refresh user data when component mounts to ensure we have the latest data
-        getCurrentUser();
+        // Force refresh user data when component mounts to ensure we have the latest data
+        forceRefreshUser();
+        getCurrentUser(true);
     }, []);
 
     useEffect(() => {

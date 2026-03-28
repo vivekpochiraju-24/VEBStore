@@ -6,12 +6,18 @@ export const userDataContext = createContext()
 function UserContext({children}) {
     let [userData,setUserData] = useState(null)
     let [loading, setLoading] = useState(true)
+    let [refreshKey, setRefreshKey] = useState(0)
     let {serverUrl} = useContext(authDataContext)
 
-
-   const getCurrentUser = async () => {
+   const getCurrentUser = async (forceRefresh = false) => {
         try {
             setLoading(true)
+            
+            // If force refresh, clear current data first
+            if (forceRefresh) {
+                setUserData(null)
+            }
+            
             let result = await axios.get(serverUrl + "/api/user/getcurrentuser",{withCredentials:true})
 
             setUserData(result.data)
@@ -25,10 +31,15 @@ function UserContext({children}) {
         }
     }
 
+    const forceRefreshUser = () => {
+        setRefreshKey(prev => prev + 1)
+    }
+
     const logoutUser = async () => {
         try {
             await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
             setUserData(null)
+            forceRefreshUser() // Force refresh after logout
             console.log("User logged out successfully")
         } catch (error) {
             console.error("Logout error:", error)
@@ -37,10 +48,10 @@ function UserContext({children}) {
 
     useEffect(()=>{
      getCurrentUser()
-    },[])
+    },[refreshKey])
 
     let value = {
-     userData,setUserData,getCurrentUser,loading,logoutUser
+     userData,setUserData,getCurrentUser,loading,logoutUser,forceRefreshUser
     }
     
    
