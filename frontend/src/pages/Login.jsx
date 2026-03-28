@@ -38,6 +38,11 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Clear all cached data before login
+      localStorage.clear();
+      sessionStorage.clear();
+      setUserData(null);
+      
       const result = await axios.post(serverUrl + '/api/auth/login', {
         email, password
       }, { withCredentials: true });
@@ -50,6 +55,9 @@ function Login() {
       
       // Fetch fresh user data with force refresh
       await getCurrentUser(true);
+      
+      // Additional delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       toast.success("User Login Successful");
       
@@ -68,6 +76,11 @@ function Login() {
 
   const googlelogin = async () => {
     try {
+      // Clear all cached data before login
+      localStorage.clear();
+      sessionStorage.clear();
+      setUserData(null);
+      
       const response = await signInWithPopup(auth, provider);
       const user = response.user;
       await axios.post(serverUrl + "/api/auth/googlelogin", {
@@ -83,6 +96,9 @@ function Login() {
       
       // Fetch fresh user data with force refresh
       await getCurrentUser(true);
+      
+      // Additional delay to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       toast.success("User Login Successful");
       navigate("/");
