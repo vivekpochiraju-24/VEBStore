@@ -64,35 +64,99 @@ function Profile() {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
+        
+        // Special handling for phone number
+        if (name === 'phone') {
+            // Only allow numbers and limit to 10 digits
+            const phoneValue = value.replace(/\D/g, '').slice(0, 10)
+            setForm(prev => ({ ...prev, [name]: phoneValue }))
+            return
+        }
+        
         setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (form.phone && form.phone.trim().length < 10) {
+        
+        console.log("=== PROFILE SUBMIT START ===")
+        console.log("Form data:", form)
+        console.log("Change password:", changePassword)
+        
+        if (form.phone && form.phone.trim().length !== 10) {
+            console.log("Phone validation failed:", form.phone)
             return toast.error('Please enter a valid 10-digit mobile number')
         }
+        
+        // Validate phone format (should be exactly 10 digits)
+        if (form.phone && !/^\d{10}$/.test(form.phone)) {
+            console.log("Phone format validation failed:", form.phone)
+            return toast.error('Mobile number must be exactly 10 digits')
+        }
+        
         try {
             setLoading(true)
+            
             const payload = { 
                 name: form.name, 
                 phone: form.phone,
                 preferredProductType: form.preferredProductType,
                 emailUpdatesOptIn: form.emailUpdatesOptIn
             }
+            
             if (changePassword) {
                 if (!form.currentPassword || !form.newPassword) {
+                    console.log("Password validation failed")
                     return toast.error('Passwords are required for change')
                 }
                 payload.currentPassword = form.currentPassword
                 payload.newPassword = form.newPassword
             }
-            const res = await axios.put(serverUrl + '/api/auth/update-profile', payload, { withCredentials: true })
+            
+            console.log("Sending update payload:", payload)
+            console.log("API endpoint:", serverUrl + '/api/auth/update-profile')
+            
+            // Add timestamp to prevent caching
+            const timestamp = Date.now()
+            const res = await axios.put(`${serverUrl}/api/auth/update-profile?t=${timestamp}`, payload, { 
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate'
+                }
+            })
+            
+            console.log("Update API response:", res.data)
+            console.log("Update successful!")
+            
             toast.success('Profile updated successfully! ✅')
-            await getCurrentUser()
-            setChangePassword(false)
+            
+            // Force refresh user data to get latest updates
+            console.log("Refreshing user data after update...")
+            await getCurrentUser(true)
+            
+            // Clear password fields after successful update
+            if (changePassword) {
+                setChangePassword(false)
+                setForm(prev => ({
+                    ...prev,
+                    currentPassword: '',
+                    newPassword: ''
+                }))
+            }
+            
+            console.log("=== PROFILE SUBMIT COMPLETE ===")
+            
         } catch (err) {
-            toast.error(err?.response?.data?.message || 'Update failed')
+            console.error("Profile update error:", err)
+            console.error("Error details:", {
+                message: err.message,
+                response: err.response?.data,
+                status: err.response?.status
+            })
+            
+            const errorMessage = err?.response?.data?.message || err?.message || 'Update failed'
+            toast.error(errorMessage)
         } finally {
             setLoading(false)
         }
