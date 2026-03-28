@@ -352,7 +352,8 @@ export const sendSubscriptionEmail = async (email) => {
         const mailOptions = {
             from: `"VEBStore Management" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: '👑 Exclusive: You\'re In! Your 20% Welcome Reveal Inside',
+            text: "Welcome to VEBStore! You are now subscribed to our elite updates. If you have any questions, reply to this mail. Check out our collections at https://vebstore.netlify.app/",
+            subject: '💎 Welcome to VEBStore Elite Confirmation',
             html: `
             <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px;">
                 <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.06);">
