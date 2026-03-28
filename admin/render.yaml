@@ -48,6 +48,5 @@ services:
     
     # Redirects for SPA routing - Fixed for Render
     rewrites:
-      - type: rewrite
-        source: /*
+      - source: /*
         destination: /index.html
