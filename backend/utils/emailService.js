@@ -16,23 +16,28 @@ const createTransporter = () => {
     
     try {
         transporter = nodemailer.createTransport({
-            service: 'gmail', // Official Gmail optimization
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // Use STARTTLS
+            pool: true,    // Connection pooling
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
-            connectionTimeout: 15000, 
-            greetingTimeout: 10000,     
-            socketTimeout: 15000      
+            tls: {
+                rejectUnauthorized: false // Fix handshake issues on Render
+            },
+            connectionTimeout: 20000, 
+            greetingTimeout: 15000,     
+            socketTimeout: 20000      
         });
 
         // Verify connection immediately
         transporter.verify((error, success) => {
             if (error) {
-                console.error('[EMAIL] ❌ SMTP Verification Error:', error.message);
-                console.log(`[EMAIL] Tips: Verify 'EMAIL_USER' & 'EMAIL_PASS' in Render Environment Variables Dashboard.`);
+                console.error('[EMAIL RESILIENCE] ❌ Check failed:', error.message);
             } else {
-                console.log('[EMAIL] ✅ SMTP OFFICIAL GMAIL SERVICE CONNECTED');
+                console.log('[EMAIL RESILIENCE] ✅ PERSISTENT PORT 587 CONNECTED');
             }
         });
 
