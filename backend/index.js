@@ -88,7 +88,7 @@ app.use("/api/cart", cartRoutes)
 app.use("/api/order", orderRoutes)
 app.use("/api/exchange", exchangeRoutes)
 app.use("/api/message", messageRoutes)
-app.use("/api/admin", adminRoutes)
+app.use("/api/adminlogin", adminRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {
