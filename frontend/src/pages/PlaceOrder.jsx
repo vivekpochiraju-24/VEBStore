@@ -71,14 +71,23 @@ function PlaceOrder() {
       handler: async (response) => {
         try {
           const { data } = await axios.post(serverUrl + '/api/order/verifyrazorpay', response, { withCredentials: true })
-          if (data) {
-            navigate("/order")
-            setCartItem({})
+          if (data && data.message === "Payment Successful") {
             toast.success("Payment Received! 🎉")
+            setCartItem({})
+            
+            // Wait 2 seconds before navigating so the user sees the success
+            setTimeout(() => {
+              navigate("/order")
+            }, 2000)
+            
+          } else {
+            toast.warning("Payment Status: " + (data?.message || "Incomplete"))
           }
         } catch (err) {
           console.error("Verification failed", err)
-          toast.error("Payment verification failed")
+          toast.error("Payment verification failed on server. Please check your Orders.")
+          // Still navigate after error to let user see their order list
+          setTimeout(() => navigate("/order"), 3000)
         }
       },
       prefill: {
