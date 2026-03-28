@@ -53,6 +53,11 @@ export const getTransporter = () => {
     return createTransporter();
 };
 
+export const resetTransporter = () => {
+    transporter = null;
+    return true;
+};
+
 export const sendOrderEmail = async (email, orderData) => {
     const { _id, items, amount, address } = orderData;
     const itemsHtml = items.map(item => `<li>${item.name} x ${item.quantity} (Size: ${item.size}) - ₹${item.price}</li>`).join('');
