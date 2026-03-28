@@ -35,7 +35,7 @@ function Home() {
       console.log('Fetching dashboard data from:', serverUrl + "/api/order/dashboard-stats")
       const response = await axios.get(`${serverUrl}/api/order/dashboard-stats`, { 
         withCredentials: true,
-        timeout: 10000
+        timeout: 15000
       })
       setStats(response.data)
       setLastRefresh(new Date())

@@ -12,16 +12,9 @@ function UserContext({children}) {
 
    const getCurrentUser = async (forceRefresh = false) => {
         try {
-            setLoading(true)
+            if (!serverUrl) return;
             
-            // Always clear user data on force refresh
-            if (forceRefresh) {
-                setUserData(null)
-                // Clear ALL storage to prevent any cached data
-                localStorage.clear()
-                sessionStorage.clear()
-                setLastFetchTime(0)
-            }
+            setLoading(true)
             
             // Add timestamp to prevent caching
             const timestamp = Date.now()
@@ -31,15 +24,9 @@ function UserContext({children}) {
             setLastFetchTime(timestamp)
             
             console.log("User data loaded:", result.data)
-            console.log("User ID:", result.data?._id)
-            console.log("User Email:", result.data?.email)
 
         } catch (error) {
             setUserData(null)
-            // Clear all storage on error
-            localStorage.clear()
-            sessionStorage.clear()
-            setLastFetchTime(0)
             console.log("No user logged in:", error.message)
         } finally {
             setLoading(false)

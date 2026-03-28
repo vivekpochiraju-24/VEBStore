@@ -6,6 +6,7 @@ import { authDataContext } from '../context/AuthContext'
 import { themeDataContext } from '../context/ThemeContext'
 import { FaWhatsapp } from 'react-icons/fa'
 import { Users as UsersIcon, ShoppingBag, Coins, Phone, Mail, Search, Send } from 'lucide-react'
+import { MdEdit } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
 const STORE_NUMBER = '919603673436'
@@ -20,6 +21,10 @@ function Users() {
     const [search, setSearch]     = useState('')
     const [filter, setFilter]     = useState('all')  // all | buyers | whatsapp
 
+    const [editUser, setEditUser] = useState(null)
+    const [editForm, setEditForm] = useState({ name: '', email: '', phone: '', supercoins: 0 })
+    const [updating, setUpdating] = useState(false)
+
     const fetchUsers = async () => {
         try {
             setLoading(true)
@@ -33,7 +38,51 @@ function Users() {
         }
     }
 
+    const openEditModal = (user) => {
+        setEditUser(user)
+        setEditForm({
+            name: user.name || '',
+            email: user.email || '',
+            phone: user.phone || '',
+            supercoins: user.supercoins || 0
+        })
+    }
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault()
+        try {
+            setUpdating(true)
+            await axios.put(`${serverUrl}/api/user/admin/update-user`, {
+                userId: editUser._id,
+                ...editForm
+            }, { withCredentials: true })
+            
+            toast.success('User updated successfully')
+            setEditUser(null)
+            fetchUsers()
+        } catch (err) {
+            console.error(err)
+            toast.error(err.response?.data?.message || 'Update failed')
+        } finally {
+            setUpdating(false)
+        }
+    }
+
+    const handleDeleteUser = async (userId) => {
+        if (!window.confirm('Are you sure you want to permanently delete this user account?')) return
+        try {
+            await axios.delete(`${serverUrl}/api/user/admin/delete-user/${userId}`, { withCredentials: true })
+            toast.success('User deleted')
+            fetchUsers()
+        } catch (err) {
+            console.error(err)
+            toast.error('Delete failed')
+        }
+    }
+
     useEffect(() => { fetchUsers() }, [])
+
+    // ... (rest of the functions: buildUpdateMessage, handleSendUpdate, handleBroadcast)
 
     // Build WhatsApp blast message for a single user
     const buildUpdateMessage = (user) => {
@@ -91,8 +140,8 @@ function Users() {
     }
 
     const filtered = users.filter(u => {
-        const matchSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
-                            u.email.toLowerCase().includes(search.toLowerCase())
+        const matchSearch = (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
+                            (u.email || '').toLowerCase().includes(search.toLowerCase())
         if (filter === 'buyers')   return matchSearch && u.orderCount > 0
         if (filter === 'whatsapp') return matchSearch && u.whatsappOptIn
         return matchSearch
@@ -200,12 +249,9 @@ function Users() {
                                             <th className='px-6 py-4 text-left'>User</th>
                                             <th className='px-6 py-4 text-left'>Contact</th>
                                             <th className='px-6 py-4 text-center'>Orders</th>
-                                            <th className='px-6 py-4 text-center'>Total Spent</th>
                                             <th className='px-6 py-4 text-center'>Supercoins</th>
-                                            <th className='px-6 py-4 text-center'>WhatsApp</th>
-                                            <th className='px-6 py-4 text-center'>Email News</th>
-                                            <th className='px-6 py-4 text-center'>Joined</th>
-                                            <th className='px-6 py-4 text-center'>Action</th>
+                                            <th className='px-6 py-4 text-center border-l border-slate-100/5'>Joined</th>
+                                            <th className='px-6 py-4 text-right'>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody className='divide-y divide-slate-100/10'>
@@ -217,7 +263,7 @@ function Users() {
                                                 <td className='px-6 py-4'>
                                                     <div className='flex items-center gap-3'>
                                                         <div className='w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 text-white font-black rounded-full flex items-center justify-center shadow text-sm'>
-                                                            {user.name[0].toUpperCase()}
+                                                            {(user.name || 'U')[0].toUpperCase()}
                                                         </div>
                                                         <div>
                                                             <p className={`font-bold text-sm ${dk ? 'text-white' : 'text-gray-900'}`}>{user.name}</p>
@@ -247,75 +293,50 @@ function Users() {
                                                     <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-black ${user.orderCount > 0 ? 'bg-green-100 text-green-700' : dk ? 'bg-slate-700 text-slate-400' : 'bg-gray-100 text-gray-400'}`}>
                                                         {user.orderCount}
                                                     </span>
-                                                </td>
-
-                                                {/* Total Spent */}
-                                                <td className='px-6 py-4 text-center'>
-                                                    <span className={`text-sm font-bold ${user.totalSpent > 0 ? 'text-green-600' : dk ? 'text-slate-500' : 'text-gray-400'}`}>
-                                                        {user.totalSpent > 0 ? `₹${user.totalSpent.toLocaleString('en-IN')}` : '—'}
-                                                    </span>
+                                                    {user.totalSpent > 0 && <p className='text-[10px] font-bold mt-1 text-emerald-600'>₹{user.totalSpent.toLocaleString()}</p>}
                                                 </td>
 
                                                 {/* Supercoins */}
                                                 <td className='px-6 py-4 text-center'>
-                                                    {user.supercoins > 0 ? (
-                                                        <span className='inline-flex items-center gap-1 px-2.5 py-1 bg-yellow-50 text-yellow-700 text-xs font-black rounded-full border border-yellow-200'>
-                                                            💛 {user.supercoins}
+                                                    <div className='flex flex-col items-center gap-1'>
+                                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-black rounded-full border ${user.supercoins > 0 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : dk ? 'bg-slate-800 border-slate-700 text-slate-600' : 'bg-gray-50 border-gray-200 text-gray-400'}`}>
+                                                            💛 {user.supercoins || 0}
                                                         </span>
-                                                    ) : (
-                                                        <span className={`text-xs ${dk ? 'text-slate-600' : 'text-gray-400'}`}>—</span>
-                                                    )}
-                                                </td>
-
-                                                {/* WhatsApp */}
-                                                <td className='px-6 py-4 text-center'>
-                                                    {user.whatsappOptIn ? (
-                                                        <div className='flex flex-col items-center gap-1'>
-                                                            <span className='inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200'>
-                                                                <FaWhatsapp size={10} /> Subscribed
-                                                            </span>
-                                                            {user.whatsappPhone && (
-                                                                <span className={`text-[10px] ${dk ? 'text-slate-500' : 'text-gray-400'}`}>+{user.whatsappPhone}</span>
-                                                            )}
-                                                        </div>
-                                                    ) : (
-                                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full border ${dk ? 'bg-slate-700 text-slate-400 border-slate-600' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                                                            Not Opted-in
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                {/* Email Updates */}
-                                                <td className='px-6 py-4 text-center'>
-                                                    {user.emailUpdatesOptIn ? (
-                                                        <span className='inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200'>
-                                                            <Mail size={10} /> Subscribed
-                                                        </span>
-                                                    ) : (
-                                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-full border ${dk ? 'bg-slate-700 text-slate-400 border-slate-600' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                                                            Opted-out
-                                                        </span>
-                                                    )}
+                                                    </div>
                                                 </td>
 
                                                 {/* Joined */}
-                                                <td className='px-6 py-4 text-center'>
+                                                <td className='px-6 py-4 text-center border-l border-slate-100/5'>
                                                     <span className={`text-xs ${dk ? 'text-slate-400' : 'text-gray-500'}`}>
-                                                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                                                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—'}
                                                     </span>
                                                 </td>
 
                                                 {/* Action */}
-                                                <td className='px-6 py-4 text-center'>
-                                                    <button
-                                                        onClick={() => handleSendUpdate(user)}
-                                                        disabled={!user.whatsappPhone && !user.phone}
-                                                        className='inline-flex items-center gap-1.5 px-3 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-xs font-bold rounded-xl transition-all active:scale-95 shadow-sm'
-                                                        title='Send WhatsApp update to this user'
-                                                    >
-                                                        <Send size={12} />
-                                                        Send
-                                                    </button>
+                                                <td className='px-6 py-4 text-right'>
+                                                    <div className='flex items-center justify-end gap-2'>
+                                                        <button
+                                                            onClick={() => openEditModal(user)}
+                                                            className='p-2 hover:bg-blue-500/10 text-blue-500 rounded-lg transition-all'
+                                                            title='Edit User Details'
+                                                        >
+                                                            <MdEdit size={18} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleSendUpdate(user)}
+                                                            className='p-2 hover:bg-green-500/10 text-green-500 rounded-lg transition-all'
+                                                            title='WhatsApp Update'
+                                                        >
+                                                            <FaWhatsapp size={18} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteUser(user._id)}
+                                                            className='p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-all'
+                                                            title='Delete User'
+                                                        >
+                                                            <ShoppingBag size={18} className='rotate-45' />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -332,6 +353,75 @@ function Users() {
                         )}
                     </div>
                 </div>
+
+                {/* Edit User Modal */}
+                {editUser && (
+                    <div className='fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in'>
+                        <div className={`w-full max-w-lg rounded-[32px] overflow-hidden shadow-2xl ${dk ? 'bg-[#1e293b] border border-slate-700' : 'bg-white'}`}>
+                            <div className='p-8 border-b border-slate-100/10'>
+                                <h3 className={`text-2xl font-black ${dk ? 'text-white' : 'text-gray-900'}`}>Refine User Profile</h3>
+                                <p className={`text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>Editing ID: {editUser._id.toUpperCase()}</p>
+                            </div>
+                            <form onSubmit={handleUpdateUser} className='p-8 space-y-6'>
+                                <div className='grid grid-cols-2 gap-4'>
+                                    <div className='space-y-1.5'>
+                                        <label className='text-[10px] font-black uppercase text-slate-500 ml-1'>Legal Name</label>
+                                        <input 
+                                            value={editForm.name} 
+                                            onChange={e => setEditForm({...editForm, name: e.target.value})}
+                                            className={`w-full px-4 py-3 rounded-xl border outline-none text-sm font-bold ${dk ? 'bg-slate-800 border-slate-700 text-white' : 'bg-gray-50 border-gray-100'}`}
+                                        />
+                                    </div>
+                                    <div className='space-y-1.5'>
+                                        <label className='text-[10px] font-black uppercase text-slate-500 ml-1'>Supercoins Balance</label>
+                                        <input 
+                                            type="number"
+                                            value={editForm.supercoins} 
+                                            onChange={e => setEditForm({...editForm, supercoins: parseInt(e.target.value) || 0})}
+                                            className={`w-full px-4 py-3 rounded-xl border outline-none text-sm font-bold ${dk ? 'bg-slate-800 border-slate-700 text-white' : 'bg-gray-50 border-gray-100'}`}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className='space-y-1.5'>
+                                    <label className='text-[10px] font-black uppercase text-slate-500 ml-1'>E-Mail Signature</label>
+                                    <input 
+                                        type="email"
+                                        value={editForm.email} 
+                                        onChange={e => setEditForm({...editForm, email: e.target.value})}
+                                        className={`w-full px-4 py-3 rounded-xl border outline-none text-sm font-bold ${dk ? 'bg-slate-800 border-slate-700 text-white' : 'bg-gray-50 border-gray-100'}`}
+                                    />
+                                </div>
+
+                                <div className='space-y-1.5'>
+                                    <label className='text-[10px] font-black uppercase text-slate-500 ml-1'>Mobile Link</label>
+                                    <input 
+                                        value={editForm.phone} 
+                                        onChange={e => setEditForm({...editForm, phone: e.target.value})}
+                                        className={`w-full px-4 py-3 rounded-xl border outline-none text-sm font-bold ${dk ? 'bg-slate-800 border-slate-700 text-white' : 'bg-gray-50 border-gray-100'}`}
+                                    />
+                                </div>
+
+                                <div className='flex gap-4 pt-4'>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setEditUser(null)}
+                                        className={`flex-1 py-4 rounded-2xl font-black text-xs uppercase tracking-widest ${dk ? 'bg-slate-800 text-slate-400' : 'bg-gray-100 text-gray-500'}`}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="submit"
+                                        disabled={updating}
+                                        className='flex-1 py-4 rounded-2xl bg-blue-600 text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-600/20 active:scale-95 transition-all'
+                                    >
+                                        {updating ? 'Processing...' : 'Sync Changes'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
                 </main>
             </div>
         </div>

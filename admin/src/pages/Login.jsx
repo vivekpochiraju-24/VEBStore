@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 import axios from 'axios'
 import { authDataContext } from '../context/AuthContext'
 import { adminDataContext } from '../context/AdminContext'
+import { themeDataContext } from '../context/ThemeContext'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Loading from '../component/Loading'
@@ -18,6 +19,8 @@ function Login() {
 
   const { serverUrl } = useContext(authDataContext)
   const { getAdmin } = useContext(adminDataContext)
+  const { isDark } = useContext(themeDataContext)
+  const dk = isDark
   const navigate = useNavigate()
 
   const AdminLogin = async (e) => {

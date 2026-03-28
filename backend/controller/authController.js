@@ -221,15 +221,19 @@ export const updateProfile = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.userId;
 
-        if (!phone || phone.trim().length < 10) {
-            return res.status(400).json({ message: "A valid mobile number is required" });
+        // Validate phone if provided
+        if (phone && phone.trim() !== "") {
+            const cleanPhone = phone.trim().replace(/\D/g, '');
+            if (cleanPhone.length !== 10) {
+                return res.status(400).json({ message: "A valid 10-digit mobile number is required" });
+            }
         }
 
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
         if (name && name.trim()) user.name = name.trim();
-        user.phone = phone.trim();
+        if (phone !== undefined) user.phone = phone.trim();
         if (preferredProductType) user.preferredProductType = preferredProductType;
         if (typeof emailUpdatesOptIn === 'boolean') user.emailUpdatesOptIn = emailUpdatesOptIn;
 

@@ -1,6 +1,6 @@
 import express from "express"
 import isAuth from "../middleware/isAuth.js"
-import { getAdmin, getCurrentUser, optInWhatsapp, getAllUsers } from "../controller/userController.js"
+import { getAdmin, getCurrentUser, optInWhatsapp, getAllUsers, updateUserByAdmin, deleteUser } from "../controller/userController.js"
 import adminAuth from "../middleware/adminAuth.js"
 
 let userRoutes = express.Router()
@@ -9,5 +9,7 @@ userRoutes.get("/getcurrentuser",isAuth,getCurrentUser)
 userRoutes.get("/getadmin",getAdmin)
 userRoutes.post("/whatsapp-optin", isAuth, optInWhatsapp)
 userRoutes.get("/admin/all-users", adminAuth, getAllUsers)
+userRoutes.put("/admin/update-user", adminAuth, updateUserByAdmin)
+userRoutes.delete("/admin/delete-user/:userId", adminAuth, deleteUser)
 
 export default userRoutes

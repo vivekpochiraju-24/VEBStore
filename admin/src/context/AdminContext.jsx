@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { authDataContext } from './AuthContext'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export const adminDataContext = createContext()
 
@@ -22,27 +23,32 @@ function AdminContext({ children }) {
             
             // First try with authentication
             let result = await axios.get(serverUrl + "/api/user/getadmin", { 
-                withCredentials: true,
-                timeout: 10000
+                withCredentials: true, 
+                timeout: 15000 // Increased timeout
             })
             setAdminData(result.data)
+            setError(null)
             console.log('Admin data received:', result.data)
             
-        } catch (error) {
-            console.log('Admin check response:', error.response?.status)
-            if (error.response?.status === 401 || error.response?.status === 400) {
+        } catch (err) {
+            console.log('Admin check response:', err.response?.status)
+            
+            if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+                setError('Connection Timeout (15s). Please ensure the backend server is running on ' + serverUrl)
+                toast.error('Admin Server Timeout. Please check if your backend is running.')
+            } else if (err.response?.status === 401 || err.response?.status === 400) {
                 // Not logged in is not an "error" for the whole app, just show login
                 setAdminData(null)
                 setError(null)
             } else {
                 setAdminData(null)
-                setError(error.message)
+                setError(err.message || 'Failed to connect to admin server')
             }
             
             console.log('Admin check failed:', {
-                message: error.message,
-                status: error.response?.status,
-                data: error.response?.data,
+                message: err.message,
+                code: err.code,
+                status: err.response?.status,
                 url: serverUrl + "/api/user/getadmin"
             })
         } finally {

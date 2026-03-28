@@ -99,3 +99,41 @@ export const getAllUsers = async (req, res) => {
         return res.status(500).json({ message: `getAllUsers error: ${error.message}` })
     }
 }
+
+export const updateUserByAdmin = async (req, res) => {
+    try {
+        const { userId, supercoins, name, email, phone } = req.body;
+        
+        if (!userId) return res.status(400).json({ message: "User ID is required" });
+        
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        
+        if (name !== undefined) user.name = name;
+        if (email !== undefined) user.email = email;
+        if (phone !== undefined) user.phone = phone;
+        if (supercoins !== undefined) user.supercoins = supercoins;
+        
+        await user.save();
+        return res.status(200).json({ message: "User updated successfully by admin", user });
+    } catch (error) {
+        console.log('updateUserByAdmin error:', error);
+        return res.status(500).json({ message: `Update user error: ${error.message}` });
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) return res.status(400).json({ message: "User ID is required" });
+        
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+        
+        await User.findByIdAndDelete(userId);
+        return res.status(200).json({ message: "User account deleted successfully" });
+    } catch (error) {
+        console.log('deleteUser error:', error);
+        return res.status(500).json({ message: `Delete user error: ${error.message}` });
+    }
+}
