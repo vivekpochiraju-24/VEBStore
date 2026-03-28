@@ -51,7 +51,7 @@ export const placeOrder = async (req,res) => {
              const targetEmail = address.email || user.email;
              console.log(`[ORDER] Preparing to send email to: ${targetEmail} (Opt-in: ${updatedUser.emailUpdatesOptIn})`);
              if (targetEmail && updatedUser.emailUpdatesOptIn) {
-                 await sendOrderEmail(targetEmail, newOrder);
+                 sendOrderEmail(targetEmail, newOrder).catch(e => console.error("Order Mail Error:", e));
              }
              createNotification(userId, "Order Placed", `Your order #${newOrder._id.toString().slice(-6)} has been placed successfully.`, "Order");
              
@@ -140,7 +140,7 @@ export const verifyRazorpay = async (req,res) =>{
             const targetEmail = newOrder.address.email || user.email;
             console.log(`[RAZORPAY SUCCESS] Sending confirmation to: ${targetEmail} (Opt-in: ${user.emailUpdatesOptIn})`);
             if (targetEmail && user.emailUpdatesOptIn) {
-                await sendOrderEmail(targetEmail, newOrder);
+                sendOrderEmail(targetEmail, newOrder).catch(e => console.error("Order Mail Error:", e));
             }
             createNotification(userId, "Order Summary", `Your Razorpay order #${newOrder._id.toString().slice(-6)} has been confirmed!`, "Order");
 
@@ -220,7 +220,7 @@ try {
     const user = await User.findById(order.userId);
     const targetEmail = order.address?.email || user?.email;
     if (targetEmail && user?.emailUpdatesOptIn) {
-        sendTrackingEmail(targetEmail, order, status);
+        sendTrackingEmail(targetEmail, order, status).catch(e => console.error("Tracking Mail Error:", e));
     }
 
     // WhatsApp Simulator for Status Update
@@ -267,7 +267,7 @@ export const cancelOrder = async (req,res) => {
         // Send Cancellation Email
         const user = await User.findById(order.userId);
         if (user) {
-            sendCancelEmail(user.email, updatedOrder);
+            sendCancelEmail(user.email, updatedOrder).catch(e => console.error("Cancel Mail Error:", e));
             createNotification(order.userId, "Order Cancelled", `Your order #${orderId.slice(-6)} has been cancelled.`, "Order");
         }
 

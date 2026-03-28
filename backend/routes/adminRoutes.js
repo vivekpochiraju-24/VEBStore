@@ -14,8 +14,8 @@ adminRoutes.post('/subscribe', async (req, res) => {
 
         res.json({ success: true, message: "Subscribed! Welcome to the Elite circle." });
     } catch (err) {
-        console.error("Sub Route Error:", err);
-        res.status(500).json({ success: false, message: "Mail server synchronization error" });
+        console.error("Sub Route Error:", err.message);
+        res.status(500).json({ success: false, message: `Mail server synchronization error: ${err.message}` });
     }
 });
 
