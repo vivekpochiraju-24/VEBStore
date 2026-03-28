@@ -52,32 +52,37 @@ function Nav() {
 
   const handleLogout = async () => {
     try {
-      console.log("Logout button clicked!")
-      console.log("Current user:", userData)
-      
-      if (!userData) {
-        console.log("No user to logout, navigating to login")
+        console.log("Logout button clicked!")
+        console.log("Current user:", userData)
+        
+        // Direct API call to ensure logout works
+        const response = await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+        console.log("Logout API response:", response.data)
+        
+        // Clear user state directly
+        setUserData(null)
+        
+        // Close profile dropdown
+        setShowProfile(false)
+        
+        // Navigate to login
         navigate("/login")
-        return
-      }
-      
-      console.log("Attempting logout...")
-      await logoutUser()
-      
-      // Add small delay to ensure logout is processed
-      await new Promise(resolve => setTimeout(resolve, 200))
-      
-      setShowProfile(false)
-      navigate("/login")
-      console.log("Logout completed, navigating to login")
+        
+        console.log("Logout completed successfully")
+        
+        // Force page reload to ensure clean state
+        setTimeout(() => {
+            window.location.href = "/login"
+        }, 100)
+        
     } catch (error) {
-      console.error("Logout failed:", error)
-      // Even if API fails, try to clear local state and navigate
-      setUserData(null)
-      setShowProfile(false)
-      navigate("/login")
+        console.error("Logout failed:", error)
+        // Force logout even if API fails
+        setUserData(null)
+        setShowProfile(false)
+        window.location.href = "/login"
     }
-  }
+}
 
   const cartCount = Object.keys(cartItem || {}).reduce((acc, id) => {
     return acc + Object.values(cartItem[id] || {}).reduce((s, q) => s + q, 0)
