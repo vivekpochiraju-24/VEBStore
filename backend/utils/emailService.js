@@ -188,8 +188,14 @@ export const sendCancelEmail = async (email, orderData) => {
         `
     };
 
+    const emailTransporter = getTransporter();
+    if (!emailTransporter) {
+        console.warn(`[EMAIL SIMULATION] 📧 Email service disabled. Simulated Cancel to ${email}:\n   SUBJECT: ${mailOptions.subject}\n`);
+        return;
+    }
+
     try {
-        await transporter.sendMail(mailOptions);
+        await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent Cancellation to ${email}`);
     } catch (error) {
         console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP. (Check ADMIN_PASSWORD in .env). Simulated Cancel to ${email}:\n   SUBJECT: ${mailOptions.subject}\n`);
@@ -316,8 +322,14 @@ export const sendTrackingEmail = async (email, orderData, status) => {
         `
     };
 
+    const emailTransporter = getTransporter();
+    if (!emailTransporter) {
+        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP, but the following Order tracking email was structurally generated for ${email}:\n   SUBJECT: ${mailOptions.subject}\n   STATUS: ${status}\n`);
+        return;
+    }
+
     try {
-        await transporter.sendMail(mailOptions);
+        await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent tracking update to ${email}: Status ${status}`);
     } catch (error) {
         console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP, but the following Order tracking email was structurally generated for ${email}:\n   SUBJECT: ${mailOptions.subject}\n   STATUS: ${status}\n`);
@@ -365,7 +377,13 @@ export const sendSubscriptionEmail = async (email) => {
             </div>
             `
         };
-        await transporter.sendMail(mailOptions);
+        const emailTransporter = getTransporter();
+        if (!emailTransporter) {
+            console.warn(`[EMAIL SIMULATION] 📧 Email service disabled. Simulated Subscription to ${email}`);
+            return;
+        }
+
+        await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Welcome Subscription sent to ${email}`);
     } catch (error) {
         console.error('Subscription Email Error:', error);
