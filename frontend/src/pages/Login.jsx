@@ -42,7 +42,13 @@ function Login() {
         email, password
       }, { withCredentials: true });
       
-      // Wait for getCurrentUser to complete
+      // Clear any existing user data and fetch fresh data
+      setUserData(null);
+      
+      // Add small delay to ensure login is processed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Fetch fresh user data
       await getCurrentUser();
       
       toast.success("User Login Successful");
@@ -67,20 +73,22 @@ function Login() {
       await axios.post(serverUrl + "/api/auth/googlelogin", {
         name: user.displayName,
         email: user.email
-      }, { withCredentials: true });
+      }, { withCredentials: true })
       
-      // Wait for getCurrentUser to complete
+      // Clear any existing user data and fetch fresh data
+      setUserData(null);
+      
+      // Add small delay to ensure login is processed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Fetch fresh user data
       await getCurrentUser();
       
-      toast.success("Google Login Successful");
-      
-      // Small delay to ensure state is updated
-      setTimeout(() => {
-        navigate("/");
-      }, 100);
-      
+      toast.success("User Login Successful");
+      navigate("/");
     } catch (error) {
       console.error(error);
+      toast.error("Google Login Failed");
       if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') return;
       toast.error(error.code === 'auth/operation-not-allowed' ? "Enable Google Auth in Firebase Console first!" : (error.response?.data?.message || error.message || "Google Login Failed"));
     }
