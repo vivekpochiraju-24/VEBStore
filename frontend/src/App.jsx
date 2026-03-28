@@ -24,7 +24,7 @@ import MyExchanges from './pages/MyExchanges'
 import Support from './pages/Support'
 
 function App() {
-  let { userData, loading } = useContext(userDataContext)
+  let { userData, userLoading: loading } = useContext(userDataContext)
   let { isDark } = useContext(themeDataContext)
   let location = useLocation()
 
