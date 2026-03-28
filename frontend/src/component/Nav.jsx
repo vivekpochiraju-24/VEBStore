@@ -65,22 +65,17 @@ function Nav() {
         // Close profile dropdown
         setShowProfile(false)
         
-        // Navigate to login
+        // Navigate to login using React Router
         navigate("/login")
         
         console.log("Logout completed successfully")
-        
-        // Force page reload to ensure clean state
-        setTimeout(() => {
-            window.location.href = "/login"
-        }, 100)
         
     } catch (error) {
         console.error("Logout failed:", error)
         // Force logout even if API fails
         setUserData(null)
         setShowProfile(false)
-        window.location.href = "/login"
+        navigate("/login")
     }
 }
 
