@@ -58,6 +58,8 @@ function App() {
         <Route path='/'
           element={userData ? <Home /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
+        <Route path='/index.html' element={<Navigate to="/" />} />
+
         <Route path='/about'
           element={userData ? <About /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 

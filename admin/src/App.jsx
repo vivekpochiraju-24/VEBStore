@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Add from './pages/Add'
 import Lists from './pages/Lists'
@@ -51,6 +51,7 @@ function App() {
             ) : (
                 <Routes>
                     <Route path='/' element={<Home />} />
+                    <Route path='/index.html' element={<Navigate to="/" />} />
                     <Route path='/add' element={<Add />} />
                     <Route path='/lists' element={<Lists />} />
                     <Route path='/orders' element={<Orders />} />
