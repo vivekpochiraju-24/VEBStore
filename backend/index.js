@@ -39,6 +39,7 @@ app.use(cors({
             "https://vebadmin.netlify.app",
             "https://veb-store.vercel.app",
             "https://vebstore-frontend.onrender.com",
+            "https://vebstore-admin.onrender.com",
             "https://veb-store-d4wpj6tq4-vivekpochirajus-projects.vercel.app"
         ];
         

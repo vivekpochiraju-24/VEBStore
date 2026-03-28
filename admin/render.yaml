@@ -1,0 +1,40 @@
+services:
+  # Admin Panel Static Site
+  - type: web
+    name: vebstore-admin
+    env: static
+    plan: free
+    rootDir: admin  # Tell Render to use admin as root
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    buildFilter:
+      paths:
+        - admin/**
+      ignored: 
+        - backend/**
+        - frontend/**
+        - docs/**
+        - "*.md"
+    
+    # Environment Variables
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://vebstore-backend.onrender.com
+        
+    # Health Check
+    healthCheckPath: /
+    
+    # Build settings
+    nodeVersion: "18"
+    
+    # Headers for SPA
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
