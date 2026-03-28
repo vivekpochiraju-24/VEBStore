@@ -46,7 +46,7 @@ services:
         name: Pragma
         value: no-cache
     
-    # Redirects for SPA routing - Fixed for Render
+    # Redirects for SPA routing - Render specific format
     rewrites:
-      - source: /*
+      - source: /(.*)/*
         destination: /index.html
