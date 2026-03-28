@@ -1,4 +1,5 @@
 services:
+  # Backend Service
   - type: web
     name: vebstore-backend
     env: node
@@ -7,23 +8,30 @@ services:
     envVars:
       - key: PORT
         value: 8000
-      - fromGroup: vebstore-secrets
+    # Point Render to look at the backend folder
+    rootDir: backend
 
+  # Frontend Static Site
   - type: static
     name: vebstore-frontend
     env: static
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    staticPublishPath: dist
+    # Point Render to look at the frontend folder
+    rootDir: frontend
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
 
+  # Admin Static Site
   - type: static
     name: vebstore-admin
     env: static
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    staticPublishPath: dist
+    # Point Render to look at the admin folder
+    rootDir: admin
     routes:
       - type: rewrite
         source: /*
