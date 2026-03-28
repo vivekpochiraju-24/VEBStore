@@ -9,12 +9,10 @@ adminRoutes.post('/subscribe', async (req, res) => {
         const { email } = req.body;
         if (!email) return res.status(400).json({ success: false, message: "Email required" });
         
-        // Use a background process for email to avoid blocking the user
-        import('../utils/emailService.js').then(({ sendSubscriptionEmail }) => {
-            sendSubscriptionEmail(email).catch(e => console.error("Bg Mail Error:", e));
-        });
+        const { sendSubscriptionEmail } = await import('../utils/emailService.js');
+        await sendSubscriptionEmail(email);
 
-        res.json({ success: true, message: "Subscribed! Check your email." });
+        res.json({ success: true, message: "Subscribed! Welcome to the Elite circle." });
     } catch (err) {
         console.error("Sub Route Error:", err);
         res.status(500).json({ success: false, message: "Mail server synchronization error" });

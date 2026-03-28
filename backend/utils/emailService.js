@@ -16,25 +16,23 @@ const createTransporter = () => {
     
     try {
         transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // Use SSL/TLS
+            service: 'gmail', // Official Gmail optimization
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
-            connectionTimeout: 10000, 
-            greetingTimeout: 5000,     
-            socketTimeout: 10000      
+            connectionTimeout: 15000, 
+            greetingTimeout: 10000,     
+            socketTimeout: 15000      
         });
 
         // Verify connection immediately
         transporter.verify((error, success) => {
             if (error) {
                 console.error('[EMAIL] ❌ SMTP Verification Error:', error.message);
-                console.log(`[EMAIL] Tips: Secure check Port 465, also ensure App Password 'duif...' is correctly set in Render Env Vars.`);
+                console.log(`[EMAIL] Tips: Verify 'EMAIL_USER' & 'EMAIL_PASS' in Render Environment Variables Dashboard.`);
             } else {
-                console.log('[EMAIL] ✅ SMTP Secure Channel Established (Port 465)');
+                console.log('[EMAIL] ✅ SMTP OFFICIAL GMAIL SERVICE CONNECTED');
             }
         });
 
@@ -154,7 +152,7 @@ export const sendOrderEmail = async (email, orderData) => {
         console.log(`[EMAIL] 📧 Sent Order Confirmation to ${email}`);
     } catch (error) {
         console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
-        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP. (Check EMAIL_PASS in .env). Simulated Confirmation to ${email}:\n   SUBJECT: ${mailOptions.subject}\n   TOTAL: ₹${amount}\n`);
+        throw error; // Rethrow for UI transparency
     }
 };
 
@@ -208,7 +206,8 @@ export const sendCancelEmail = async (email, orderData) => {
         await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent Cancellation to ${email}`);
     } catch (error) {
-        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP. (Check ADMIN_PASSWORD in .env). Simulated Cancel to ${email}:\n   SUBJECT: ${mailOptions.subject}\n`);
+        console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
+        throw error; // Rethrow for UI transparency
     }
 };
 
@@ -254,7 +253,7 @@ export const sendOtpEmail = async (email, otp) => {
         console.log(`[EMAIL] 🔐 Sent OTP Verification to ${email}`);
     } catch (error) {
         console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
-        console.warn(`\n[EMAIL SIMULATION] 🔐 Could not securely connect to SMTP. (Check EMAIL_PASS in .env).\n   Simulated OTP for ${email}: ${otp}\n   SUBJECT: ${mailOptions.subject}\n`);
+        throw error; // Rethrow for UI transparency
     }
 };
 
@@ -342,7 +341,8 @@ export const sendTrackingEmail = async (email, orderData, status) => {
         await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent tracking update to ${email}: Status ${status}`);
     } catch (error) {
-        console.warn(`[EMAIL SIMULATION] 📧 Could not securely connect to SMTP, but the following Order tracking email was structurally generated for ${email}:\n   SUBJECT: ${mailOptions.subject}\n   STATUS: ${status}\n`);
+        console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
+        throw error; // Rethrow for UI transparency
     }
 };
 

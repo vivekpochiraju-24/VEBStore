@@ -18,11 +18,7 @@ export const sendOtp = async (req, res) => {
 
         console.log(`[TESTING OTP] Code for ${email} is ${otp}`);
 
-        try {
-            await sendOtpEmail(email, otp);
-        } catch (e) {
-            console.log("Failed to send real email. Check EMAIL_USER in .env. Test OTP is in console log.");
-        }
+        await sendOtpEmail(email, otp);
 
         return res.status(200).json({ message: "OTP sent successfully" });
     } catch (error) {
