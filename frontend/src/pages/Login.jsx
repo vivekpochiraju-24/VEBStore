@@ -39,46 +39,22 @@ function Login() {
     setLoading(true);
     try {
       console.log("=== LOGIN START ===")
-      console.log("Clearing all cached data...")
-      
-      // Clear ALL browser storage
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Clear React state
-      setUserData(null);
-      
-      console.log("Storage cleared, making login API call...")
       
       const result = await axios.post(serverUrl + '/api/auth/login', {
         email, password
       }, { withCredentials: true });
       
       console.log("Login API response:", result.data)
-      console.log("Logged in user ID:", result.data.user._id)
-      console.log("Logged in user email:", result.data.user.email)
       
-      // Force refresh user data with delay
-      console.log("Forcing user data refresh...")
-      forceRefreshUser();
-      
-      // Add delay to ensure login is processed on server
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Fetch fresh user data with force refresh
+      // Fetch fresh user data to update the context state
       console.log("Fetching fresh user data...")
       await getCurrentUser(true);
       
-      // Additional delay to ensure state is updated
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       console.log("Login completed successfully!")
-      toast.success("User Login Successful");
+      toast.success("Welcome back to VEBStore! ✨");
       
-      // Small delay to ensure state is updated
-      setTimeout(() => {
-        navigate("/");
-      }, 100);
+      // Redirect seamlessly
+      navigate("/");
       
     } catch (error) {
       console.error("Login error:", error);
@@ -91,17 +67,6 @@ function Login() {
   const googlelogin = async () => {
     try {
       console.log("=== GOOGLE LOGIN START ===")
-      console.log("Clearing all cached data...")
-      
-      // Clear ALL browser storage
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Clear React state
-      setUserData(null);
-      
-      console.log("Storage cleared, starting Google auth...")
-      
       const response = await signInWithPopup(auth, provider);
       const user = response.user;
       
@@ -112,24 +77,14 @@ function Login() {
         email: user.email
       }, { withCredentials: true })
       
-      console.log("Google login API call completed")
+      console.log("Google login API for session sync completed")
       
-      // Force refresh user data with delay
-      console.log("Forcing user data refresh...")
-      forceRefreshUser();
-      
-      // Add delay to ensure login is processed on server
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Fetch fresh user data with force refresh
+      // Fetch fresh user data to update the context state
       console.log("Fetching fresh user data...")
       await getCurrentUser(true);
       
-      // Additional delay to ensure state is updated
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       console.log("Google login completed successfully!")
-      toast.success("User Login Successful");
+      toast.success("Welcome back to your Style Hub! ✨");
       navigate("/");
     } catch (error) {
       console.error("Google login error:", error);

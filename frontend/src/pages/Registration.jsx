@@ -15,7 +15,7 @@ import Loading from '../component/Loading';
 function Registration() {
   const [show, setShow] = useState(false);
   const { serverUrl } = useContext(authDataContext);
-  const { getCurrentUser } = useContext(userDataContext);
+  const { getCurrentUser, setUserData } = useContext(userDataContext);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,18 +30,19 @@ function Registration() {
     setLoading(true);
     
     try {
+      console.log("=== REGISTRATION START ===")
       const result = await axios.post(serverUrl + '/api/auth/registration', {
         name, email, password, phone
       }, { withCredentials: true });
       
-      // Add a small delay to ensure user is saved in database
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log("Registration API response:", result.data)
       
-      // Clear any existing user data and fetch fresh data
-      setUserData(null);
-      await getCurrentUser();
+      // Fetch fresh user data to update the context state
+      console.log("Fetching fresh user data...")
+      await getCurrentUser(true);
       
-      toast.success("User Registration Successful!");
+      console.log("Registration completed successfully!")
+      toast.success("Welcome to VEBStore! ✨ Your exclusive account is ready.");
       navigate("/");
       
     } catch (error) {
@@ -54,15 +55,19 @@ function Registration() {
 
   const googleSignup = async () => {
     try {
+      console.log("=== GOOGLE REGISTRATION START ===")
       const response = await signInWithPopup(auth, provider);
       const user = response.user;
+      
       await axios.post(serverUrl + "/api/auth/googlelogin", {
         name: user.displayName,
         email: user.email
       }, { withCredentials: true });
 
-      await getCurrentUser();
-      toast.success("Google Registration Successful!");
+      console.log("Google session created, fetching fresh data...")
+      await getCurrentUser(true);
+      
+      toast.success("Welcome to VEBStore! ✨ Your style journey starts now.");
       navigate("/");
     } catch (error) {
       console.error(error);

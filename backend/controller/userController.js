@@ -17,25 +17,26 @@ export const getCurrentUser = async (req,res) => {
 
 export const getAdmin = async (req,res) => {
     try {
-        // Check if user is authenticated via token
-        const token = req.cookies?.token;
+        // Check if user is authenticated via admin token
+        const admin_token = req.cookies?.admin_token;
         
-        if (!token) {
-            // No token provided, check if there's a valid session
+        if (!admin_token) {
             return res.status(401).json({message:"Not authenticated - Please login first"});
         }
 
         // Verify token
         const jwt = (await import("jsonwebtoken")).default;
-        let verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+        let verifyToken = jwt.verify(admin_token, process.env.JWT_SECRET);
         
-        if (!verifyToken) {
-            return res.status(401).json({message:"Invalid token - Please login again"});
+        const adminEmail = process.env.ADMIN_EMAIL || "bhargavisurampudi1@gmail.com";
+
+        if (!verifyToken || verifyToken.email !== adminEmail) {
+            return res.status(401).json({message:"Invalid administrator token"});
         }
 
         // Token is valid, return admin info
         return res.status(200).json({
-            email: process.env.ADMIN_EMAIL || "bhargavisurampudi1@gmail.com",
+            email: adminEmail,
             role: "admin",
             _id: "admin123"
         });

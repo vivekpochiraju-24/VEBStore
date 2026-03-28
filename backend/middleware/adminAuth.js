@@ -2,19 +2,23 @@ import jwt from 'jsonwebtoken'
 
 const adminAuth = async (req,res,next) => {
     try {
-        let {token} = req.cookies
+        let { admin_token } = req.cookies
 
-    if(!token) {
-        return res.status(401).json({message:"Not Authorized Login Again"})
-    }
+        if (!admin_token) {
+            return res.status(401).json({ message: "Not Authorized Login Again" })
+        }
     
-    let verifyToken =  jwt.verify(token,process.env.JWT_SECRET)
-
-    if(!verifyToken){
-         return res.status(401).json({message:"Not Authorized Login Again, Invalid token"})
+        let verifyToken = jwt.verify(admin_token, process.env.JWT_SECRET)
+    
+    // Distinguish between admin (email-based) and user (id-based) tokens
+    const adminEmail = process.env.ADMIN_EMAIL || "bhargavisurampudi1@gmail.com";
+    
+    if (!verifyToken.email || verifyToken.email !== adminEmail) {
+        console.log("Access denied: Not an administrator token");
+        return res.status(401).json({ message: "Not Authorized: Administrators Only" })
     }
-    req.adminEmail = process.env.ADMIN_EMAIL
 
+    req.adminEmail = adminEmail
     next()
         
     } catch (error) {
