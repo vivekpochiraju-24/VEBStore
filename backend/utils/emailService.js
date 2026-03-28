@@ -17,17 +17,27 @@ const createTransporter = () => {
     try {
         transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // Use STARTTLS
+            port: 465,
+            secure: true, // Use SSL/TLS
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
-            // Add timeout and connection limits
-            connectionTimeout: 10000, // 10 seconds
-            greetingTimeout: 5000,     // 5 seconds
-            socketTimeout: 10000      // 10 seconds
+            connectionTimeout: 10000, 
+            greetingTimeout: 5000,     
+            socketTimeout: 10000      
         });
+
+        // Verify connection immediately
+        transporter.verify((error, success) => {
+            if (error) {
+                console.error('[EMAIL] ❌ SMTP Verification Error:', error.message);
+                console.log(`[EMAIL] Tips: Secure check Port 465, also ensure App Password 'duif...' is correctly set in Render Env Vars.`);
+            } else {
+                console.log('[EMAIL] ✅ SMTP Secure Channel Established (Port 465)');
+            }
+        });
+
         return transporter;
     } catch (error) {
         console.error('[EMAIL] ❌ Failed to create email transporter:', error.message);
