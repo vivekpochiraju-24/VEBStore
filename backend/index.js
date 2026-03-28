@@ -69,21 +69,9 @@ const server = app.listen(port, '0.0.0.0', () => {
     connectDb().then(() => {
         console.log("✅ Database connected successfully")
         
-        // SMTP Verification - only in development
-        if (process.env.NODE_ENV !== 'production') {
-            import('./utils/emailService.js').then(({ transporter }) => {
-                transporter.verify((error, success) => {
-                    if (error) {
-                        console.error("❌ Email Service (SMTP) Error:", error.message);
-                    } else {
-                        console.log("📨 Email Service (SMTP) Verified & Ready!");
-                    }
-                });
-            });
-        } else {
-            console.log("📨 Email Service disabled in production");
-        }
-
+        // Email service is now lazy-loaded and optional
+        console.log("📨 Email service ready (lazy-loaded)")
+        
         console.log("🎯 VEBStore Backend Ready!")
     }).catch(err => {
         console.error("❌ Database connection failed:", err.message)

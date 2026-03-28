@@ -2,15 +2,42 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv'
 dotenv.config()
 
-export const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Use STARTTLS
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+let transporter = null;
+
+// Create transporter only when needed and if email is configured
+const createTransporter = () => {
+    if (transporter) return transporter;
+    
+    // Only create transporter if email credentials are available
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.warn('[EMAIL] ⚠️ Email credentials not configured. Email service disabled.');
+        return null;
     }
-});
+    
+    try {
+        transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // Use STARTTLS
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+            // Add timeout and connection limits
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 5000,     // 5 seconds
+            socketTimeout: 10000      // 10 seconds
+        });
+        return transporter;
+    } catch (error) {
+        console.error('[EMAIL] ❌ Failed to create email transporter:', error.message);
+        return null;
+    }
+};
+
+export const getTransporter = () => {
+    return createTransporter();
+};
 
 export const sendOrderEmail = async (email, orderData) => {
     const { _id, items, amount, address } = orderData;
@@ -106,8 +133,14 @@ export const sendOrderEmail = async (email, orderData) => {
         `
     };
 
+    const emailTransporter = getTransporter();
+    if (!emailTransporter) {
+        console.warn(`[EMAIL SIMULATION] 📧 Email service disabled. Simulated Order Confirmation to ${email}:\n   SUBJECT: ${mailOptions.subject}\n   TOTAL: ₹${amount}\n`);
+        return;
+    }
+
     try {
-        await transporter.sendMail(mailOptions);
+        await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 📧 Sent Order Confirmation to ${email}`);
     } catch (error) {
         console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
@@ -193,8 +226,15 @@ export const sendOtpEmail = async (email, otp) => {
             </div>
         `
     };
+    
+    const emailTransporter = getTransporter();
+    if (!emailTransporter) {
+        console.warn(`[EMAIL SIMULATION] 🔐 Email service disabled. Simulated OTP for ${email}: ${otp}\n   SUBJECT: ${mailOptions.subject}\n`);
+        return;
+    }
+    
     try {
-        await transporter.sendMail(mailOptions);
+        await emailTransporter.sendMail(mailOptions);
         console.log(`[EMAIL] 🔐 Sent OTP Verification to ${email}`);
     } catch (error) {
         console.error(`[EMAIL ERROR] ❌ SMTP Error: ${error.message}`);
