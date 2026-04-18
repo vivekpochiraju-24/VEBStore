@@ -1,0 +1,21 @@
+﻿Testing SMTP for: vivekpochiraju@gmail.com
+[2026-04-06 15:05:02] DEBUG Creating transport: nodemailer (8.0.3; +https://nodemailer.com/; SMTP/8.0.3[client:8.0.3])
+[2026-04-06 15:05:23] DEBUG [BV7NZu5LbIQ] Resolved smtp.gmail.com as 2404:6800:4000:1025::6d [cache miss]
+[2026-04-06 15:05:44] INFO  [BV7NZu5LbIQ] Connection to 2404:6800:4000:1025::6d failed, trying 192.178.211.108
+[2026-04-06 15:05:44] INFO  [BV7NZu5LbIQ] Secure connection established to 192.178.211.108:465
+[2026-04-06 15:05:44] DEBUG [BV7NZu5LbIQ] S: 220 smtp.gmail.com ESMTP d2e1a72fcca58-82cf9c3d67dsm16761133b3a.33 - gsmtp
+[2026-04-06 15:05:44] DEBUG [BV7NZu5LbIQ] C: EHLO [127.0.0.1]
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-smtp.gmail.com at your service, [122.177.245.4]
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-SIZE 35882577
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-8BITMIME
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-ENHANCEDSTATUSCODES
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-PIPELINING
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250-CHUNKING
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 250 SMTPUTF8
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] SMTP handshake finished
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] C: AUTH PLAIN AHZpdmVrcG9jaGlyYWp1QGdtYWlsLmNvbQAvKiBzZWNyZXQgKi8=
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 535-5.7.8 Username and Password not accepted. For more information, go to
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] S: 535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-82cf9c3d67dsm16761133b3a.33 - gsmtp
+[2026-04-06 15:05:45] INFO  [BV7NZu5LbIQ] User "vivekpochiraju@gmail.com" failed to authenticate
+[2026-04-06 15:05:45] DEBUG [BV7NZu5LbIQ] Closing connection to the server using "end"

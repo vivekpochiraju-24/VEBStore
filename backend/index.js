@@ -106,7 +106,6 @@ const server = app.listen(port, '0.0.0.0', () => {
         
         // Email service is now lazy-loaded and optional
         console.log("📨 Email service ready (lazy-loaded)")
-        
         console.log("🎯 VEBStore Backend Ready!")
     }).catch(err => {
         console.error("❌ Database connection failed:", err.message)
