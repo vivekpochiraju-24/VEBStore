@@ -40,8 +40,12 @@ const userSchema = new mongoose.Schema({
     emailUpdatesOptIn: {
         type: Boolean,
         default: true
+    },
+    wishlist: {
+        type: Array,
+        default: []
     }
-}, { timestamps: true, minimize: false })
+} , { timestamps: true, minimize: false })
 
 const User = mongoose.model("User", userSchema)
 

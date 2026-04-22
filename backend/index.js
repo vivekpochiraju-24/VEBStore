@@ -12,6 +12,7 @@ import orderRoutes from './routes/orderRoutes.js'
 import exchangeRoutes from './routes/exchangeRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import wishlistRoutes from './routes/wishlistRoutes.js'
 
 let port = process.env.PORT || 8000
 
@@ -89,6 +90,7 @@ app.use("/api/order", orderRoutes)
 app.use("/api/exchange", exchangeRoutes)
 app.use("/api/message", messageRoutes)
 app.use("/api/admin", adminRoutes)
+app.use("/api/wishlist", wishlistRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {

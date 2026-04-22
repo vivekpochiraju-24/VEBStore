@@ -22,6 +22,7 @@ import WhatsappModal from './component/WhatsappModal'
 import Exchange from './pages/Exchange'
 import MyExchanges from './pages/MyExchanges'
 import Support from './pages/Support'
+import Wishlist from './pages/Wishlist'
 
 function App() {
   let { userData, userLoading: loading } = useContext(userDataContext)
@@ -97,6 +98,9 @@ function App() {
 
         <Route path='/support'
           element={userData ? <Support /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
+
+        <Route path='/wishlist'
+          element={userData ? <Wishlist /> : <Navigate to="/login" state={{ from: location.pathname }} />} />
 
         <Route path='*' element={<NotFound />} />
       </Routes>

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { authDataContext } from '../context/AuthContext'
 import { userDataContext } from '../context/UserContext'
 import { themeDataContext } from '../context/ThemeContext'
-import { FaUser, FaPhoneAlt, FaLock, FaEye, FaEyeSlash, FaTags, FaClipboardList, FaExchangeAlt } from 'react-icons/fa'
+import { FaUser, FaPhoneAlt, FaLock, FaEye, FaEyeSlash, FaTags, FaClipboardList, FaExchangeAlt, FaHeart } from 'react-icons/fa'
 import { MdEdit, MdVerifiedUser } from 'react-icons/md'
 import { Mail, ShieldCheck } from 'lucide-react'
 
@@ -157,14 +157,24 @@ function Profile() {
                     </div>
 
                     {/* Navigation Shortcut Cards */}
-                    <div className='grid grid-cols-2 gap-4'>
-                        <button onClick={() => navigate('/order')} className={`p-6 rounded-[35px] border flex flex-col items-center gap-3 transition-all hover:scale-105 active:scale-95 group ${dk ? 'bg-slate-900/50 border-slate-800 hover:border-blue-500/50' : 'bg-white border-slate-100 hover:border-blue-200'}`}>
-                            <FaClipboardList className={`text-2xl ${dk ? 'text-slate-500 group-hover:text-blue-400' : 'text-slate-400 group-hover:text-blue-600'} transition-colors`} />
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${dk ? 'text-slate-500' : 'text-slate-600'}`}>Orders</span>
+                    <div className='flex flex-col gap-4'>
+                        <button onClick={() => navigate('/order')} className={`w-full p-5 rounded-[30px] border flex items-center gap-4 transition-all hover:translate-x-2 active:scale-95 group ${dk ? 'bg-slate-900/50 border-slate-800 hover:border-blue-500/50' : 'bg-white border-slate-100 hover:border-blue-200'}`}>
+                            <div className={`p-3 rounded-2xl ${dk ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-400'}`}>
+                                <FaClipboardList size={20} />
+                            </div>
+                            <span className={`text-[11px] font-black uppercase tracking-widest ${dk ? 'text-slate-300' : 'text-slate-600'}`}>Order History</span>
                         </button>
-                        <button onClick={() => navigate('/my-exchanges')} className={`p-6 rounded-[35px] border flex flex-col items-center gap-3 transition-all hover:scale-105 active:scale-95 group ${dk ? 'bg-slate-900/50 border-slate-800 hover:border-emerald-500/50' : 'bg-white border-slate-100 hover:border-emerald-200'}`}>
-                            <FaExchangeAlt className={`text-2xl ${dk ? 'text-slate-500 group-hover:text-emerald-400' : 'text-slate-400 group-hover:text-emerald-600'} transition-colors`} />
-                            <span className={`text-[10px] font-black uppercase tracking-widest ${dk ? 'text-slate-500' : 'text-slate-600'}`}>Exchanges</span>
+                        <button onClick={() => navigate('/my-exchanges')} className={`w-full p-5 rounded-[30px] border flex items-center gap-4 transition-all hover:translate-x-2 active:scale-95 group ${dk ? 'bg-slate-900/50 border-slate-800 hover:border-emerald-500/50' : 'bg-white border-slate-100 hover:border-emerald-200'}`}>
+                            <div className={`p-3 rounded-2xl ${dk ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-400'}`}>
+                                <FaExchangeAlt size={20} />
+                            </div>
+                            <span className={`text-[11px] font-black uppercase tracking-widest ${dk ? 'text-slate-300' : 'text-slate-600'}`}>My Exchanges</span>
+                        </button>
+                        <button onClick={() => navigate('/wishlist')} className={`w-full p-5 rounded-[30px] border flex items-center gap-4 transition-all hover:translate-x-2 active:scale-95 group ${dk ? 'bg-slate-900/50 border-slate-800 hover:border-rose-500/50' : 'bg-white border-slate-100 hover:border-rose-200'}`}>
+                            <div className={`p-3 rounded-2xl ${dk ? 'bg-slate-800 text-slate-400' : 'bg-slate-50 text-slate-400'}`}>
+                                <FaHeart size={20} className='text-rose-500' />
+                            </div>
+                            <span className={`text-[11px] font-black uppercase tracking-widest ${dk ? 'text-slate-300' : 'text-slate-600'}`}>My Wishlist</span>
                         </button>
                     </div>
                 </div>

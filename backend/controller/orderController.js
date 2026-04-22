@@ -15,7 +15,7 @@ const razorpayInstance = new Razorpay({
 export const placeOrder = async (req,res) => {
 
      try {
-         const {items , amount , address, appliedCoins} = req.body;
+         const {items , amount , address, appliedCoins, paymentMethod, paymentStatus} = req.body;
          const userId = req.userId;
          
          // Validate user coins
@@ -31,8 +31,8 @@ export const placeOrder = async (req,res) => {
             appliedCoins: coinsToDeduct,
             userId,
             address,
-            paymentMethod:'COD',
-            payment:false,
+            paymentMethod: paymentMethod || 'COD',
+            payment: paymentStatus || false,
             date: Date.now()
          }
 
@@ -49,10 +49,8 @@ export const placeOrder = async (req,res) => {
          const updatedUser = await User.findById(userId);
          if (updatedUser) {
              const targetEmail = address.email || user.email;
-             console.log(`[ORDER] Preparing to send email to: ${targetEmail} (Opt-in: ${updatedUser.emailUpdatesOptIn})`);
-             if (targetEmail && updatedUser.emailUpdatesOptIn) {
-                 sendOrderEmail(targetEmail, newOrder).catch(e => console.error("Order Mail Error:", e));
-             }
+             console.log(`[ORDER] 📧 Dispatching transactional order confirmation to: ${targetEmail}`);
+             sendOrderEmail(targetEmail, newOrder).catch(e => console.error("❌ Order Mail Error:", e));
              createNotification(userId, "Order Placed", `Your order #${newOrder._id.toString().slice(-6)} has been placed successfully.`, "Order");
              
              // WhatsApp Simulator
@@ -138,10 +136,10 @@ export const verifyRazorpay = async (req,res) =>{
             
             // Send Order Confirmation Email via Razorpay
             const targetEmail = newOrder.address.email || user.email;
-            console.log(`[RAZORPAY SUCCESS] Sending confirmation to: ${targetEmail} (Opt-in: ${user.emailUpdatesOptIn})`);
-            if (targetEmail && user.emailUpdatesOptIn) {
-                sendOrderEmail(targetEmail, newOrder).catch(e => console.error("Order Mail Error:", e));
-            }
+            console.log(`[RAZORPAY SUCCESS] 📧 Dispatching transactional confirmation to: ${targetEmail}`);
+            // Note: Transactional emails (orders) bypass the marketing opt-in check
+            sendOrderEmail(targetEmail, newOrder).catch(e => console.error("❌ Order Mail Error:", e));
+            
             createNotification(userId, "Order Summary", `Your Razorpay order #${newOrder._id.toString().slice(-6)} has been confirmed!`, "Order");
 
             // WhatsApp Simulator for Razorpay

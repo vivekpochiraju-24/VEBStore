@@ -99,7 +99,24 @@ function ProductDetail() {
               </div>
               <p className={`font-medium text-sm ${dk ? 'text-slate-400' : 'text-gray-500'}`}>({reviewCount} Reviews)</p>
             </div>
-            <div className='flex items-center gap-4 mt-2'>
+            
+            {/* Tags / Badges */}
+            <div className='flex flex-wrap gap-2 mt-2'>
+              {productData.fabric && (
+                <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] border flex items-center gap-2 ${dk ? 'bg-blue-900/20 border-blue-500/30 text-blue-400' : 'bg-blue-50 border-blue-100 text-blue-600'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${dk ? 'bg-blue-400' : 'bg-blue-500'}`}></div>
+                  Fabric: {productData.fabric}
+                </span>
+              )}
+              {productData.suitableFor && (Array.isArray(productData.suitableFor) ? productData.suitableFor : [productData.suitableFor]).map((occasion, index) => (
+                <span key={index} className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-[0.1em] border flex items-center gap-2 ${dk ? 'bg-emerald-900/20 border-emerald-500/30 text-emerald-400' : 'bg-emerald-50 border-emerald-100 text-emerald-600'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${dk ? 'bg-emerald-400' : 'bg-emerald-500'}`}></div>
+                  {occasion}
+                </span>
+              ))}
+            </div>
+
+            <div className='flex items-center gap-4 mt-3'>
               <p className='text-3xl sm:text-4xl font-black text-blue-500'>₹{productData.price}</p>
               {productData.exchangeEligible && (
                 <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-200 bg-green-50 text-green-600 flex items-center gap-1.5`}>

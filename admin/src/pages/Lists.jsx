@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom'
 import { Trash2, Package, Search, Filter, LayoutGrid, List as ListIcon, Edit2, X, Star, MessageSquare, Sparkles, RefreshCw } from 'lucide-react'
 
 function Lists() {
+  const [expandedTags, setExpandedTags] = useState(new Set())
+
   const [list, setList] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const { serverUrl } = useContext(authDataContext)
@@ -615,18 +617,27 @@ function Lists() {
                             </td>
                           </tr>
                           <tr className='border-b border-gray-100'>
-                            <td className='py-1 text-gray-500 font-medium w-20'>Suitable:</td>
                             <td className='py-1 text-gray-900 font-medium'>
                               {item.suitableFor && Array.isArray(item.suitableFor) ? (
                                 <div className='flex flex-wrap gap-1'>
-                                  {item.suitableFor.slice(0, 3).map((occasion, index) => (
-                                    <span key={index} className='px-2 py-0.5 bg-green-100 text-green-800 rounded-md text-xs capitalize'>
+                                  {((expandedTags.has(item._id) ? item.suitableFor : item.suitableFor.slice(0, 3))).map((occasion, index) => (
+                                    <span key={index} className='px-2 py-0.5 bg-green-100 text-green-800 rounded-md text-xs capitalize border border-green-200'>
                                       {occasion}
                                     </span>
                                   ))}
                                   {item.suitableFor.length > 3 && (
-                                    <span className='px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md text-xs'>
-                                      +{item.suitableFor.length - 3}
+                                    <span 
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const newExpanded = new Set(expandedTags);
+                                        if (newExpanded.has(item._id)) newExpanded.delete(item._id);
+                                        else newExpanded.add(item._id);
+                                        setExpandedTags(newExpanded);
+                                      }}
+                                      title={!expandedTags.has(item._id) ? `Show all: ${item.suitableFor.slice(3).join(', ')}` : 'Show less'}
+                                      className='px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md text-xs cursor-pointer hover:bg-gray-200 transition-colors border border-gray-200'
+                                    >
+                                      {expandedTags.has(item._id) ? 'Hide' : `+${item.suitableFor.length - 3}`}
                                     </span>
                                   )}
                                 </div>

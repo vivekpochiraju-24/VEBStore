@@ -13,7 +13,7 @@ import { themeDataContext } from '../context/ThemeContext';
 import { IoMdHome } from "react-icons/io";
 import { HiOutlineCollection } from "react-icons/hi";
 import { MdContacts } from "react-icons/md";
-import { User, LogOut, Package, ChevronDown, X, Sun, Moon, RefreshCw, MessageCircle, Sparkles, Menu } from 'lucide-react'
+import { User, LogOut, Package, ChevronDown, X, Sun, Moon, RefreshCw, MessageCircle, Sparkles, Menu, Heart } from 'lucide-react'
 
 function Nav() {
   const { getCurrentUser, userData, logoutUser, setUserData } = useContext(userDataContext)
@@ -292,6 +292,7 @@ function Nav() {
                       { name: 'Order History', path: '/order', icon: <Package size={16} /> },
                       { name: 'Support Tickets', path: '/support', icon: <MessageCircle size={16} />, unread: unreadReplies },
                       { name: 'My Exchanges', path: '/my-exchanges', icon: <RefreshCw size={16} /> },
+                      { name: 'Wishlist', path: '/wishlist', icon: <Heart size={16} /> },
                       { name: 'Edit Profile', path: '/profile', icon: <User size={16} /> },
                     ].map(item => (
                       <button

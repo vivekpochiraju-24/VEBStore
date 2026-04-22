@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Heart } from 'lucide-react'
 
 function Card({ name, image, id, price, fabric, suitableFor }) {
-  const { currency, products } = useContext(shopDataContext)
+  const { currency, products, toggleWishlist, wishlist } = useContext(shopDataContext)
+  const isWishlisted = wishlist.includes(id)
   const { isDark } = useContext(themeDataContext)
   const navigate = useNavigate()
   const dk = isDark
@@ -15,6 +16,8 @@ function Card({ name, image, id, price, fabric, suitableFor }) {
   const averageRating = reviews.length > 0
     ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1)
     : 0
+
+  const [showAllSuitable, setShowAllSuitable] = React.useState(false)
 
   return (
     <div
@@ -32,11 +35,28 @@ function Card({ name, image, id, price, fabric, suitableFor }) {
         {/* Overlay Actions */}
         <div className='absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500'></div>
 
-        <div className='absolute top-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-500 delay-75'>
-          <button className='w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-900 shadow-lg hover:bg-blue-600 hover:text-white transition-all'>
-            <Heart size={18} />
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          className='absolute top-4 right-4 flex flex-col gap-2 translate-x-12 group-hover:translate-x-0 transition-transform duration-500 delay-75'
+        >
+          <button 
+            onClick={(e) => { 
+                e.stopPropagation(); 
+                e.preventDefault(); 
+                toggleWishlist(id); 
+            }}
+            className={`w-10 h-10 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg transition-all z-10 ${
+              isWishlisted 
+                ? 'bg-rose-500 text-white' 
+                : 'bg-white/90 text-gray-900 hover:bg-blue-600 hover:text-white'
+            }`}
+          >
+            <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} />
           </button>
-          <button className='w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-900 shadow-lg hover:bg-blue-600 hover:text-white transition-all'>
+          <button 
+            onClick={(e) => { e.stopPropagation(); /* Add to cart logic */ }}
+            className='w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-900 shadow-lg hover:bg-blue-600 hover:text-white transition-all'
+          >
             <Plus size={18} />
           </button>
         </div>
@@ -49,24 +69,40 @@ function Card({ name, image, id, price, fabric, suitableFor }) {
         {/* Fabric and Suitable For Badges */}
         <div className='flex flex-wrap gap-1.5 mt-1'>
           {fabric && (
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-800'}`}>
+            <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${dk ? 'bg-blue-900/30 text-blue-400 border border-blue-800/30' : 'bg-blue-50 text-blue-600 border border-blue-100'}`}>
               {fabric}
             </span>
           )}
           {suitableFor && Array.isArray(suitableFor) ? (
-            suitableFor.slice(0, 2).map((occasion, index) => (
-              <span key={index} className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}`}>
-                {occasion}
-              </span>
-            ))
+            <>
+              {(showAllSuitable ? suitableFor : suitableFor.slice(0, 2)).map((occasion, index) => (
+                <span 
+                  key={index} 
+                  className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all ${dk ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/30' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}
+                >
+                  {occasion}
+                </span>
+              ))}
+              {suitableFor.length > 2 && (
+                <span 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAllSuitable(!showAllSuitable);
+                  }}
+                  title={!showAllSuitable ? `Show more: ${suitableFor.slice(2).join(', ')}` : 'Show less'}
+                  className={`px-2 py-1 text-[10px] font-black uppercase tracking-wider rounded-md cursor-pointer transition-all hover:scale-110 active:scale-95 ${
+                    showAllSuitable 
+                      ? (dk ? 'bg-amber-900/30 text-amber-400 border border-amber-800/30' : 'bg-amber-50 text-amber-600 border border-amber-100')
+                      : (dk ? 'bg-slate-700 text-slate-300 border border-slate-600' : 'bg-gray-200 text-gray-700 border border-gray-300')
+                  }`}
+                >
+                  {showAllSuitable ? 'LESS' : `+${suitableFor.length - 2}`}
+                </span>
+              )}
+            </>
           ) : suitableFor && (
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}`}>
+            <span className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${dk ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/30' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}`}>
               {suitableFor}
-            </span>
-          )}
-          {suitableFor && Array.isArray(suitableFor) && suitableFor.length > 2 && (
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${dk ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-600'}`}>
-              +{suitableFor.length - 2}
             </span>
           )}
         </div>

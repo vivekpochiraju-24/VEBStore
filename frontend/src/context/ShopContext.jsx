@@ -15,28 +15,77 @@ function ShopContext({children}) {
     let [cartItem, setCartItem] = useState({});
       let [loading,setLoading] = useState(false)
     let [showWhatsapp, setShowWhatsapp] = useState(false)
+    let [wishlist, setWishlist] = useState([])
     let currency = '₹';
     let delivery_fee = 40;
 
     const getProducts = async () => {
         try {
             let result = await axios.get(serverUrl + "/api/product/list")
-            console.log(result.data)
             setProducts(result.data)
         } catch (error) {
             console.log(error)
         }
-        
     }
 
+    const addToWishlist = async (productId) => {
+        if (!userData) {
+            toast.error("Please login to use wishlist");
+            return;
+        }
+        try {
+            const result = await axios.post(serverUrl + "/api/wishlist/add", { productId }, { withCredentials: true });
+            if (result.data.success) {
+                setWishlist(result.data.wishlist);
+                toast.success("Added to wishlist");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Error adding to wishlist");
+        }
+    }
+
+    const removeFromWishlist = async (productId) => {
+        if (!userData) return;
+        try {
+            const result = await axios.post(serverUrl + "/api/wishlist/remove", { productId }, { withCredentials: true });
+            if (result.data.success) {
+                setWishlist(result.data.wishlist);
+                toast.success("Removed from wishlist");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Error removing from wishlist");
+        }
+    }
+
+    const getWishlist = async () => {
+        if (!userData) return;
+        try {
+            const result = await axios.get(serverUrl + "/api/wishlist/get", { withCredentials: true });
+            if (result.data.success) {
+                setWishlist(result.data.wishlist);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const toggleWishlist = async (productId) => {
+        if (wishlist.includes(productId)) {
+            await removeFromWishlist(productId);
+        } else {
+            await addToWishlist(productId);
+        }
+    }
 
     const addtoCart = async (itemId , size) => {
        if (!size) {
-      console.log("Select Product Size");
+      toast.error("Select Product Size");
       return;
     }
 
-    let cartData = structuredClone(cartItem); // Clone the product
+    let cartData = structuredClone(cartItem);
 
     if (cartData[itemId]) {
       if (cartData[itemId][size]) {
@@ -51,57 +100,44 @@ function ShopContext({children}) {
   
     setCartItem(cartData);
   
-
     if (userData) {
       setLoading(true)
       try {
-      let result = await axios.post(serverUrl + "/api/cart/add" , {itemId,size} , {withCredentials: true})
-      console.log(result.data)
-      toast.success("Product Added")
-      setLoading(false)
-
-
-       
+        await axios.post(serverUrl + "/api/cart/add" , {itemId,size} , {withCredentials: true})
+        toast.success("Product Added")
+        setLoading(false)
       }
       catch (error) {
         console.log(error)
         setLoading(false)
         toast.error("Add Cart Error")
-       
       }
-     
     } 
     }
-
 
     const getUserCart = async () => {
       try {
         const result = await axios.post(serverUrl + '/api/cart/get',{},{ withCredentials: true })
-
-      setCartItem(result.data)
-    } catch (error) {
-      console.log(error)
-     
-
-
-    }
-      
-    }
-    const updateQuantity = async (itemId , size , quantity) => {
-      let cartData = structuredClone(cartItem);
-    cartData[itemId][size] = quantity
-    setCartItem(cartData)
-
-    if (userData) {
-      try {
-        await axios.post(serverUrl + "/api/cart/update", { itemId, size, quantity }, { withCredentials: true })
+        setCartItem(result.data)
       } catch (error) {
         console.log(error)
-        
       }
     }
-      
+
+    const updateQuantity = async (itemId , size , quantity) => {
+      let cartData = structuredClone(cartItem);
+      cartData[itemId][size] = quantity
+      setCartItem(cartData)
+
+      if (userData) {
+        try {
+          await axios.post(serverUrl + "/api/cart/update", { itemId, size, quantity }, { withCredentials: true })
+        } catch (error) {
+          console.log(error)
+        }
+      }
     }
+
      const getCartCount = () => {
     let totalCount = 0;
     for (const items in cartItem) {
@@ -111,7 +147,6 @@ function ShopContext({children}) {
             totalCount += cartItem[items][item]
           }
         } catch (error) {
-
         }
       }
     }
@@ -128,12 +163,10 @@ function ShopContext({children}) {
             totalAmount += itemInfo.price * cartItem[items][item];
           }
         } catch (error) {
-
         }
       }
     }
     return totalAmount
-    
   }
 
     useEffect(()=>{
@@ -141,18 +174,19 @@ function ShopContext({children}) {
     },[])
 
     useEffect(() => {
-    getUserCart()
-  },[])
-
-
-
-
-
+     if (userData) {
+        getUserCart()
+        getWishlist()
+     } else {
+        setCartItem({})
+        setWishlist([])
+     }
+  },[userData])
 
     let [appliedCoins, setAppliedCoins] = useState(0);
     
     let value = {
-      products, currency , delivery_fee,getProducts,search,setSearch,showSearch,setShowSearch,cartItem, addtoCart, getCartCount, setCartItem ,updateQuantity,getCartAmount,loading, appliedCoins, setAppliedCoins, showWhatsapp, setShowWhatsapp
+      products, currency , delivery_fee,getProducts,search,setSearch,showSearch,setShowSearch,cartItem, addtoCart, getCartCount, setCartItem ,updateQuantity,getCartAmount,loading, appliedCoins, setAppliedCoins, showWhatsapp, setShowWhatsapp, wishlist, toggleWishlist, getWishlist
     }
   return (
     <div>
